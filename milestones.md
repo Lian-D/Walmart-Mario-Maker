@@ -31,3 +31,8 @@ Example: Object while (condition) moves between [coords]
 ### Recursion
 Allow users to specify an input for recursion
 Example: Allow users to specify players to recurse through different levels depending on the data given to a door.
+
+### TA Suggestions and Follow Up Tasks
+At TA suggestion, we added the control flow elements and the SQL like format.
+
+At this stage, we will begin considering how to translate the parsed data into Typescript, as well as looking more into Typescript and React. We have confirmed that there is a ANTLR library available for Typescript.
