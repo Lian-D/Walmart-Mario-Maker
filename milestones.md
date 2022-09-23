@@ -5,7 +5,7 @@
 ### A DSL to allow people unfamiliar with programming to create simple yet diverse platformers. Format will be similar to SQL using things like CREATE, REQUIRE, WHILE. Typescript will be used for the backend, and React for the frontend as of now.
 
 
-## Main Langauge Features
+## Main Language Features
 
 ### Conditionals
 
@@ -51,6 +51,7 @@ Sept 23rd -> <br/>
     Mocks of Input and outputs <br/>
     Placeholder Sprites <br/>
     Figuring out rendering process <br/>
+
 Sept 29th ->  <br/>
     Parsers and backend Completed <br/> 
     Mockup of Language provided to Front-end <br/>
