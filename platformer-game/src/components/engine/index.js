@@ -26,19 +26,23 @@ function CreateEngine(setState) {
 
     // current stage position
     this.game = 'start';
-    this.stage = 0;
+    this.stageXPos = 0;
+
     this.jump = false;
-    this.direction = 'up';
-    this.position = 0;
-    this.max = this.settings.tile * 40;
+    this.yDirection = 'up';
+    this.xDirection = '';
+
+    this.playerXPos = 200;
+    this.playerYPos = 0;
+    this.jumpMaxHeight = this.settings.tile * 40;
     this.blocks = BLOCKS.map(b => (b * this.settings.tile));
 
     const checkBlocks = () => {
-        const charXPos = this.stage + 200;
-        const charYPos = this.position;
+        const charXPos = this.playerXPos;
+        const charYPos = this.playerYPos;
 
         // if the char has past all blocks
-        if (charXPos > this.blocks[this.blocks.length - 1] + 200 && this.position <= 0) {
+        if (charXPos > this.blocks[this.blocks.length - 1] + 200 && this.playerYPos <= 0) {
             this.game = 'win';
         }
 
@@ -58,34 +62,53 @@ function CreateEngine(setState) {
     const doJump = () => {
         // if not jumping, reset and return
         if (!this.jump) {
-            this.position = 0;
-            this.direction = 'up';
+            this.playerYPos = 0;
+            this.yDirection = 'up';
             return;
         }
 
         // if finished jumping, reset and return
-        if (this.direction === 'down' && this.position <= 0) {
+        if (this.yDirection === 'down' && this.playerYPos <= 0) {
             this.jump = false;
-            this.position = 0;
-            this.direction = 'up';
+            this.playerYPos = 0;
+            this.yDirection = 'up';
             return;
         }
 
         // if the jump is at its max, start falling
-        if (this.position >= this.max) this.direction = 'down';
+        if (this.playerYPos >= this.jumpMaxHeight) this.yDirection = 'down';
 
         // depending on the direction increment the jump.
-        if (this.direction === 'up') {
-            this.position += (this.settings.tile * JUMP_VELOCITY);
+        if (this.yDirection === 'up') {
+            this.playerYPos += (this.settings.tile * finalVelocity(this.playerYPos, 0.2, 4));
         } else {
-            this.position -= (this.settings.tile * JUMP_VELOCITY);
+            this.playerYPos -= (this.settings.tile * finalVelocity(this.playerYPos, 0.3, 5));
         }
+    };
+
+    const finalVelocity = (yPos, distanceThreshold, multiplier) => {
+        let distance = Math.max(this.jumpMaxHeight - yPos, 0) / this.jumpMaxHeight;
+        let velocity = distance < distanceThreshold ? JUMP_VELOCITY * distance * multiplier : JUMP_VELOCITY;
+        return Math.max(0.2, velocity);
+    }
+
+    const doMove = () => {
+        if (this.xDirection === 'right') {
+            this.playerXPos += this.settings.tile;
+        } 
+        else if (this.xDirection === 'left') {
+            this.playerXPos -= this.settings.tile;
+        }
+
+        this.stageXPos = Math.max(this.playerXPos - 700, 0);
+        this.playerXPos = Math.max(this.playerXPos, 0);
+        // add another check for the max width of the stage when we get around to defining it
     };
 
     // function that will be continuously ran
     this.repaint = () => {
         // move the stage by one tile
-        this.stage += this.settings.tile;
+        doMove();
 
         // check if char has hit a block
         checkBlocks();
@@ -95,8 +118,9 @@ function CreateEngine(setState) {
 
         // set state for use in the component
         setState({
-            stage: this.stage,
-            jump: this.position,
+            stageX: this.stageXPos,
+            playerX: this.playerXPos,
+            playerY: this.playerYPos,
             blocks: this.blocks,
             status: this.game,
         });
@@ -105,10 +129,11 @@ function CreateEngine(setState) {
         if (this.game !== 'start') {
             // reset and stop
             this.game = 'start';
-            this.stage = 0;
+            this.stageXPos = 0;
             this.jump = false;
-            this.direction = 'up';
-            this.position = 0;
+            this.yDirection = 'up';
+            this.xDirection = '';
+            this.playerYPos = 0;
             return null;
         }
 
@@ -125,12 +150,16 @@ function CreateEngine(setState) {
                 this.jump = true;
             }
         },
+        move: (direction) => {
+            this.xDirection = direction;
+        },
     });
 }
 
 const initialState = {
-    stage: 0,
-    jump: 0,
+    stageX: 0,
+    playerX: 200,
+    playerY: 0,
     blocks: [],
     status: 'start',
 };
@@ -162,9 +191,25 @@ export default function Engine() {
             // otherwise jump
             engine.jump();
         }
+        else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+            if (engine === null) return;
+            engine.move('');
+        }
+    };
+    
+    const handleKeyDown = (e) => {
+        if (e.key === 'ArrowRight') {
+            if (engine === null) return;
+            engine.move('right');
+        }
+        else if (e.key === 'ArrowLeft') {
+            if (engine === null) return;
+            engine.move('left');
+        }
     };
 
     useEvent('keyup', handleKeyPress);
+    useEvent('keydown', handleKeyDown);
 
     useEffect(() => {
         if (start) {
@@ -201,17 +246,17 @@ export default function Engine() {
             <div
                 className={styles.stage}
                 style={{
-                    transform: `translate(-${gameState.stage}px, 0px)`, // move stage
+                    transform: `translate(-${gameState.stageX}px, 0px)`, // move stage
                 }}
             >
-        <span
-            className={styles.character}
-            style={{
-                transform: `translate(${gameState.stage + 200}px, -${gameState.jump}px)`, // move char in opposite direction
-                height: charHeight,
-                width: charWidth,
-            }}
-        />
+                <span
+                    className={styles.character}
+                    style={{
+                        transform: `translate(${gameState.playerX}px, -${gameState.playerY}px)`, // move char in opposite direction
+                        height: charHeight,
+                        width: charWidth,
+                    }}
+                />
                 {
                     gameState.blocks.map(
                         block => (
