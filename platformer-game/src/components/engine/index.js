@@ -11,7 +11,7 @@ const BLOCKS = [
 // Defining platforms here for now, but we can probably pass this in as a prop later
 const PLATFORMS = [
     {
-        "xPos": 140,
+        "xPos": 130,
         "yPos": 30,
         "length": 250
     }
@@ -40,6 +40,7 @@ function CreateEngine(setState) {
     this.stageXPos = 0;
 
     this.jump = false;
+    this.isOnPlatform = false;
     this.yDirection = 'up';
     this.xDirection = '';
 
@@ -57,17 +58,23 @@ function CreateEngine(setState) {
 
 
     const checkPlatform = () => {
+        const charXPos = this.playerXPos;
         const charYPos = this.playerYPos;
 
-        let isOnPlatform = false;
         
         // Check if player is on any platform
         for (let platform of this.platforms) {
-            let platformSurfaceYPos = parseFloat(platform["yPos"] - platformHeight);
-            if (charYPos == platformSurfaceYPos) {
-                isOnPlatform = true;
-                console.log(isOnPlatform);
+            let platformSurfaceYPos = platform["yPos"] + platformHeight;
+            if (((platformSurfaceYPos - 0.5) <= charYPos) 
+            && (charYPos <= (platformSurfaceYPos + 0.5))
+            && (platform["xPos"] <= charXPos)
+            && (charXPos <= platform["xPos"] + platform["length"])) {
+                this.isOnPlatform = true;
+                this.playerYPos = platformSurfaceYPos;
+                this.jump = false;
                 break;
+            } else {
+                this.isOnPlatform = false;
             }
         }
 
@@ -99,7 +106,14 @@ function CreateEngine(setState) {
     const doJump = () => {
         // if not jumping, reset and return
         if (!this.jump) {
-            // this.playerYPos = 0;
+            if (!this.isOnPlatform) {
+                if (this.playerYPos <= 0) {
+                    this.playerYPos = 0;
+                } else {
+                    this.yDirection = 'down'
+                    movePlayerVertically(this.yDirection);
+                }
+            }
             this.yDirection = 'up';
             return;
         }
@@ -107,7 +121,9 @@ function CreateEngine(setState) {
         // if finished jumping, reset and return
         if (this.yDirection === 'down' && this.playerYPos <= 0) {
             this.jump = false;
-            this.playerYPos = 0;
+            if (!this.isOnPlatform) {
+                this.playerYPos = 0;
+            }
             this.yDirection = 'up';
             return;
         }
@@ -176,6 +192,7 @@ function CreateEngine(setState) {
             this.game = 'start';
             this.stageXPos = 0;
             this.jump = false;
+            this.isOnPlatform = false;
             this.yDirection = 'up';
             this.xDirection = '';
             this.playerYPos = 0;
