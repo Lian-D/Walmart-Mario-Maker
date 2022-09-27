@@ -8,8 +8,19 @@ const BLOCKS = [
     390,
 ];
 
+// Defining platforms here for now, but we can probably pass this in as a prop later
+const PLATFORMS = [
+    {
+        "xPos": 140,
+        "yPos": 30,
+        "length": 250
+    }
+];
+
 const charWidth = 100;
 const charHeight = 100;
+
+const platformHeight = 25;
 
 const blockWidth = 80;
 const blockHeight = 200;
@@ -36,13 +47,39 @@ function CreateEngine(setState) {
     this.playerYPos = 0;
     this.jumpMaxHeight = this.settings.tile * 40;
     this.blocks = BLOCKS.map(b => (b * this.settings.tile));
+    this.platforms = PLATFORMS.map(p => (
+        {
+            "xPos": p["xPos"] * this.settings.tile,
+            "yPos": p["yPos"] * this.settings.tile,
+            "length": p["length"] * this.settings.tile,
+        }
+    ));
+
+
+    const checkPlatform = () => {
+        const charYPos = this.playerYPos;
+
+        let isOnPlatform = false;
+        
+        // Check if player is on any platform
+        for (let platform of this.platforms) {
+            let platformSurfaceYPos = parseFloat(platform["yPos"] - platformHeight);
+            if (charYPos == platformSurfaceYPos) {
+                isOnPlatform = true;
+                console.log(isOnPlatform);
+                break;
+            }
+        }
+
+    }
+
 
     const checkBlocks = () => {
         const charXPos = this.playerXPos;
         const charYPos = this.playerYPos;
 
-        // if the char has past all blocks
-        if (charXPos > this.blocks[this.blocks.length - 1] + 200 && this.playerYPos <= 0) {
+        // if the char has passed all blocks
+        if (charXPos > this.blocks[this.blocks.length - 1] + 200) {
             this.game = 'win';
         }
 
@@ -62,7 +99,7 @@ function CreateEngine(setState) {
     const doJump = () => {
         // if not jumping, reset and return
         if (!this.jump) {
-            this.playerYPos = 0;
+            // this.playerYPos = 0;
             this.yDirection = 'up';
             return;
         }
@@ -79,12 +116,16 @@ function CreateEngine(setState) {
         if (this.playerYPos >= this.jumpMaxHeight) this.yDirection = 'down';
 
         // depending on the direction increment the jump.
-        if (this.yDirection === 'up') {
+        movePlayerVertically(this.yDirection);
+    };
+
+    const movePlayerVertically = (direction) => {
+        if (direction === 'up') {
             this.playerYPos += (this.settings.tile * finalVelocity(this.playerYPos, 0.2, 4));
         } else {
             this.playerYPos -= (this.settings.tile * finalVelocity(this.playerYPos, 0.3, 5));
         }
-    };
+    }
 
     const finalVelocity = (yPos, distanceThreshold, multiplier) => {
         let distance = Math.max(this.jumpMaxHeight - yPos, 0) / this.jumpMaxHeight;
@@ -113,8 +154,11 @@ function CreateEngine(setState) {
         // check if char has hit a block
         checkBlocks();
 
+        checkPlatform();
+
         // check and perform jump
         doJump();
+
 
         // set state for use in the component
         setState({
@@ -122,6 +166,7 @@ function CreateEngine(setState) {
             playerX: this.playerXPos,
             playerY: this.playerYPos,
             blocks: this.blocks,
+            platforms: this.platforms,
             status: this.game,
         });
 
@@ -161,6 +206,7 @@ const initialState = {
     playerX: 200,
     playerY: 0,
     blocks: [],
+    platforms: [],
     status: 'start',
 };
 
@@ -271,6 +317,21 @@ export default function Engine() {
                             />
                         ),
                     )
+                }
+                {
+                    gameState.platforms.map(
+                        platform => (
+                            <span 
+                                className={styles.platform} 
+                                key={platform}
+                                style= {{
+                                    transform: `translate(${platform["xPos"]}px, -${platform["yPos"]}px)`,
+                                    height: platformHeight,
+                                    width: platform["length"]
+                                }}
+                            />
+                        )
+                    )   
                 }
             </div>
         </div>
