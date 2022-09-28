@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './engine.module.scss';
 import { useEvent } from '../../hooks';
+import Door from '../entities/door';
 
 const BLOCKS = [
     140,
@@ -13,7 +14,18 @@ const PLATFORMS = [
     {
         "xPos": 130,
         "yPos": 30,
-        "length": 250
+        "length": 50
+    }
+];
+
+const DOORS = [
+    {
+        "xPos": 200,
+        "yPos": 0,
+        "height": 130,
+        "width": 110,
+        "isOpen": true,
+        "name": "door1"
     }
 ];
 
@@ -55,6 +67,14 @@ function CreateEngine(setState) {
             "length": p["length"] * this.settings.tile,
         }
     ));
+    this.doors = DOORS.map(d => ({
+        "xPos": d["xPos"] * this.settings.tile,
+        "yPos": d["yPos"] * this.settings.tile,
+        "height": d["height"],
+        "width": d["width"],
+        "isOpen": d["isOpen"],
+        "name": d["name"],
+    }));
 
 
     const checkPlatform = () => {
@@ -79,6 +99,23 @@ function CreateEngine(setState) {
         }
 
     }
+
+    const checkDoors = () => {
+        const charXPos = this.playerXPos;
+        const charYPos = this.playerYPos;
+
+        this.doors.forEach((door) => {
+            if (
+                charXPos + charWidth >= door.xPos + (door.width * 0.5)
+                && charYPos <= door.yPos + (door.height * 0.5)
+                && charYPos + charHeight >= door.yPos
+                && charXPos <= door.xPos + door.width
+                && door.isOpen
+            ) {
+                this.game = 'win';
+            }
+        });
+    };
 
 
     const checkBlocks = () => {
@@ -170,6 +207,7 @@ function CreateEngine(setState) {
         // check if char has hit a block
         checkBlocks();
 
+        checkDoors();
         checkPlatform();
 
         // check and perform jump
@@ -183,6 +221,7 @@ function CreateEngine(setState) {
             playerY: this.playerYPos,
             blocks: this.blocks,
             platforms: this.platforms,
+            doors: this.doors,
             status: this.game,
         });
 
@@ -224,6 +263,7 @@ const initialState = {
     playerY: 0,
     blocks: [],
     platforms: [],
+    doors: [],
     status: 'start',
 };
 
@@ -349,6 +389,19 @@ export default function Engine() {
                             />
                         )
                     )   
+                }
+                {
+                    gameState.doors.map(
+                        door => (
+                            <Door 
+                                height={door["height"]} 
+                                width={door["width"]} 
+                                xPos={door["xPos"]} 
+                                yPos={door["yPos"]} 
+                                key={door["name"]}
+                            />
+                        )
+                    )
                 }
             </div>
         </div>
