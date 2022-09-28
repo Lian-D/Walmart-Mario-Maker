@@ -12,9 +12,14 @@ const BLOCKS = [
 // Defining platforms here for now, but we can probably pass this in as a prop later
 const PLATFORMS = [
     {
-        "xPos": 130,
+        "xPos": 100,
         "yPos": 30,
         "length": 50
+    },
+    {
+        "xPos": 50,
+        "yPos": 20,
+        "length": 50 
     }
 ];
 
@@ -85,14 +90,15 @@ function CreateEngine(setState) {
         // Check if player is on any platform
         for (let platform of this.platforms) {
             let platformSurfaceYPos = platform["yPos"] + platformHeight;
-            if (((platformSurfaceYPos - 0.5) <= charYPos) 
-            && (charYPos <= (platformSurfaceYPos + 0.5))
-            && (platform["xPos"] <= charXPos)
-            && (charXPos <= platform["xPos"] + platform["length"])) {
+            if (
+                charXPos + charWidth >= platform["xPos"]
+                && charYPos <= platformSurfaceYPos + 0.5
+                && charYPos + charHeight >= platformSurfaceYPos - 0.5
+                && charXPos <= platform["xPos"] + platform["length"]
+            ) {
                 this.isOnPlatform = true;
                 this.playerYPos = platformSurfaceYPos;
                 this.jump = false;
-                break;
             } else {
                 this.isOnPlatform = false;
             }
@@ -362,10 +368,10 @@ export default function Engine() {
                 />
                 {
                     gameState.blocks.map(
-                        block => (
+                        (block,index) => (
                             <span
                                 className={styles.block}
-                                key={block}
+                                key={index}
                                 style={{
                                     transform: `translate(${block}px, 0px)`, // move stage
                                     height: blockHeight,
@@ -377,10 +383,10 @@ export default function Engine() {
                 }
                 {
                     gameState.platforms.map(
-                        platform => (
+                        (platform, index) => (
                             <span 
                                 className={styles.platform} 
-                                key={platform}
+                                key={index}
                                 style= {{
                                     transform: `translate(${platform["xPos"]}px, -${platform["yPos"]}px)`,
                                     height: platformHeight,
