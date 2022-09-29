@@ -3,6 +3,8 @@ import styles from './engine.module.scss';
 import { useEvent } from '../../hooks';
 import Door from '../entities/door';
 
+/* eslint-disable */
+
 const BLOCKS = [
     140,
     250,
@@ -56,14 +58,26 @@ function CreateEngine(setState) {
     this.game = 'start';
     this.stageXPos = 0;
 
+    this.inAir = true;
+    this.playerYAcceleration = -1; // gravity, in m/s^2
+    // every second, add this onto the velocity
+
+    this.playerYVelocity = 0; // player speed, in m/s
+    // every second, add this onto the y position
+
+    // when the player is on a surface, set the velocity to be 0
+    // when a jump is triggered, add a positive amount to the Y velocity
+
+    this.playerTerminalVelocity = -40; // the maximum velocity a human can have
+    // do not allow the player to be faster than this
+
+
     this.jump = false;
     this.isOnPlatform = false;
-    this.yDirection = 'up';
     this.xDirection = '';
 
     this.playerXPos = 200;
     this.playerYPos = 0;
-    this.jumpMaxHeight = this.playerYPos + this.settings.tile * 15;
     this.blocks = BLOCKS.map(b => (b * this.settings.tile));
     this.platforms = PLATFORMS.map(p => (
         {
@@ -80,6 +94,24 @@ function CreateEngine(setState) {
         "isOpen": d["isOpen"],
         "name": d["name"],
     }));
+
+    const applyYAcceleration = () => {
+        if ((this.playerYVelocity + this.playerYAcceleration) < this.playerTerminalVelocity){
+            this.playerYVelocity = this.playerTerminalVelocity;
+        } else {
+            this.playerYVelocity += this.playerYAcceleration;
+        }
+    }
+
+    const applyYVelocity = () => {
+        if (this.playerYPos + this.playerYVelocity < 0) {
+            this.playerYpos = 0;
+            this.playerYVelocity = 0;
+            this.inAir = false;
+        } else {
+            this.playerYPos += this.playerYVelocity
+        }
+    }
 
 
     const checkPlatform = (newYPos) => {
@@ -143,41 +175,14 @@ function CreateEngine(setState) {
     };
 
     const doJump = () => {
-        // if not jumping, reset and return
-        if (!this.jump) {
-            if (!this.isOnPlatform && this.playerYPos === 0) {
-                this.jump = false
-                return;
+        if (this.jump) {
+            if (this.inAir == false) {
+                this.playerYVelocity += 25;
+                this.inAir = true;
+                this.jump = false;
             }
         }
-
-        // depending on the direction increment the jump.
-        movePlayerVertically(this.yDirection);
-
-        // if the jump is at its max, start falling
-        if (this.playerYPos >= this.jumpMaxHeight)  {
-            this.yDirection = 'down';
-        }
     };
-
-    const movePlayerVertically = (direction) => {
-        let newYPos;
-        if (direction === 'up') {
-            newYPos = this.playerYPos + (this.settings.tile * finalVelocity(this.playerYPos, 0.4, 5));
-        } else {
-            newYPos = this.playerYPos - (this.settings.tile * finalVelocity(this.playerYPos, 0.3, 6));
-        }
-        this.playerYPos = Math.max(0, checkPlatform(newYPos));
-        if (this.playerYPos === 0) {
-            this.jump = false;
-        }
-    }
-
-    const finalVelocity = (yPos, distanceThreshold, multiplier) => {
-        let distance = Math.max(this.jumpMaxHeight - yPos, 0) / this.jumpMaxHeight;
-        let velocity = distance < distanceThreshold ? JUMP_VELOCITY * distance * multiplier : JUMP_VELOCITY;
-        return Math.max(0.2, velocity);
-    }
 
     const doMove = () => {
         if (this.xDirection === 'right') {
@@ -197,6 +202,9 @@ function CreateEngine(setState) {
         doMove();
         // check and perform jump
         doJump();
+
+        applyYAcceleration();
+        applyYVelocity();
 
         // check if char has hit a block
         checkBlocks();
@@ -238,8 +246,6 @@ function CreateEngine(setState) {
             // if jump is not active, trigger jump
             if (!this.jump) {
                 this.jump = true;
-                this.yDirection = 'up';
-                this.jumpMaxHeight = this.playerYPos + this.settings.tile * 40; 
             }
         },
         move: (direction) => {
