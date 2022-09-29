@@ -283,18 +283,18 @@ export default function Engine() {
             // otherwise jump
             engine.jump();
         }
-        else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        else if (e.key === 'a' || e.key === 'd') {
             if (engine === null) return;
             engine.move('');
         }
     };
     
     const handleKeyDown = (e) => {
-        if (e.key === 'ArrowRight') {
+        if (e.key === 'd') {
             if (engine === null) return;
             engine.move('right');
         }
-        else if (e.key === 'ArrowLeft') {
+        else if (e.key === 'a') {
             if (engine === null) return;
             engine.move('left');
         }
