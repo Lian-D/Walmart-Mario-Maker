@@ -108,32 +108,32 @@ function CreateEngine(setState) {
             this.playerYpos = 0;
             this.playerYVelocity = 0;
             this.inAir = false;
+        } else if (checkPlatform(this.playerYPos + this.playerYVelocity)) {
+            this.playerYPos =  checkPlatform(this.playerYPos + this.playerYVelocity);
+            this.playerYVelocity = 0;
+            this.inAir = false;
         } else {
-            this.playerYPos += this.playerYVelocity
+            this.playerYPos += this.playerYVelocity;
         }
     }
 
-
+    // returns false if the player is not about to go through a platform, else return the y position of the surface of the platform
     const checkPlatform = (newYPos) => {
         const charCenterXPos = this.playerXPos + (charWidth * 0.5);
         const charCurrentYPos = this.playerYPos;
 
         for (let platform of this.platforms) {
             let platformSurfaceYPos = platform["yPos"] + platformHeight;
-            if (this.yDirection === 'down' 
+            if (this.playerYVelocity < 0
                 && charCenterXPos >= platform["xPos"]
                 && charCenterXPos <= platform["xPos"] + platform["length"]
                 && charCurrentYPos >= platformSurfaceYPos
                 && newYPos <= platformSurfaceYPos 
             ){
-                this.isOnPlatform = true;
-                this.jump = false
                 return platformSurfaceYPos;
             }
         }
-
-        this.isOnPlatform = false;
-        return newYPos;
+        return false;
     }
 
     const checkDoors = () => {
