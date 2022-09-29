@@ -3,8 +3,6 @@ import styles from './engine.module.scss';
 import { useEvent } from '../../hooks';
 import Door from '../entities/door';
 
-/* eslint-disable */
-
 const BLOCKS = [
     140,
     250,
@@ -44,11 +42,6 @@ const platformHeight = 25;
 const blockWidth = 80;
 const blockHeight = 200;
 
-// this is in comparison to the rest of the game
-// 2 is twice the speed
-// 1 is the same speed
-const JUMP_VELOCITY = 1.4;
-
 function CreateEngine(setState) {
     this.settings = {
         tile: 10, // width of one tile
@@ -73,7 +66,6 @@ function CreateEngine(setState) {
 
 
     this.jump = false;
-    this.isOnPlatform = false;
     this.xDirection = '';
 
     this.playerXPos = 200;
