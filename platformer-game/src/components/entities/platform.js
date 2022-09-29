@@ -17,7 +17,7 @@ const Platform = ({xPos, yPos, length, name}) => {
     );
 };
 
-Door.propTypes = {
+Platform.propTypes = {
     xPos: PropTypes.number,
     yPos: PropTypes.number,
     length: PropTypes.number,

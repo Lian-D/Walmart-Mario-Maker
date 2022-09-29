@@ -42,11 +42,6 @@ const platformHeight = 25;
 const blockWidth = 80;
 const blockHeight = 200;
 
-// this is in comparison to the rest of the game
-// 2 is twice the speed
-// 1 is the same speed
-const JUMP_VELOCITY = 1.4;
-
 function CreateEngine(setState) {
     this.settings = {
         tile: 10, // width of one tile
@@ -56,14 +51,25 @@ function CreateEngine(setState) {
     this.game = 'start';
     this.stageXPos = 0;
 
+    this.inAir = true;
+    this.playerYAcceleration = -1; // gravity, in m/s^2
+    // every second, add this onto the velocity
+
+    this.playerYVelocity = 0; // player speed, in m/s
+    // every second, add this onto the y position
+
+    // when the player is on a surface, set the velocity to be 0
+    // when a jump is triggered, add a positive amount to the Y velocity
+
+    this.playerTerminalVelocity = -40; // the maximum velocity a human can have
+    // do not allow the player to be faster than this
+
+
     this.jump = false;
-    this.isOnPlatform = false;
-    this.yDirection = 'up';
     this.xDirection = '';
 
     this.playerXPos = 200;
     this.playerYPos = 0;
-    this.jumpMaxHeight = this.settings.tile * 40;
     this.blocks = BLOCKS.map(b => (b * this.settings.tile));
     this.platforms = PLATFORMS.map(p => (
         {
@@ -81,29 +87,45 @@ function CreateEngine(setState) {
         "name": d["name"],
     }));
 
+    const applyYAcceleration = () => {
+        if ((this.playerYVelocity + this.playerYAcceleration) < this.playerTerminalVelocity){
+            this.playerYVelocity = this.playerTerminalVelocity;
+        } else {
+            this.playerYVelocity += this.playerYAcceleration;
+        }
+    }
 
-    const checkPlatform = () => {
-        const charXPos = this.playerXPos;
-        const charYPos = this.playerYPos;
+    const applyYVelocity = () => {
+        if (this.playerYPos + this.playerYVelocity < 0) {
+            this.playerYpos = 0;
+            this.playerYVelocity = 0;
+            this.inAir = false;
+        } else if (checkPlatform(this.playerYPos + this.playerYVelocity)) {
+            this.playerYPos =  checkPlatform(this.playerYPos + this.playerYVelocity);
+            this.playerYVelocity = 0;
+            this.inAir = false;
+        } else {
+            this.playerYPos += this.playerYVelocity;
+        }
+    }
 
-        
-        // Check if player is on any platform
+    // returns false if the player is not about to go through a platform, else return the y position of the surface of the platform
+    const checkPlatform = (newYPos) => {
+        const charCenterXPos = this.playerXPos + (charWidth * 0.5);
+        const charCurrentYPos = this.playerYPos;
+
         for (let platform of this.platforms) {
             let platformSurfaceYPos = platform["yPos"] + platformHeight;
-            if (
-                charXPos + charWidth >= platform["xPos"]
-                && charYPos <= platformSurfaceYPos + 0.5
-                && charYPos + charHeight >= platformSurfaceYPos - 0.5
-                && charXPos <= platform["xPos"] + platform["length"]
-            ) {
-                this.isOnPlatform = true;
-                this.playerYPos = platformSurfaceYPos;
-                this.jump = false;
-            } else {
-                this.isOnPlatform = false;
+            if (this.playerYVelocity < 0
+                && charCenterXPos >= platform["xPos"]
+                && charCenterXPos <= platform["xPos"] + platform["length"]
+                && charCurrentYPos >= platformSurfaceYPos
+                && newYPos <= platformSurfaceYPos 
+            ){
+                return platformSurfaceYPos;
             }
         }
-
+        return false;
     }
 
     const checkDoors = () => {
@@ -123,7 +145,6 @@ function CreateEngine(setState) {
         });
     };
 
-
     const checkBlocks = () => {
         const charXPos = this.playerXPos;
         const charYPos = this.playerYPos;
@@ -135,8 +156,7 @@ function CreateEngine(setState) {
 
         this.blocks.forEach((block) => {
             // if char hits a block
-            if (
-                charXPos + charWidth >= block
+            if (charXPos + charWidth >= block
                 && charYPos <= blockHeight
                 && charYPos + charHeight >= 0
                 && charXPos <= block + blockWidth
@@ -147,50 +167,14 @@ function CreateEngine(setState) {
     };
 
     const doJump = () => {
-        // if not jumping, reset and return
-        if (!this.jump) {
-            if (!this.isOnPlatform) {
-                if (this.playerYPos <= 0) {
-                    this.playerYPos = 0;
-                } else {
-                    this.yDirection = 'down'
-                    movePlayerVertically(this.yDirection);
-                }
+        if (this.jump) {
+            if (this.inAir == false) {
+                this.playerYVelocity += 25;
+                this.inAir = true;
+                this.jump = false;
             }
-            this.yDirection = 'up';
-            return;
         }
-
-        // if finished jumping, reset and return
-        if (this.yDirection === 'down' && this.playerYPos <= 0) {
-            this.jump = false;
-            if (!this.isOnPlatform) {
-                this.playerYPos = 0;
-            }
-            this.yDirection = 'up';
-            return;
-        }
-
-        // if the jump is at its max, start falling
-        if (this.playerYPos >= this.jumpMaxHeight) this.yDirection = 'down';
-
-        // depending on the direction increment the jump.
-        movePlayerVertically(this.yDirection);
     };
-
-    const movePlayerVertically = (direction) => {
-        if (direction === 'up') {
-            this.playerYPos += (this.settings.tile * finalVelocity(this.playerYPos, 0.2, 4));
-        } else {
-            this.playerYPos -= (this.settings.tile * finalVelocity(this.playerYPos, 0.3, 5));
-        }
-    }
-
-    const finalVelocity = (yPos, distanceThreshold, multiplier) => {
-        let distance = Math.max(this.jumpMaxHeight - yPos, 0) / this.jumpMaxHeight;
-        let velocity = distance < distanceThreshold ? JUMP_VELOCITY * distance * multiplier : JUMP_VELOCITY;
-        return Math.max(0.2, velocity);
-    }
 
     const doMove = () => {
         if (this.xDirection === 'right') {
@@ -207,18 +191,17 @@ function CreateEngine(setState) {
 
     // function that will be continuously ran
     this.repaint = () => {
-        // move the stage by one tile
         doMove();
+        // check and perform jump
+        doJump();
+
+        applyYAcceleration();
+        applyYVelocity();
 
         // check if char has hit a block
         checkBlocks();
 
         checkDoors();
-        checkPlatform();
-
-        // check and perform jump
-        doJump();
-
 
         // set state for use in the component
         setState({
@@ -238,7 +221,7 @@ function CreateEngine(setState) {
             this.stageXPos = 0;
             this.jump = false;
             this.isOnPlatform = false;
-            this.yDirection = 'up';
+            this.yDirection = 'down';
             this.xDirection = '';
             this.playerYPos = 0;
             return null;
