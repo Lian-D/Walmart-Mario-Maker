@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './engine.module.scss';
 import { useEvent } from '../../hooks';
+import Door from '../entities/door';
 
 const BLOCKS = [
     140,
@@ -8,8 +9,35 @@ const BLOCKS = [
     390,
 ];
 
+// Defining platforms here for now, but we can probably pass this in as a prop later
+const PLATFORMS = [
+    {
+        "xPos": 100,
+        "yPos": 30,
+        "length": 50
+    },
+    {
+        "xPos": 50,
+        "yPos": 20,
+        "length": 50 
+    }
+];
+
+const DOORS = [
+    {
+        "xPos": 200,
+        "yPos": 0,
+        "height": 130,
+        "width": 110,
+        "isOpen": true,
+        "name": "door1"
+    }
+];
+
 const charWidth = 100;
 const charHeight = 100;
+
+const platformHeight = 25;
 
 const blockWidth = 80;
 const blockHeight = 200;
@@ -26,19 +54,82 @@ function CreateEngine(setState) {
 
     // current stage position
     this.game = 'start';
-    this.stage = 0;
+    this.stageXPos = 0;
+
     this.jump = false;
-    this.direction = 'up';
-    this.position = 0;
-    this.max = this.settings.tile * 40;
+    this.isOnPlatform = false;
+    this.yDirection = 'up';
+    this.xDirection = '';
+
+    this.playerXPos = 200;
+    this.playerYPos = 0;
+    this.jumpMaxHeight = this.settings.tile * 40;
     this.blocks = BLOCKS.map(b => (b * this.settings.tile));
+    this.platforms = PLATFORMS.map(p => (
+        {
+            "xPos": p["xPos"] * this.settings.tile,
+            "yPos": p["yPos"] * this.settings.tile,
+            "length": p["length"] * this.settings.tile,
+        }
+    ));
+    this.doors = DOORS.map(d => ({
+        "xPos": d["xPos"] * this.settings.tile,
+        "yPos": d["yPos"] * this.settings.tile,
+        "height": d["height"],
+        "width": d["width"],
+        "isOpen": d["isOpen"],
+        "name": d["name"],
+    }));
+
+
+    const checkPlatform = () => {
+        const charXPos = this.playerXPos;
+        const charYPos = this.playerYPos;
+
+        
+        // Check if player is on any platform
+        for (let platform of this.platforms) {
+            let platformSurfaceYPos = platform["yPos"] + platformHeight;
+            if (
+                charXPos + charWidth >= platform["xPos"]
+                && charYPos <= platformSurfaceYPos + 0.5
+                && charYPos + charHeight >= platformSurfaceYPos - 0.5
+                && charXPos <= platform["xPos"] + platform["length"]
+            ) {
+                this.isOnPlatform = true;
+                this.playerYPos = platformSurfaceYPos;
+                this.jump = false;
+            } else {
+                this.isOnPlatform = false;
+            }
+        }
+
+    }
+
+    const checkDoors = () => {
+        const charXPos = this.playerXPos;
+        const charYPos = this.playerYPos;
+
+        this.doors.forEach((door) => {
+            if (
+                charXPos + charWidth >= door.xPos + (door.width * 0.5)
+                && charYPos <= door.yPos + (door.height * 0.5)
+                && charYPos + charHeight >= door.yPos
+                && charXPos <= door.xPos + door.width
+                && door.isOpen
+            ) {
+                this.game = 'win';
+            }
+        });
+    };
+
 
     const checkBlocks = () => {
-        const charXPos = this.stage + 200;
-        const charYPos = this.position;
+        const charXPos = this.playerXPos;
+        const charYPos = this.playerYPos;
 
-        // if the char has past all blocks
-        if (charXPos > this.blocks[this.blocks.length - 1] + 200 && this.position <= 0) {
+        // if the char has passed all blocks
+        if (charXPos > this.blocks[this.blocks.length - 1] + 200) {
             this.game = 'win';
         }
 
@@ -58,46 +149,85 @@ function CreateEngine(setState) {
     const doJump = () => {
         // if not jumping, reset and return
         if (!this.jump) {
-            this.position = 0;
-            this.direction = 'up';
+            if (!this.isOnPlatform) {
+                if (this.playerYPos <= 0) {
+                    this.playerYPos = 0;
+                } else {
+                    this.yDirection = 'down'
+                    movePlayerVertically(this.yDirection);
+                }
+            }
+            this.yDirection = 'up';
             return;
         }
 
         // if finished jumping, reset and return
-        if (this.direction === 'down' && this.position <= 0) {
+        if (this.yDirection === 'down' && this.playerYPos <= 0) {
             this.jump = false;
-            this.position = 0;
-            this.direction = 'up';
+            if (!this.isOnPlatform) {
+                this.playerYPos = 0;
+            }
+            this.yDirection = 'up';
             return;
         }
 
         // if the jump is at its max, start falling
-        if (this.position >= this.max) this.direction = 'down';
+        if (this.playerYPos >= this.jumpMaxHeight) this.yDirection = 'down';
 
         // depending on the direction increment the jump.
-        if (this.direction === 'up') {
-            this.position += (this.settings.tile * JUMP_VELOCITY);
+        movePlayerVertically(this.yDirection);
+    };
+
+    const movePlayerVertically = (direction) => {
+        if (direction === 'up') {
+            this.playerYPos += (this.settings.tile * finalVelocity(this.playerYPos, 0.2, 4));
         } else {
-            this.position -= (this.settings.tile * JUMP_VELOCITY);
+            this.playerYPos -= (this.settings.tile * finalVelocity(this.playerYPos, 0.3, 5));
         }
+    }
+
+    const finalVelocity = (yPos, distanceThreshold, multiplier) => {
+        let distance = Math.max(this.jumpMaxHeight - yPos, 0) / this.jumpMaxHeight;
+        let velocity = distance < distanceThreshold ? JUMP_VELOCITY * distance * multiplier : JUMP_VELOCITY;
+        return Math.max(0.2, velocity);
+    }
+
+    const doMove = () => {
+        if (this.xDirection === 'right') {
+            this.playerXPos += this.settings.tile;
+        } 
+        else if (this.xDirection === 'left') {
+            this.playerXPos -= this.settings.tile;
+        }
+
+        this.stageXPos = Math.max(this.playerXPos - 700, 0);
+        this.playerXPos = Math.max(this.playerXPos, 0);
+        // add another check for the max width of the stage when we get around to defining it
     };
 
     // function that will be continuously ran
     this.repaint = () => {
         // move the stage by one tile
-        this.stage += this.settings.tile;
+        doMove();
 
         // check if char has hit a block
         checkBlocks();
 
+        checkDoors();
+        checkPlatform();
+
         // check and perform jump
         doJump();
 
+
         // set state for use in the component
         setState({
-            stage: this.stage,
-            jump: this.position,
+            stageX: this.stageXPos,
+            playerX: this.playerXPos,
+            playerY: this.playerYPos,
             blocks: this.blocks,
+            platforms: this.platforms,
+            doors: this.doors,
             status: this.game,
         });
 
@@ -105,10 +235,12 @@ function CreateEngine(setState) {
         if (this.game !== 'start') {
             // reset and stop
             this.game = 'start';
-            this.stage = 0;
+            this.stageXPos = 0;
             this.jump = false;
-            this.direction = 'up';
-            this.position = 0;
+            this.isOnPlatform = false;
+            this.yDirection = 'up';
+            this.xDirection = '';
+            this.playerYPos = 0;
             return null;
         }
 
@@ -125,13 +257,19 @@ function CreateEngine(setState) {
                 this.jump = true;
             }
         },
+        move: (direction) => {
+            this.xDirection = direction;
+        },
     });
 }
 
 const initialState = {
-    stage: 0,
-    jump: 0,
+    stageX: 0,
+    playerX: 200,
+    playerY: 0,
     blocks: [],
+    platforms: [],
+    doors: [],
     status: 'start',
 };
 
@@ -162,9 +300,25 @@ export default function Engine() {
             // otherwise jump
             engine.jump();
         }
+        else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+            if (engine === null) return;
+            engine.move('');
+        }
+    };
+    
+    const handleKeyDown = (e) => {
+        if (e.key === 'ArrowRight') {
+            if (engine === null) return;
+            engine.move('right');
+        }
+        else if (e.key === 'ArrowLeft') {
+            if (engine === null) return;
+            engine.move('left');
+        }
     };
 
     useEvent('keyup', handleKeyPress);
+    useEvent('keydown', handleKeyDown);
 
     useEffect(() => {
         if (start) {
@@ -201,23 +355,23 @@ export default function Engine() {
             <div
                 className={styles.stage}
                 style={{
-                    transform: `translate(-${gameState.stage}px, 0px)`, // move stage
+                    transform: `translate(-${gameState.stageX}px, 0px)`, // move stage
                 }}
             >
-        <span
-            className={styles.character}
-            style={{
-                transform: `translate(${gameState.stage + 200}px, -${gameState.jump}px)`, // move char in opposite direction
-                height: charHeight,
-                width: charWidth,
-            }}
-        />
+                <span
+                    className={styles.character}
+                    style={{
+                        transform: `translate(${gameState.playerX}px, -${gameState.playerY}px)`, // move char in opposite direction
+                        height: charHeight,
+                        width: charWidth,
+                    }}
+                />
                 {
                     gameState.blocks.map(
-                        block => (
+                        (block,index) => (
                             <span
                                 className={styles.block}
-                                key={block}
+                                key={index}
                                 style={{
                                     transform: `translate(${block}px, 0px)`, // move stage
                                     height: blockHeight,
@@ -225,6 +379,34 @@ export default function Engine() {
                                 }}
                             />
                         ),
+                    )
+                }
+                {
+                    gameState.platforms.map(
+                        (platform, index) => (
+                            <span 
+                                className={styles.platform} 
+                                key={index}
+                                style= {{
+                                    transform: `translate(${platform["xPos"]}px, -${platform["yPos"]}px)`,
+                                    height: platformHeight,
+                                    width: platform["length"]
+                                }}
+                            />
+                        )
+                    )   
+                }
+                {
+                    gameState.doors.map(
+                        door => (
+                            <Door 
+                                height={door["height"]} 
+                                width={door["width"]} 
+                                xPos={door["xPos"]} 
+                                yPos={door["yPos"]} 
+                                key={door["name"]}
+                            />
+                        )
                     )
                 }
             </div>
