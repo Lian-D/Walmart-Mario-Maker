@@ -63,7 +63,7 @@ function CreateEngine(setState) {
 
     this.playerXPos = 200;
     this.playerYPos = 0;
-    this.jumpMaxHeight = this.settings.tile * 40;
+    this.jumpMaxHeight = this.playerYPos + this.settings.tile * 15;
     this.blocks = BLOCKS.map(b => (b * this.settings.tile));
     this.platforms = PLATFORMS.map(p => (
         {
@@ -82,28 +82,26 @@ function CreateEngine(setState) {
     }));
 
 
-    const checkPlatform = () => {
-        const charXPos = this.playerXPos;
-        const charYPos = this.playerYPos;
+    const checkPlatform = (newYPos) => {
+        const charCenterXPos = this.playerXPos + (charWidth * 0.5);
+        const charCurrentYPos = this.playerYPos;
 
-        
-        // Check if player is on any platform
         for (let platform of this.platforms) {
             let platformSurfaceYPos = platform["yPos"] + platformHeight;
-            if (
-                charXPos + charWidth >= platform["xPos"]
-                && charYPos <= platformSurfaceYPos + 0.5
-                && charYPos + charHeight >= platformSurfaceYPos - 0.5
-                && charXPos <= platform["xPos"] + platform["length"]
-            ) {
+            if (this.yDirection === 'down' 
+                && charCenterXPos >= platform["xPos"]
+                && charCenterXPos <= platform["xPos"] + platform["length"]
+                && charCurrentYPos >= platformSurfaceYPos
+                && newYPos <= platformSurfaceYPos 
+            ){
                 this.isOnPlatform = true;
-                this.playerYPos = platformSurfaceYPos;
-                this.jump = false;
-            } else {
-                this.isOnPlatform = false;
+                this.jump = false
+                return platformSurfaceYPos;
             }
         }
 
+        this.isOnPlatform = false;
+        return newYPos;
     }
 
     const checkDoors = () => {
@@ -123,7 +121,6 @@ function CreateEngine(setState) {
         });
     };
 
-
     const checkBlocks = () => {
         const charXPos = this.playerXPos;
         const charYPos = this.playerYPos;
@@ -135,8 +132,7 @@ function CreateEngine(setState) {
 
         this.blocks.forEach((block) => {
             // if char hits a block
-            if (
-                charXPos + charWidth >= block
+            if (charXPos + charWidth >= block
                 && charYPos <= blockHeight
                 && charYPos + charHeight >= 0
                 && charXPos <= block + blockWidth
@@ -149,40 +145,31 @@ function CreateEngine(setState) {
     const doJump = () => {
         // if not jumping, reset and return
         if (!this.jump) {
-            if (!this.isOnPlatform) {
-                if (this.playerYPos <= 0) {
-                    this.playerYPos = 0;
-                } else {
-                    this.yDirection = 'down'
-                    movePlayerVertically(this.yDirection);
-                }
+            if (!this.isOnPlatform && this.playerYPos === 0) {
+                this.jump = false
+                return;
             }
-            this.yDirection = 'up';
-            return;
         }
-
-        // if finished jumping, reset and return
-        if (this.yDirection === 'down' && this.playerYPos <= 0) {
-            this.jump = false;
-            if (!this.isOnPlatform) {
-                this.playerYPos = 0;
-            }
-            this.yDirection = 'up';
-            return;
-        }
-
-        // if the jump is at its max, start falling
-        if (this.playerYPos >= this.jumpMaxHeight) this.yDirection = 'down';
 
         // depending on the direction increment the jump.
         movePlayerVertically(this.yDirection);
+
+        // if the jump is at its max, start falling
+        if (this.playerYPos >= this.jumpMaxHeight)  {
+            this.yDirection = 'down';
+        }
     };
 
     const movePlayerVertically = (direction) => {
+        let newYPos;
         if (direction === 'up') {
-            this.playerYPos += (this.settings.tile * finalVelocity(this.playerYPos, 0.2, 4));
+            newYPos = this.playerYPos + (this.settings.tile * finalVelocity(this.playerYPos, 0.4, 5));
         } else {
-            this.playerYPos -= (this.settings.tile * finalVelocity(this.playerYPos, 0.3, 5));
+            newYPos = this.playerYPos - (this.settings.tile * finalVelocity(this.playerYPos, 0.3, 6));
+        }
+        this.playerYPos = Math.max(0, checkPlatform(newYPos));
+        if (this.playerYPos === 0) {
+            this.jump = false;
         }
     }
 
@@ -207,18 +194,14 @@ function CreateEngine(setState) {
 
     // function that will be continuously ran
     this.repaint = () => {
-        // move the stage by one tile
         doMove();
+        // check and perform jump
+        doJump();
 
         // check if char has hit a block
         checkBlocks();
 
         checkDoors();
-        checkPlatform();
-
-        // check and perform jump
-        doJump();
-
 
         // set state for use in the component
         setState({
@@ -238,7 +221,7 @@ function CreateEngine(setState) {
             this.stageXPos = 0;
             this.jump = false;
             this.isOnPlatform = false;
-            this.yDirection = 'up';
+            this.yDirection = 'down';
             this.xDirection = '';
             this.playerYPos = 0;
             return null;
@@ -255,6 +238,8 @@ function CreateEngine(setState) {
             // if jump is not active, trigger jump
             if (!this.jump) {
                 this.jump = true;
+                this.yDirection = 'up';
+                this.jumpMaxHeight = this.playerYPos + this.settings.tile * 40; 
             }
         },
         move: (direction) => {
