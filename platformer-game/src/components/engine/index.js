@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './engine.module.scss';
 import { useEvent } from '../../hooks';
 import Door from '../entities/door';
+import Platform from '../entities/platform';
 
 const BLOCKS = [
     140,
@@ -367,14 +368,13 @@ export default function Engine() {
                 {
                     gameState.platforms.map(
                         (platform, index) => (
-                            <span 
-                                className={styles.platform} 
+                            <Platform
+                                xPos={platform["xPos"]}
+                                yPos={platform["yPos"]}
+                                length={platform["length"]}
+                                height={platformHeight}
                                 key={index}
-                                style= {{
-                                    transform: `translate(${platform["xPos"]}px, -${platform["yPos"]}px)`,
-                                    height: platformHeight,
-                                    width: platform["length"]
-                                }}
+                                name={`${index}`}
                             />
                         )
                     )   

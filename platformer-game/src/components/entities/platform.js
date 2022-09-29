@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Platform = ({xPos, yPos, length, name}) => {
+const Platform = ({xPos, yPos, length, height, name}) => {
     const style = {
-        xPos: xPos,
-        yPos: yPos,
-        length: length,
+        transform: `translate(${xPos}px, -${yPos}px)`,
+        height: height,
+        width: length
     };
 
     return (
@@ -21,6 +21,7 @@ Platform.propTypes = {
     xPos: PropTypes.number,
     yPos: PropTypes.number,
     length: PropTypes.number,
+    height: PropTypes.number,
     name: PropTypes.string,
 };
 
