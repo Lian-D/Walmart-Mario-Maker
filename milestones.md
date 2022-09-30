@@ -77,12 +77,10 @@ We gave our first user study this task to implement
 
 Task 1: Create a level that has:
 
-A green button
-2 doors that connect to each other
-Create 2 terrain types called “grass” and “dirt”
-Have the grass terrain cover the entire bottom of the level
-do you think this is specific enough to be useful for an initial user study?
-
+- A green button
+- 2 doors that connect to each other
+- Create 2 terrain types called “grass” and “dirt”
+- Have the grass terrain cover the entire bottom of the level
 
 ## User Study Feedback
 We have started with our user studies and had our users try to implement simple tasks in our program. Here is the feedback that we have been given.
