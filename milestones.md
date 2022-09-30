@@ -67,3 +67,50 @@ Oct 13th -> <br/>
 
 ## Summary Of Progress
 We have decided on the technology stack for this project, and as seen above, the division of responsibilities and roadmap. We will now begin finalizing the grammar. 
+
+
+# Milestone 3
+
+## User Study Example
+
+We gave our first user study this task to implement 
+
+Task 1: Create a level that has:
+
+A green button
+2 doors that connect to each other
+Create 2 terrain types called “grass” and “dirt”
+Have the grass terrain cover the entire bottom of the level
+do you think this is specific enough to be useful for an initial user study?
+
+
+## User Study Feedback
+We have started with our user studies and had our users try to implement simple tasks in our program. Here is the feedback that we have been given.
+
+- How many spaces do I need to put in?
+- Does capitalization matter?
+- What colours are allowed?
+- Does level need to be at the end?
+- How does the index work with the positioning? Does it start at 0 or 1?
+- Requirements for level isn't super specific
+- How does order matter?
+- Valuable set range: more clear boundaries for each conditions
+- Terrain and if then statement was the most confusing part of the problem 
+- OR keyword is better than the |, not everyone would know what the | symbol means
+
+
+## What we have implemented
+
+- Basic Demo has been created
+- Collision detection for platforms, ground, enemies and win conditions (door)
+- Hard coded game that player can control
+
+
+## What we need to implement
+
+- Fix some bugs with platforming
+- Collectibles such as coins
+- Button triggers
+- Back-end that interprets DSL
+
+
