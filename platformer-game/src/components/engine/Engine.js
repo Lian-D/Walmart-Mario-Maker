@@ -5,7 +5,7 @@ import Door from '../entities/door';
 import Platform from '../entities/platform';
 import Character from '../entities/character';
 
-const BLOCKS = [
+const ENEMIES = [
     140,
     250,
     390,
@@ -41,8 +41,8 @@ const charHeight = 100;
 
 const platformHeight = 25;
 
-const blockWidth = 80;
-const blockHeight = 200;
+const enemyWidth = 80;
+const enemyHeight = 200;
 
 function CreateEngine(setState) {
     this.settings = {
@@ -72,7 +72,7 @@ function CreateEngine(setState) {
 
     this.playerXPos = 200;
     this.playerYPos = 0;
-    this.blocks = BLOCKS.map(b => (b * this.settings.tile));
+    this.enemies = ENEMIES.map(b => (b * this.settings.tile));
     this.platforms = PLATFORMS.map(p => (
         {
             "xPos": p["xPos"] * this.settings.tile,
@@ -147,21 +147,21 @@ function CreateEngine(setState) {
         });
     };
 
-    const checkBlocks = () => {
+    const checkEnemies = () => {
         const charXPos = this.playerXPos;
         const charYPos = this.playerYPos;
 
-        // if the char has passed all blocks
-        if (charXPos > this.blocks[this.blocks.length - 1] + 200) {
+        // if the char has passed all enemies
+        if (charXPos > this.enemies[this.enemies.length - 1] + 200) {
             this.game = 'win';
         }
 
-        this.blocks.forEach((block) => {
-            // if char hits a block
-            if (charXPos + charWidth >= block
-                && charYPos <= blockHeight
+        this.enemies.forEach((enemy) => {
+            // if char hits an enemy
+            if (charXPos + charWidth >= enemy
+                && charYPos <= enemyHeight
                 && charYPos + charHeight >= 0
-                && charXPos <= block + blockWidth
+                && charXPos <= enemy + enemyWidth
             ) {
                 this.game = 'fail';
             }
@@ -170,7 +170,7 @@ function CreateEngine(setState) {
 
     const doJump = () => {
         if (this.jump) {
-            if (this.inAir == false) {
+            if (this.inAir === false) {
                 this.playerYVelocity += 25;
                 this.inAir = true;
                 this.jump = false;
@@ -200,8 +200,8 @@ function CreateEngine(setState) {
         applyYAcceleration();
         applyYVelocity();
 
-        // check if char has hit a block
-        checkBlocks();
+        // check if char has hit a enemy
+        checkEnemies();
 
         checkDoors();
 
@@ -212,6 +212,7 @@ function CreateEngine(setState) {
             playerY: this.playerYPos,
             playerXDirection: this.xDirection,
             blocks: this.blocks,
+            enemies: this.enemies,
             platforms: this.platforms,
             doors: this.doors,
             status: this.game,
@@ -223,8 +224,6 @@ function CreateEngine(setState) {
             this.game = 'start';
             this.stageXPos = 0;
             this.jump = false;
-            this.isOnPlatform = false;
-            this.yDirection = 'down';
             this.xDirection = '';
             this.playerYPos = 0;
             return null;
@@ -255,6 +254,7 @@ const initialState = {
     playerY: 0,
     playerXDirection: '',
     blocks: [],
+    enemies: [],
     platforms: [],
     doors: [],
     status: 'start',
@@ -276,7 +276,7 @@ export default function Engine() {
     const handleKeyPress = (e) => {
         // the ' ' char actually represents the space bar key.
         if (e.key === ' ') {
-            // start the game when the user first presses the spacebar
+            // start the game when the user first presses the space bar
             if (!started && !start) {
                 setStart(true);
             }
@@ -360,15 +360,15 @@ export default function Engine() {
                         }}/>
                 }
                 {
-                    gameState.blocks.map(
-                        (block,index) => (
+                    gameState.enemies.map(
+                        (enemy,index) => (
                             <span
-                                className={styles.block}
+                                className={styles.enemy}
                                 key={index}
                                 style={{
-                                    transform: `translate(${block}px, 0px)`, // move stage
-                                    height: blockHeight,
-                                    width: blockWidth,
+                                    transform: `translate(${enemy}px, 0px)`, // move stage
+                                    height: enemyHeight,
+                                    width: enemyWidth,
                                 }}
                             />
                         ),
