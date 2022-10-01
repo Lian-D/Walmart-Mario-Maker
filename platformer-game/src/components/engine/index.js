@@ -138,15 +138,16 @@ function CreateEngine(setState) {
     }
 
     const checkYTerrain = (newYPos) => {
-        const charCenterXPos = this.playerXPos + (charWidth * 0.5);
+        const charLeftXPos = this.playerXPos;
+        const charRightXPos = this.playerXPos + charWidth;
         const charCurrentYPos = this.playerYPos;
         const charCurrentHeadYPos = this.playerYPos + charHeight;
 
         for (let t of this.terrain) {
             let terrainSurfaceYPos = t["yPos"] + terrainHeight;
             let terrainBottomYPos = t["yPos"];
-            if (charCenterXPos >= t["xPos"]
-                && charCenterXPos <= t["xPos"] + t["length"]) {
+            if (charRightXPos >= t["xPos"]
+                && charLeftXPos <= t["xPos"] + t["length"]) {
                 if (this.playerYVelocity < 0
                     && charCurrentYPos >= terrainSurfaceYPos
                     && newYPos <= terrainSurfaceYPos) {
@@ -163,14 +164,15 @@ function CreateEngine(setState) {
 
     // returns false if the player is not about to go through a platform, else return the y position of the surface of the platform
     const checkPlatform = (newYPos) => {
-        const charCenterXPos = this.playerXPos + (charWidth * 0.5);
+        const charLeftXPos = this.playerXPos;
+        const charRightXPos = this.playerXPos + charWidth;
         const charCurrentYPos = this.playerYPos;
 
         for (let platform of this.platforms) {
             let platformSurfaceYPos = platform["yPos"] + platformHeight;
             if (this.playerYVelocity < 0
-                && charCenterXPos >= platform["xPos"]
-                && charCenterXPos <= platform["xPos"] + platform["length"]
+                && charRightXPos >= platform["xPos"]
+                && charLeftXPos <= platform["xPos"] + platform["length"]
                 && charCurrentYPos >= platformSurfaceYPos
                 && newYPos <= platformSurfaceYPos 
             ){
@@ -260,8 +262,6 @@ function CreateEngine(setState) {
             ) {
                 let terrainLeftXPos = t["xPos"];
                 let terrainRightXPos = t["xPos"] + t["length"];
-                console.log(this.playerXPos);
-                console.log(terrainRightXPos);
                 if (this.xDirection === 'right'
                     && (newXPos + charWidth) > terrainLeftXPos
                     && this.playerXPos < terrainLeftXPos) { // moving right, we only want to check the left wall
