@@ -1,15 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Character = ({height, width, xPos, yPos}) => {
-
-    const style = {
-        height: height,
-        width: width,
-        left: xPos,
-        bottom: yPos,
-        transform: 'scaleX(1)'
-    };
+const Character = ({style}) => {
 
     return (
         <span 
@@ -20,10 +12,7 @@ const Character = ({height, width, xPos, yPos}) => {
 };
 
 Character.propTypes = {
-    height: PropTypes.number,
-    width: PropTypes.number,
-    xPos: PropTypes.number,
-    yPos: PropTypes.number
+    style: PropTypes.object
 };
 
 export default Character;

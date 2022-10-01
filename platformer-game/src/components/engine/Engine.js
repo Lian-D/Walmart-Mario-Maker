@@ -210,6 +210,7 @@ function CreateEngine(setState) {
             stageX: this.stageXPos,
             playerX: this.playerXPos,
             playerY: this.playerYPos,
+            playerXDirection: this.xDirection,
             blocks: this.blocks,
             platforms: this.platforms,
             doors: this.doors,
@@ -252,6 +253,7 @@ const initialState = {
     stageX: 0,
     playerX: 200,
     playerY: 0,
+    playerXDirection: '',
     blocks: [],
     platforms: [],
     doors: [],
@@ -344,7 +346,18 @@ export default function Engine() {
                 }}
             >
                 {
-                    <Character height={charHeight} width={charWidth} xPos={gameState.playerX} yPos={gameState.playerY}/>
+                    <Character
+                        style={gameState.playerXDirection === 'left' ? 
+                        {
+                            height: {charHeight},
+                            width: {charWidth},
+                            transform: `translate(${gameState.playerX}px, -${gameState.playerY}px) scaleX(-1)`
+                        } 
+                        : {
+                            height: {charHeight},
+                            width: {charWidth},
+                            transform: `translate(${gameState.playerX}px, -${gameState.playerY}px) scaleX(1)`
+                        }}/>
                 }
                 {
                     gameState.blocks.map(
