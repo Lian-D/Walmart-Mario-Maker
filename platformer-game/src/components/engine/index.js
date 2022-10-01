@@ -122,9 +122,39 @@ function CreateEngine(setState) {
             this.playerYPos =  checkPlatform(this.playerYPos + this.playerYVelocity);
             this.playerYVelocity = 0;
             this.inAir = false;
+        } else if (checkYTerrain(this.playerYPos + this.playerYVelocity)) {
+            this.playerYPos = checkYTerrain(this.playerYPos + this.playerYVelocity);
+            if (this.playerYVelocity < 0) {
+                this.inAir = false;
+            }
+            this.playerYVelocity = 0;
         } else {
             this.playerYPos += this.playerYVelocity;
         }
+    }
+
+    const checkYTerrain = (newYPos) => {
+        const charCenterXPos = this.playerXPos + (charWidth * 0.5);
+        const charCurrentYPos = this.playerYPos;
+        const charCurrentHeadYPos = this.playerYPos + charHeight;
+
+        for (let t of this.terrain) {
+            let terrainSurfaceYPos = t["yPos"] + terrainHeight;
+            let terrainBottomYPos = t["yPos"];
+            if (charCenterXPos >= t["xPos"]
+                && charCenterXPos <= t["xPos"] + t["length"]) {
+                if (this.playerYVelocity < 0
+                    && charCurrentYPos >= terrainSurfaceYPos
+                    && newYPos <= terrainSurfaceYPos) {
+                    return terrainSurfaceYPos;
+                } else if (this.playerYVelocity > 0
+                    && charCurrentHeadYPos <= terrainBottomYPos
+                    && (newYPos + charHeight) >= terrainBottomYPos) {
+                    return terrainBottomYPos - charHeight;
+                }
+            }
+        }
+        return false;
     }
 
     // returns false if the player is not about to go through a platform, else return the y position of the surface of the platform
