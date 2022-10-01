@@ -6,7 +6,6 @@ import Platform from '../entities/platform';
 import Terrain from "../entities/terrain";
 
 const ENEMIES = [
-    140,
     250,
     390,
 ];
@@ -22,6 +21,11 @@ const PLATFORMS = [
         "xPos": 50,
         "yPos": 20,
         "length": 50 
+    },
+    {
+        "xPos": 200,
+        "yPos": 30,
+        "length": 50
     }
 ];
 
@@ -226,16 +230,51 @@ function CreateEngine(setState) {
 
     const doMove = () => {
         if (this.xDirection === 'right') {
-            this.playerXPos += this.settings.tile;
+            if (checkXTerrain(this.playerXPos + this.settings.tile)){
+                this.playerXPos = checkXTerrain(this.playerXPos + this.settings.tile);
+            } else {
+                this.playerXPos += this.settings.tile;
+            }
         } 
         else if (this.xDirection === 'left') {
-            this.playerXPos -= this.settings.tile;
+            if (checkXTerrain(this.playerXPos - this.settings.tile)){
+                this.playerXPos = checkXTerrain(this.playerXPos - this.settings.tile);
+            } else {
+                this.playerXPos -= this.settings.tile;
+            }
         }
-
         this.stageXPos = Math.max(this.playerXPos - 700, 0);
         this.playerXPos = Math.max(this.playerXPos, 0);
         // add another check for the max width of the stage when we get around to defining it
     };
+
+    const checkXTerrain = (newXPos) => {
+        for (let t of this.terrain) {
+            let terrainYPos = t["yPos"];
+            let terrainYSurface = t["yPos"] + terrainHeight;
+            let playerYTopPos = this.playerYPos + charHeight;
+            if ( // TODO: player is at correct y value
+                (this.playerYPos >= terrainYPos && this.playerYPos < terrainYSurface)
+                || (playerYTopPos <= terrainYSurface && playerYTopPos > terrainYPos)
+                || (this.playerYPos >= terrainYPos && playerYTopPos <= terrainYSurface)
+            ) {
+                let terrainLeftXPos = t["xPos"];
+                let terrainRightXPos = t["xPos"] + t["length"];
+                console.log(this.playerXPos);
+                console.log(terrainRightXPos);
+                if (this.xDirection === 'right'
+                    && (newXPos + charWidth) > terrainLeftXPos
+                    && this.playerXPos < terrainLeftXPos) { // moving right, we only want to check the left wall
+                    return terrainLeftXPos - charWidth;
+                } else if (this.xDirection === 'left'
+                    && newXPos < terrainRightXPos
+                    && this.playerXPos > terrainLeftXPos) { // moving left
+                    return terrainRightXPos;
+                }
+            }
+        }
+        return false;
+    }
 
     // function that will be continuously ran
     this.repaint = () => {
