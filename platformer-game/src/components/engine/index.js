@@ -3,6 +3,7 @@ import styles from './engine.module.scss';
 import { useEvent } from '../../hooks';
 import Door from '../entities/door';
 import Platform from '../entities/platform';
+import Terrain from "../entities/terrain";
 
 const ENEMIES = [
     140,
@@ -24,6 +25,14 @@ const PLATFORMS = [
     }
 ];
 
+const TERRAIN = [
+    {
+        "xPos": 150,
+        "yPos": 30,
+        "length": 50
+    }
+]
+
 const DOORS = [
     {
         "xPos": 200,
@@ -39,6 +48,7 @@ const charWidth = 100;
 const charHeight = 100;
 
 const platformHeight = 25;
+const terrainHeight = 50;
 
 const enemyWidth = 80;
 const enemyHeight = 200;
@@ -79,6 +89,13 @@ function CreateEngine(setState) {
             "length": p["length"] * this.settings.tile,
         }
     ));
+    this.terrain = TERRAIN.map(t => (
+        {
+            "xPos": t["xPos"] * this.settings.tile,
+            "yPos": t["yPos"] * this.settings.tile,
+            "length": t["length"] * this.settings.tile,
+        }
+    ))
     this.doors = DOORS.map(d => ({
         "xPos": d["xPos"] * this.settings.tile,
         "yPos": d["yPos"] * this.settings.tile,
@@ -211,6 +228,7 @@ function CreateEngine(setState) {
             playerY: this.playerYPos,
             enemies: this.enemies,
             platforms: this.platforms,
+            terrain: this.terrain,
             doors: this.doors,
             status: this.game,
         });
@@ -251,6 +269,7 @@ const initialState = {
     playerY: 0,
     enemies: [],
     platforms: [],
+    terrain: [],
     doors: [],
     status: 'start',
 };
@@ -376,6 +395,20 @@ export default function Engine() {
                             />
                         )
                     )   
+                }
+                {
+                    gameState.terrain.map(
+                        (platform, index) => (
+                            <Terrain
+                                xPos={platform["xPos"]}
+                                yPos={platform["yPos"]}
+                                length={platform["length"]}
+                                height={terrainHeight}
+                                key={index}
+                                name={`${index}`}
+                            />
+                        )
+                    )
                 }
                 {
                     gameState.doors.map(
