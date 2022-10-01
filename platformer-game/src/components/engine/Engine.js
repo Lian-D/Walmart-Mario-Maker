@@ -3,6 +3,7 @@ import styles from './engine.module.scss';
 import { useEvent } from '../../hooks';
 import Door from '../entities/door';
 import Platform from '../entities/platform';
+import Character from '../entities/character';
 
 const BLOCKS = [
     140,
@@ -342,14 +343,9 @@ export default function Engine() {
                     transform: `translate(-${gameState.stageX}px, 0px)`, // move stage
                 }}
             >
-                <span
-                    className={styles.character}
-                    style={{
-                        transform: `translate(${gameState.playerX}px, -${gameState.playerY}px)`, // move char in opposite direction
-                        height: charHeight,
-                        width: charWidth,
-                    }}
-                />
+                {
+                    <Character height={charHeight} width={charWidth} xPos={gameState.playerX} yPos={gameState.playerY}/>
+                }
                 {
                     gameState.blocks.map(
                         (block,index) => (
