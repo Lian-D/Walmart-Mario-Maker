@@ -61,7 +61,7 @@ const DOORS = [
     {
         "xPos": 200,
         "yPos": 0,
-        "height": 130,
+        "height": 170,
         "width": 110,
         "isOpen": true,
         "name": "door1"

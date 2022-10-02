@@ -38,22 +38,12 @@ function CreateEngine(setState) {
     this.xDirection = '';
 
     this.playerXPos = 200;
-    this.playerYPos = 100;
+    this.playerYPos = 50;
     this.enemies = this.room.enemies;
     this.platforms = this.room.platforms;
     this.terrain = this.room.terrain;
     this.doors = this.room.doors;
     this.coins = this.room.coins;
-
-    this.coins = COINS.map(c => (
-        {
-        "xPos": c["xPos"] * this.settings.tile,
-        "yPos": c["yPos"] * this.settings.tile,
-        "height": c["height"],
-        "width": c["width"],
-        "name": c["name"],
-        }
-    ));
 
     const applyYAcceleration = () => {
         if ((this.playerYVelocity + this.playerYAcceleration) < this.playerTerminalVelocity){
@@ -299,7 +289,7 @@ function CreateEngine(setState) {
 const initialState = {
     stageX: 0,
     playerX: 200,
-    playerY: 0,
+    playerY: 50,
     playerXDirection: '',
     room: STAGES['start'],
     cumCoins: 0,
