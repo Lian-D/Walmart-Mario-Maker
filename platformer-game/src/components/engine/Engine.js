@@ -4,9 +4,9 @@ import { useEvent } from '../../hooks';
 import Door from '../entities/door';
 import Platform from '../entities/platform';
 import Character from '../entities/character';
+import Terrain from "../entities/terrain";
 
 const ENEMIES = [
-    140,
     250,
     390,
 ];
@@ -22,8 +22,31 @@ const PLATFORMS = [
         "xPos": 50,
         "yPos": 20,
         "length": 50 
+    },
+    {
+        "xPos": 200,
+        "yPos": 30,
+        "length": 50
     }
 ];
+
+const TERRAIN = [
+    {
+        "xPos": 150,
+        "yPos": 30,
+        "length": 50
+    },
+    {
+        "xPos": 0,
+        "yPos": 0,
+        "length": 50
+    },
+    {
+        "xPos": 100,
+        "yPos": 0,
+        "length": 200
+    }
+]
 
 const DOORS = [
     {
@@ -40,6 +63,7 @@ const charWidth = 100;
 const charHeight = 100;
 
 const platformHeight = 25;
+const terrainHeight = 50;
 
 const enemyWidth = 80;
 const enemyHeight = 200;
@@ -71,7 +95,7 @@ function CreateEngine(setState) {
     this.xDirection = '';
 
     this.playerXPos = 200;
-    this.playerYPos = 0;
+    this.playerYPos = 100;
     this.enemies = ENEMIES.map(b => (b * this.settings.tile));
     this.platforms = PLATFORMS.map(p => (
         {
@@ -80,6 +104,13 @@ function CreateEngine(setState) {
             "length": p["length"] * this.settings.tile,
         }
     ));
+    this.terrain = TERRAIN.map(t => (
+        {
+            "xPos": t["xPos"] * this.settings.tile,
+            "yPos": t["yPos"] * this.settings.tile,
+            "length": t["length"] * this.settings.tile,
+        }
+    ))
     this.doors = DOORS.map(d => ({
         "xPos": d["xPos"] * this.settings.tile,
         "yPos": d["yPos"] * this.settings.tile,
@@ -99,28 +130,58 @@ function CreateEngine(setState) {
 
     const applyYVelocity = () => {
         if (this.playerYPos + this.playerYVelocity < 0) {
-            this.playerYpos = 0;
-            this.playerYVelocity = 0;
-            this.inAir = false;
+            this.game = 'fail';
         } else if (checkPlatform(this.playerYPos + this.playerYVelocity)) {
             this.playerYPos =  checkPlatform(this.playerYPos + this.playerYVelocity);
             this.playerYVelocity = 0;
             this.inAir = false;
+        } else if (checkYTerrain(this.playerYPos + this.playerYVelocity)) {
+            this.playerYPos = checkYTerrain(this.playerYPos + this.playerYVelocity);
+            if (this.playerYVelocity < 0) {
+                this.inAir = false;
+            }
+            this.playerYVelocity = 0;
         } else {
             this.playerYPos += this.playerYVelocity;
         }
     }
 
+    const checkYTerrain = (newYPos) => {
+        const charLeftXPos = this.playerXPos;
+        const charRightXPos = this.playerXPos + charWidth;
+        const charCurrentYPos = this.playerYPos;
+        const charCurrentHeadYPos = this.playerYPos + charHeight;
+
+        for (let t of this.terrain) {
+            let terrainSurfaceYPos = t["yPos"] + terrainHeight;
+            let terrainBottomYPos = t["yPos"];
+            if (charRightXPos >= t["xPos"]
+                && charLeftXPos <= t["xPos"] + t["length"]) {
+                if (this.playerYVelocity < 0
+                    && charCurrentYPos >= terrainSurfaceYPos
+                    && newYPos <= terrainSurfaceYPos) {
+                    return terrainSurfaceYPos;
+                } else if (this.playerYVelocity > 0
+                    && charCurrentHeadYPos <= terrainBottomYPos
+                    && (newYPos + charHeight) >= terrainBottomYPos) {
+                    return terrainBottomYPos - charHeight;
+                }
+            }
+        }
+        return false;
+    }
+
     // returns false if the player is not about to go through a platform, else return the y position of the surface of the platform
     const checkPlatform = (newYPos) => {
-        const charCenterXPos = this.playerXPos + (charWidth * 0.5);
+        const charLeftXPos = this.playerXPos;
+        const charRightXPos = this.playerXPos + charWidth;
         const charCurrentYPos = this.playerYPos;
 
         for (let platform of this.platforms) {
             let platformSurfaceYPos = platform["yPos"] + platformHeight;
             if (this.playerYVelocity < 0
-                && charCenterXPos >= platform["xPos"]
-                && charCenterXPos <= platform["xPos"] + platform["length"]
+                && charRightXPos >= platform["xPos"]
+                && charLeftXPos <= platform["xPos"] + platform["length"]
                 && charCurrentYPos >= platformSurfaceYPos
                 && newYPos <= platformSurfaceYPos 
             ){
@@ -180,16 +241,49 @@ function CreateEngine(setState) {
 
     const doMove = () => {
         if (this.xDirection === 'right') {
-            this.playerXPos += this.settings.tile;
+            if (checkXTerrain(this.playerXPos + this.settings.tile)){
+                this.playerXPos = checkXTerrain(this.playerXPos + this.settings.tile);
+            } else {
+                this.playerXPos += this.settings.tile;
+            }
         } 
         else if (this.xDirection === 'left') {
-            this.playerXPos -= this.settings.tile;
+            if (checkXTerrain(this.playerXPos - this.settings.tile)){
+                this.playerXPos = checkXTerrain(this.playerXPos - this.settings.tile);
+            } else {
+                this.playerXPos -= this.settings.tile;
+            }
         }
-
         this.stageXPos = Math.max(this.playerXPos - 700, 0);
         this.playerXPos = Math.max(this.playerXPos, 0);
         // add another check for the max width of the stage when we get around to defining it
     };
+
+    const checkXTerrain = (newXPos) => {
+        for (let t of this.terrain) {
+            let terrainYPos = t["yPos"];
+            let terrainYSurface = t["yPos"] + terrainHeight;
+            let playerYTopPos = this.playerYPos + charHeight;
+            if ( // TODO: player is at correct y value
+                (this.playerYPos >= terrainYPos && this.playerYPos < terrainYSurface)
+                || (playerYTopPos <= terrainYSurface && playerYTopPos > terrainYPos)
+                || (this.playerYPos >= terrainYPos && playerYTopPos <= terrainYSurface)
+            ) {
+                let terrainLeftXPos = t["xPos"];
+                let terrainRightXPos = t["xPos"] + t["length"];
+                if (this.xDirection === 'right'
+                    && (newXPos + charWidth) > terrainLeftXPos
+                    && this.playerXPos < terrainLeftXPos) { // moving right, we only want to check the left wall
+                    return terrainLeftXPos - charWidth;
+                } else if (this.xDirection === 'left'
+                    && newXPos < terrainRightXPos
+                    && this.playerXPos > terrainLeftXPos) { // moving left
+                    return terrainRightXPos;
+                }
+            }
+        }
+        return false;
+    }
 
     // function that will be continuously ran
     this.repaint = () => {
@@ -214,6 +308,7 @@ function CreateEngine(setState) {
             blocks: this.blocks,
             enemies: this.enemies,
             platforms: this.platforms,
+            terrain: this.terrain,
             doors: this.doors,
             status: this.game,
         });
@@ -238,7 +333,7 @@ function CreateEngine(setState) {
     return () => ({
         jump: () => {
             // if jump is not active, trigger jump
-            if (!this.jump) {
+            if (!this.jump && this.playerYVelocity === 0) {
                 this.jump = true;
             }
         },
@@ -256,6 +351,7 @@ const initialState = {
     blocks: [],
     enemies: [],
     platforms: [],
+    terrain: [],
     doors: [],
     status: 'start',
 };
@@ -387,6 +483,20 @@ export default function Engine() {
                             />
                         )
                     )   
+                }
+                {
+                    gameState.terrain.map(
+                        (platform, index) => (
+                            <Terrain
+                                xPos={platform["xPos"]}
+                                yPos={platform["yPos"]}
+                                length={platform["length"]}
+                                height={terrainHeight}
+                                key={index}
+                                name={`${index}`}
+                            />
+                        )
+                    )
                 }
                 {
                     gameState.doors.map(

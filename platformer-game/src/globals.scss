@@ -34,3 +34,12 @@ html, body {
   background-size: contain;
   z-index: 10;
 }
+
+
+.terrain {
+  position: absolute;
+  display: block;
+  bottom: 0;
+  left: 0;
+  background-color: #042b2b;
+}
