@@ -4,6 +4,7 @@ import { useEvent } from '../../hooks';
 import Door from '../entities/door';
 import Platform from '../entities/platform';
 import Terrain from "../entities/terrain";
+import Coin from "../entities/coin";
 
 const ENEMIES = [
     250,
@@ -11,6 +12,7 @@ const ENEMIES = [
 ];
 
 // Defining platforms here for now, but we can probably pass this in as a prop later
+
 const PLATFORMS = [
     {
         "xPos": 100,
@@ -58,6 +60,23 @@ const DOORS = [
     }
 ];
 
+const COINS = [
+    {
+        "xPos": 120,
+        "yPos": 50,
+        "height": 30,
+        "width": 30,
+        "name": "c1"
+    },
+    {
+        "xPos": 70,
+        "yPos": 40,
+        "height": 30,
+        "width": 30,
+        "name": "c2"
+    }
+];
+
 const charWidth = 100;
 const charHeight = 100;
 
@@ -89,7 +108,7 @@ function CreateEngine(setState) {
     this.playerTerminalVelocity = -40; // the maximum velocity a human can have
     // do not allow the player to be faster than this
 
-
+    this.cumCoins = 0;
     this.jump = false;
     this.xDirection = '';
 
@@ -109,7 +128,7 @@ function CreateEngine(setState) {
             "yPos": t["yPos"] * this.settings.tile,
             "length": t["length"] * this.settings.tile,
         }
-    ))
+    ));
     this.doors = DOORS.map(d => ({
         "xPos": d["xPos"] * this.settings.tile,
         "yPos": d["yPos"] * this.settings.tile,
@@ -118,6 +137,16 @@ function CreateEngine(setState) {
         "isOpen": d["isOpen"],
         "name": d["name"],
     }));
+
+    this.coins = COINS.map(c => (
+        {
+        "xPos": c["xPos"] * this.settings.tile,
+        "yPos": c["yPos"] * this.settings.tile,
+        "height": c["height"],
+        "width": c["width"],
+        "name": c["name"],
+        }
+    ));
 
     const applyYAcceleration = () => {
         if ((this.playerYVelocity + this.playerYAcceleration) < this.playerTerminalVelocity){
@@ -197,6 +226,7 @@ function CreateEngine(setState) {
         this.doors.forEach((door) => {
             if (
                 charXPos + charWidth >= door.xPos + (door.width * 0.5)
+
                 && charYPos <= door.yPos + (door.height * 0.5)
                 && charYPos + charHeight >= door.yPos
                 && charXPos <= door.xPos + door.width
@@ -204,6 +234,25 @@ function CreateEngine(setState) {
             ) {
                 this.game = 'win';
             }
+        });
+    };
+
+    const checkCoins = () => {
+        const charXPos = this.playerXPos;
+        const charYPos = this.playerYPos;
+        let coinsIndex = 0;
+        this.coins.forEach((coin) => {
+            if (
+                charXPos + charWidth >= coin.xPos + (coin.width * 0.5)
+                && charYPos <= coin.yPos + (coin.height * 0.5)
+                && charYPos + charHeight >= coin.yPos
+                && charXPos <= coin.xPos + coin.width
+            ) {
+                this.coins.splice(coinsIndex, 1);
+                this.cumCoins++;
+//                alert(this.cumCoins);
+            }
+            coinsIndex++;
         });
     };
 
@@ -297,6 +346,7 @@ function CreateEngine(setState) {
         checkEnemies();
 
         checkDoors();
+        checkCoins();
 
         // set state for use in the component
         setState({
@@ -307,6 +357,7 @@ function CreateEngine(setState) {
             platforms: this.platforms,
             terrain: this.terrain,
             doors: this.doors,
+            coins: this.coins,
             status: this.game,
         });
 
@@ -348,6 +399,7 @@ const initialState = {
     platforms: [],
     terrain: [],
     doors: [],
+    coins: [],
     status: 'start',
 };
 
@@ -496,6 +548,19 @@ export default function Engine() {
                                 xPos={door["xPos"]} 
                                 yPos={door["yPos"]} 
                                 key={door["name"]}
+                            />
+                        )
+                    )
+                }
+                {
+                    gameState.coins.map(
+                        coin => (
+                            <Coin
+                                height={coin["height"]}
+                                width={coin["width"]}
+                                xPos={coin["xPos"]}
+                                yPos={coin["yPos"]}
+                                key={coin["name"]}
                             />
                         )
                     )
