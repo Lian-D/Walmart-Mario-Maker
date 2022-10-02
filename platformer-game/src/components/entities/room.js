@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Terrain from "./terrain";
+import Coin from "./coin";
 import Door from './door';
 import Platform from './platform';
 import {enemyHeight, enemyWidth, platformHeight, terrainHeight} from '../constants';
 
-const Room = ({player, enemies, platforms, terrain, doors, stageX}) => {
+const Room = ({player, enemies, platforms, terrain, doors, coins, stageX}) => {
     let style = {
         transform: `translate(-${stageX}px, 0px)`,
     };
@@ -52,6 +53,19 @@ const Room = ({player, enemies, platforms, terrain, doors, stageX}) => {
                 />
             )
         )}
+        
+        {coins.map(
+                coin => (
+                    <Coin
+                        height={coin["height"]}
+                        width={coin["width"]}
+                        xPos={coin["xPos"]}
+                        yPos={coin["yPos"]}
+                        key={coin["name"]}
+                    />
+                )
+            )
+        }
         {doors.map(
             (door) => (
                 <Door 
@@ -71,6 +85,7 @@ Room.propTypes = {
     enemies: PropTypes.array,
     platforms: PropTypes.array,
     terrain: PropTypes.array,
+    coins: PropTypes.array,
     doors: PropTypes.array,
     stageX: PropTypes.number,
 };

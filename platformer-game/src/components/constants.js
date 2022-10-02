@@ -22,6 +22,23 @@ const PLATFORMS = [
     }
 ];
 
+const COINS = [
+    {
+        "xPos": 120,
+        "yPos": 50,
+        "height": 30,
+        "width": 30,
+        "name": "c1"
+    },
+    {
+        "xPos": 70,
+        "yPos": 40,
+        "height": 30,
+        "width": 30,
+        "name": "c2"
+    }
+];
+
 const TERRAIN = [
     {
         "xPos": 150,
@@ -84,6 +101,15 @@ const STAGES = {
                 "xPos": t["xPos"] * tile,
                 "yPos": t["yPos"] * tile,
                 "length": t["length"] * tile,
+            }
+        )),
+        coins: COINS.map(c => (
+            {
+            "xPos": c["xPos"] * tile,
+            "yPos": c["yPos"] * tile,
+            "height": c["height"],
+            "width": c["width"],
+            "name": c["name"],
             }
         )),
         enemies: ENEMIES.map(b => (b * tile)),

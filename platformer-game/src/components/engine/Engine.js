@@ -33,6 +33,7 @@ function CreateEngine(setState) {
     this.playerTerminalVelocity = -40; // the maximum velocity a human can have
     // do not allow the player to be faster than this
 
+    this.cumCoins = 0;
     this.jump = false;
     this.xDirection = '';
 
@@ -42,6 +43,7 @@ function CreateEngine(setState) {
     this.platforms = this.room.platforms;
     this.terrain = this.room.terrain;
     this.doors = this.room.doors;
+    this.coins = this.room.coins;
 
     const applyYAcceleration = () => {
         if ((this.playerYVelocity + this.playerYAcceleration) < this.playerTerminalVelocity){
@@ -121,6 +123,7 @@ function CreateEngine(setState) {
         this.doors.forEach((door) => {
             if (
                 charXPos + charWidth >= door.xPos + (door.width * 0.5)
+
                 && charYPos <= door.yPos + (door.height * 0.5)
                 && charYPos + charHeight >= door.yPos
                 && charXPos <= door.xPos + door.width
@@ -128,6 +131,25 @@ function CreateEngine(setState) {
             ) {
                 this.game = 'win';
             }
+        });
+    };
+
+    const checkCoins = () => {
+        const charXPos = this.playerXPos;
+        const charYPos = this.playerYPos;
+        let coinsIndex = 0;
+        this.coins.forEach((coin) => {
+            if (
+                charXPos + charWidth >= coin.xPos + (coin.width * 0.5)
+                && charYPos <= coin.yPos + (coin.height * 0.5)
+                && charYPos + charHeight >= coin.yPos
+                && charXPos <= coin.xPos + coin.width
+            ) {
+                this.coins.splice(coinsIndex, 1);
+                this.cumCoins++;
+//                alert(this.cumCoins);
+            }
+            coinsIndex++;
         });
     };
 
@@ -221,6 +243,7 @@ function CreateEngine(setState) {
         checkEnemies();
 
         checkDoors();
+        checkCoins();
 
         // set state for use in the component
         setState({
@@ -228,11 +251,6 @@ function CreateEngine(setState) {
             playerX: this.playerXPos,
             playerY: this.playerYPos,
             playerXDirection: this.xDirection,
-            blocks: this.blocks,
-            enemies: this.enemies,
-            platforms: this.platforms,
-            terrain: this.terrain,
-            doors: this.doors,
             room: this.room,
             status: this.game,
         });
@@ -272,11 +290,6 @@ const initialState = {
     playerX: 200,
     playerY: 0,
     playerXDirection: '',
-    blocks: [],
-    enemies: [],
-    platforms: [],
-    terrain: [],
-    doors: [],
     room: STAGES['start'],
     status: 'start',
 };
@@ -372,6 +385,7 @@ export default function Engine() {
                         transform: `translate(${gameState.playerX}px, -${gameState.playerY}px) scaleX(1)`
                     }}/>}
                 enemies={gameState.room["enemies"]}
+                coins={gameState.room["coins"]}
                 platforms={gameState.room["platforms"]}
                 terrain={gameState.room["terrain"]}
                 doors={gameState.room["doors"]}
