@@ -1,77 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import styles from './engine.module.scss';
 import { useEvent } from '../../hooks';
-import Door from '../entities/door';
-import Platform from '../entities/platform';
 import Character from '../entities/character';
-import Terrain from "../entities/terrain";
-
-const ENEMIES = [
-    250,
-    390,
-];
-
-// Defining platforms here for now, but we can probably pass this in as a prop later
-const PLATFORMS = [
-    {
-        "xPos": 100,
-        "yPos": 30,
-        "length": 50
-    },
-    {
-        "xPos": 50,
-        "yPos": 20,
-        "length": 50 
-    },
-    {
-        "xPos": 200,
-        "yPos": 30,
-        "length": 50
-    }
-];
-
-const TERRAIN = [
-    {
-        "xPos": 150,
-        "yPos": 30,
-        "length": 50
-    },
-    {
-        "xPos": 0,
-        "yPos": 0,
-        "length": 50
-    },
-    {
-        "xPos": 100,
-        "yPos": 0,
-        "length": 200
-    }
-]
-
-const DOORS = [
-    {
-        "xPos": 200,
-        "yPos": 0,
-        "height": 130,
-        "width": 110,
-        "isOpen": true,
-        "name": "door1"
-    }
-];
-
-const charWidth = 100;
-const charHeight = 100;
-
-const platformHeight = 25;
-const terrainHeight = 50;
-
-const enemyWidth = 80;
-const enemyHeight = 200;
+import Room from "../entities/room";
+import {
+    charWidth, 
+    charHeight, 
+    platformHeight, 
+    terrainHeight, 
+    tile, 
+    enemyWidth, 
+    enemyHeight, 
+    STAGES,
+} from '../constants';
 
 function CreateEngine(setState) {
-    this.settings = {
-        tile: 10, // width of one tile
-    };
+    this.room = STAGES['start'];
 
     // current stage position
     this.game = 'start';
@@ -90,35 +33,15 @@ function CreateEngine(setState) {
     this.playerTerminalVelocity = -40; // the maximum velocity a human can have
     // do not allow the player to be faster than this
 
-
     this.jump = false;
     this.xDirection = '';
 
     this.playerXPos = 200;
     this.playerYPos = 100;
-    this.enemies = ENEMIES.map(b => (b * this.settings.tile));
-    this.platforms = PLATFORMS.map(p => (
-        {
-            "xPos": p["xPos"] * this.settings.tile,
-            "yPos": p["yPos"] * this.settings.tile,
-            "length": p["length"] * this.settings.tile,
-        }
-    ));
-    this.terrain = TERRAIN.map(t => (
-        {
-            "xPos": t["xPos"] * this.settings.tile,
-            "yPos": t["yPos"] * this.settings.tile,
-            "length": t["length"] * this.settings.tile,
-        }
-    ))
-    this.doors = DOORS.map(d => ({
-        "xPos": d["xPos"] * this.settings.tile,
-        "yPos": d["yPos"] * this.settings.tile,
-        "height": d["height"],
-        "width": d["width"],
-        "isOpen": d["isOpen"],
-        "name": d["name"],
-    }));
+    this.enemies = this.room.enemies;
+    this.platforms = this.room.platforms;
+    this.terrain = this.room.terrain;
+    this.doors = this.room.doors;
 
     const applyYAcceleration = () => {
         if ((this.playerYVelocity + this.playerYAcceleration) < this.playerTerminalVelocity){
@@ -241,17 +164,17 @@ function CreateEngine(setState) {
 
     const doMove = () => {
         if (this.xDirection === 'right') {
-            if (checkXTerrain(this.playerXPos + this.settings.tile)){
-                this.playerXPos = checkXTerrain(this.playerXPos + this.settings.tile);
+            if (checkXTerrain(this.playerXPos + tile)){
+                this.playerXPos = checkXTerrain(this.playerXPos + tile);
             } else {
-                this.playerXPos += this.settings.tile;
+                this.playerXPos += tile;
             }
         } 
         else if (this.xDirection === 'left') {
-            if (checkXTerrain(this.playerXPos - this.settings.tile)){
-                this.playerXPos = checkXTerrain(this.playerXPos - this.settings.tile);
+            if (checkXTerrain(this.playerXPos - tile)){
+                this.playerXPos = checkXTerrain(this.playerXPos - tile);
             } else {
-                this.playerXPos -= this.settings.tile;
+                this.playerXPos -= tile;
             }
         }
         this.stageXPos = Math.max(this.playerXPos - 700, 0);
@@ -310,6 +233,7 @@ function CreateEngine(setState) {
             platforms: this.platforms,
             terrain: this.terrain,
             doors: this.doors,
+            room: this.room,
             status: this.game,
         });
 
@@ -353,6 +277,7 @@ const initialState = {
     platforms: [],
     terrain: [],
     doors: [],
+    room: STAGES['start'],
     status: 'start',
 };
 
@@ -432,86 +357,26 @@ export default function Engine() {
     });
 
     return (
-        <div
-            className={styles.container}
-        >
-            <div
-                className={styles.stage}
-                style={{
-                    transform: `translate(-${gameState.stageX}px, 0px)`, // move stage
-                }}
-            >
-                {
-                    <Character
-                        style={gameState.playerXDirection === 'left' ? 
-                        {
-                            height: {charHeight},
-                            width: {charWidth},
-                            transform: `translate(${gameState.playerX}px, -${gameState.playerY}px) scaleX(-1)`
-                        } 
-                        : {
-                            height: {charHeight},
-                            width: {charWidth},
-                            transform: `translate(${gameState.playerX}px, -${gameState.playerY}px) scaleX(1)`
-                        }}/>
-                }
-                {
-                    gameState.enemies.map(
-                        (enemy,index) => (
-                            <span
-                                className={styles.enemy}
-                                key={index}
-                                style={{
-                                    transform: `translate(${enemy}px, 0px)`, // move stage
-                                    height: enemyHeight,
-                                    width: enemyWidth,
-                                }}
-                            />
-                        ),
-                    )
-                }
-                {
-                    gameState.platforms.map(
-                        (platform, index) => (
-                            <Platform
-                                xPos={platform["xPos"]}
-                                yPos={platform["yPos"]}
-                                length={platform["length"]}
-                                height={platformHeight}
-                                key={index}
-                                name={`${index}`}
-                            />
-                        )
-                    )   
-                }
-                {
-                    gameState.terrain.map(
-                        (platform, index) => (
-                            <Terrain
-                                xPos={platform["xPos"]}
-                                yPos={platform["yPos"]}
-                                length={platform["length"]}
-                                height={terrainHeight}
-                                key={index}
-                                name={`${index}`}
-                            />
-                        )
-                    )
-                }
-                {
-                    gameState.doors.map(
-                        door => (
-                            <Door 
-                                height={door["height"]} 
-                                width={door["width"]} 
-                                xPos={door["xPos"]} 
-                                yPos={door["yPos"]} 
-                                key={door["name"]}
-                            />
-                        )
-                    )
-                }
-            </div>
+        <div className={'container'} >
+            <Room  
+                player={<Character
+                    style={gameState.playerXDirection === 'left' ? 
+                    {
+                        height: {charHeight},
+                        width: {charWidth},
+                        transform: `translate(${gameState.playerX}px, -${gameState.playerY}px) scaleX(-1)`
+                    } 
+                    : {
+                        height: {charHeight},
+                        width: {charWidth},
+                        transform: `translate(${gameState.playerX}px, -${gameState.playerY}px) scaleX(1)`
+                    }}/>}
+                enemies={gameState.room["enemies"]}
+                platforms={gameState.room["platforms"]}
+                terrain={gameState.room["terrain"]}
+                doors={gameState.room["doors"]}
+                stageX={gameState.stageX}
+            />
         </div>
     );
 }
