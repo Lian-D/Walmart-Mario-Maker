@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Platform = ({xPos, yPos, length, height, name}) => {
+const Terrain = ({xPos, yPos, length, height, name}) => {
     const style = {
         transform: `translate(${xPos}px, -${yPos}px)`,
         height: height,
@@ -10,14 +10,14 @@ const Platform = ({xPos, yPos, length, height, name}) => {
 
     return (
         <span 
-            className="platform"
+            className="terrain"
             key={name}
             style={style}
         />
     );
 };
 
-Platform.propTypes = {
+Terrain.propTypes = {
     xPos: PropTypes.number,
     yPos: PropTypes.number,
     length: PropTypes.number,
@@ -25,4 +25,4 @@ Platform.propTypes = {
     name: PropTypes.string,
 };
 
-export default Platform;
+export default Terrain;
