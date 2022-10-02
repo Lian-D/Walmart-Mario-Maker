@@ -361,6 +361,7 @@ function CreateEngine(setState) {
             terrain: this.terrain,
             doors: this.doors,
             coins: this.coins,
+            cumCoins: this.cumCoins,
             status: this.game,
         });
 
@@ -405,6 +406,7 @@ const initialState = {
     terrain: [],
     doors: [],
     coins: [],
+    cumCoins: 0,
     status: 'start',
 };
 
@@ -487,6 +489,7 @@ export default function Engine() {
         <div
             className={styles.container}
         >
+            {started && <span className="coinCounter">Coins obtained: {gameState.cumCoins ? gameState.cumCoins : 0}</span>}
             <div
                 className={styles.stage}
                 style={{
