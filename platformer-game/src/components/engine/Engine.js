@@ -3,6 +3,7 @@ import styles from './engine.module.scss';
 import { useEvent } from '../../hooks';
 import Door from '../entities/door';
 import Platform from '../entities/platform';
+import Character from '../entities/character';
 import Terrain from "../entities/terrain";
 import Coin from "../entities/coin";
 
@@ -353,6 +354,8 @@ function CreateEngine(setState) {
             stageX: this.stageXPos,
             playerX: this.playerXPos,
             playerY: this.playerYPos,
+            playerXDirection: this.xDirection,
+            blocks: this.blocks,
             enemies: this.enemies,
             platforms: this.platforms,
             terrain: this.terrain,
@@ -395,6 +398,8 @@ const initialState = {
     stageX: 0,
     playerX: 200,
     playerY: 0,
+    playerXDirection: '',
+    blocks: [],
     enemies: [],
     platforms: [],
     terrain: [],
@@ -488,14 +493,20 @@ export default function Engine() {
                     transform: `translate(-${gameState.stageX}px, 0px)`, // move stage
                 }}
             >
-                <span
-                    className={styles.character}
-                    style={{
-                        transform: `translate(${gameState.playerX}px, -${gameState.playerY}px)`, // move char in opposite direction
-                        height: charHeight,
-                        width: charWidth,
-                    }}
-                />
+                {
+                    <Character
+                        style={gameState.playerXDirection === 'left' ? 
+                        {
+                            height: {charHeight},
+                            width: {charWidth},
+                            transform: `translate(${gameState.playerX}px, -${gameState.playerY}px) scaleX(-1)`
+                        } 
+                        : {
+                            height: {charHeight},
+                            width: {charWidth},
+                            transform: `translate(${gameState.playerX}px, -${gameState.playerY}px) scaleX(1)`
+                        }}/>
+                }
                 {
                     gameState.enemies.map(
                         (enemy,index) => (

@@ -33,6 +33,20 @@ html, body {
   background-color: #008080;
 }
 
+.character {
+  position: absolute;
+  display: block;
+  height: 100px;
+  width: 100px;
+  bottom: 0;
+  left: 0;
+  background-color: #ffd600;
+  background:url('https://media.discordapp.net/attachments/1019466411044765716/1024926081033195561/owi.png') no-repeat;
+  background-size: contain;
+  z-index: 10;
+}
+
+
 .terrain {
   position: absolute;
   display: block;
