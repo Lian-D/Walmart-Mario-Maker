@@ -34,6 +34,16 @@ const TERRAIN = [
         "xPos": 150,
         "yPos": 30,
         "length": 50
+    },
+    {
+        "xPos": 0,
+        "yPos": 0,
+        "length": 50
+    },
+    {
+        "xPos": 100,
+        "yPos": 0,
+        "length": 200
     }
 ]
 
@@ -84,7 +94,7 @@ function CreateEngine(setState) {
     this.xDirection = '';
 
     this.playerXPos = 200;
-    this.playerYPos = 0;
+    this.playerYPos = 100;
     this.enemies = ENEMIES.map(b => (b * this.settings.tile));
     this.platforms = PLATFORMS.map(p => (
         {
@@ -119,9 +129,7 @@ function CreateEngine(setState) {
 
     const applyYVelocity = () => {
         if (this.playerYPos + this.playerYVelocity < 0) {
-            this.playerYpos = 0;
-            this.playerYVelocity = 0;
-            this.inAir = false;
+            this.game = 'fail';
         } else if (checkPlatform(this.playerYPos + this.playerYVelocity)) {
             this.playerYPos =  checkPlatform(this.playerYPos + this.playerYVelocity);
             this.playerYVelocity = 0;
