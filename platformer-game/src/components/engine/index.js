@@ -330,7 +330,7 @@ function CreateEngine(setState) {
     return () => ({
         jump: () => {
             // if jump is not active, trigger jump
-            if (!this.jump) {
+            if (!this.jump && this.playerYVelocity === 0) {
                 this.jump = true;
             }
         },
