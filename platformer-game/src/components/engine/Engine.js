@@ -45,6 +45,16 @@ function CreateEngine(setState) {
     this.doors = this.room.doors;
     this.coins = this.room.coins;
 
+    this.coins = COINS.map(c => (
+        {
+        "xPos": c["xPos"] * this.settings.tile,
+        "yPos": c["yPos"] * this.settings.tile,
+        "height": c["height"],
+        "width": c["width"],
+        "name": c["name"],
+        }
+    ));
+
     const applyYAcceleration = () => {
         if ((this.playerYVelocity + this.playerYAcceleration) < this.playerTerminalVelocity){
             this.playerYVelocity = this.playerTerminalVelocity;
@@ -252,6 +262,7 @@ function CreateEngine(setState) {
             playerY: this.playerYPos,
             playerXDirection: this.xDirection,
             room: this.room,
+            cumCoins: this.cumCoins,
             status: this.game,
         });
 
@@ -291,6 +302,7 @@ const initialState = {
     playerY: 0,
     playerXDirection: '',
     room: STAGES['start'],
+    cumCoins: 0,
     status: 'start',
 };
 
@@ -371,6 +383,7 @@ export default function Engine() {
 
     return (
         <div className={'container'} >
+            {started && <span className="coinCounter">Coins obtained: {gameState.cumCoins ? gameState.cumCoins : 0}</span>}
             <Room  
                 player={<Character
                     style={gameState.playerXDirection === 'left' ? 
