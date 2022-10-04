@@ -60,11 +60,24 @@ const TERRAIN = [
 const DOORS = [
     {
         "xPos": 200,
-        "yPos": 0,
+        "yPos": 5,
         "height": 170,
         "width": 110,
         "isOpen": true,
-        "name": "door1"
+        "name": "door1",
+        "leadsTo": "level2"
+    }
+];
+
+const DOORS2 = [
+    {
+        "xPos": 150,
+        "yPos": 5,
+        "height": 170,
+        "width": 110,
+        "isOpen": true,
+        "name": "door1",
+        "leadsTo": null
     }
 ];
 
@@ -88,6 +101,7 @@ const STAGES = {
             "width": d["width"],
             "isOpen": d["isOpen"],
             "name": d["name"],
+            "leadsTo": d["leadsTo"]
         })),
         platforms: PLATFORMS.map(p => (
             {
@@ -114,7 +128,48 @@ const STAGES = {
         )),
         enemies: ENEMIES.map(b => (b * tile)),
         height: 900,
-        width: 1500,
+        width: 3000,
+        playerStartX: 200,
+        playerStartY: 50,
+    },
+    "level2": {
+        doors: DOORS2.map(d => ({
+            "xPos": d["xPos"] * tile,
+            "yPos": d["yPos"] * tile,
+            "height": d["height"],
+            "width": d["width"],
+            "isOpen": d["isOpen"],
+            "name": d["name"],
+            "leadsTo": d["leadsTo"]
+        })),
+        platforms: PLATFORMS.map(p => (
+            {
+                "xPos": p["xPos"] * tile,
+                "yPos": p["yPos"] * tile,
+                "length": p["length"] * tile,
+            }
+        )),
+        terrain: TERRAIN.map(t => (
+            {
+                "xPos": t["xPos"] * tile,
+                "yPos": t["yPos"] * tile,
+                "length": t["length"] * tile,
+            }
+        )),
+        coins: COINS.map(c => (
+            {
+            "xPos": c["xPos"] * tile,
+            "yPos": c["yPos"] * tile,
+            "height": c["height"],
+            "width": c["width"],
+            "name": c["name"],
+            }
+        )),
+        enemies: ENEMIES.map(b => (b * tile)),
+        height: 900,
+        width: 2000,
+        playerStartX: 500,
+        playerStartY: 250,
     },
 };
 

@@ -39,11 +39,6 @@ function CreateEngine(setState) {
 
     this.playerXPos = 200;
     this.playerYPos = 50;
-    this.enemies = this.room.enemies;
-    this.platforms = this.room.platforms;
-    this.terrain = this.room.terrain;
-    this.doors = this.room.doors;
-    this.coins = this.room.coins;
 
     const applyYAcceleration = () => {
         if ((this.playerYVelocity + this.playerYAcceleration) < this.playerTerminalVelocity){
@@ -77,7 +72,7 @@ function CreateEngine(setState) {
         const charCurrentYPos = this.playerYPos;
         const charCurrentHeadYPos = this.playerYPos + charHeight;
 
-        for (let t of this.terrain) {
+        for (let t of this.room.terrain) {
             let terrainSurfaceYPos = t["yPos"] + terrainHeight;
             let terrainBottomYPos = t["yPos"];
             if (charRightXPos >= t["xPos"]
@@ -102,7 +97,7 @@ function CreateEngine(setState) {
         const charRightXPos = this.playerXPos + charWidth;
         const charCurrentYPos = this.playerYPos;
 
-        for (let platform of this.platforms) {
+        for (let platform of this.room.platforms) {
             let platformSurfaceYPos = platform["yPos"] + platformHeight;
             if (this.playerYVelocity < 0
                 && charRightXPos >= platform["xPos"]
@@ -120,7 +115,7 @@ function CreateEngine(setState) {
         const charXPos = this.playerXPos;
         const charYPos = this.playerYPos;
 
-        this.doors.forEach((door) => {
+        this.room.doors.forEach((door) => {
             if (
                 charXPos + charWidth >= door.xPos + (door.width * 0.5)
 
@@ -129,7 +124,13 @@ function CreateEngine(setState) {
                 && charXPos <= door.xPos + door.width
                 && door.isOpen
             ) {
-                this.game = 'win';
+                if (door.leadsTo === null) {
+                    this.game = 'win';
+                } else {
+                    this.room = STAGES[door.leadsTo];
+                    this.playerXPos = this.room.playerStartX;
+                    this.playerYPos = this.room.playerStartY;
+                }
             }
         });
     };
@@ -138,14 +139,14 @@ function CreateEngine(setState) {
         const charXPos = this.playerXPos;
         const charYPos = this.playerYPos;
         let coinsIndex = 0;
-        this.coins.forEach((coin) => {
+        this.room.coins.forEach((coin) => {
             if (
                 charXPos + charWidth >= coin.xPos + (coin.width * 0.5)
                 && charYPos <= coin.yPos + (coin.height * 0.5)
                 && charYPos + charHeight >= coin.yPos
                 && charXPos <= coin.xPos + coin.width
             ) {
-                this.coins.splice(coinsIndex, 1);
+                this.room.coins.splice(coinsIndex, 1);
                 this.cumCoins++;
 //                alert(this.cumCoins);
             }
@@ -158,11 +159,11 @@ function CreateEngine(setState) {
         const charYPos = this.playerYPos;
 
         // if the char has passed all enemies
-        if (charXPos > this.enemies[this.enemies.length - 1] + 200) {
+        if (charXPos > this.room.enemies[this.room.enemies.length - 1] + 200) {
             this.game = 'win';
         }
 
-        this.enemies.forEach((enemy) => {
+        this.room.enemies.forEach((enemy) => {
             // if char hits an enemy
             if (charXPos + charWidth >= enemy
                 && charYPos <= enemyHeight
@@ -199,13 +200,20 @@ function CreateEngine(setState) {
                 this.playerXPos -= tile;
             }
         }
-        this.stageXPos = Math.max(this.playerXPos - 700, 0);
+        let screenWidth = window.innerWidth;
+        this.stageXPos = Math.max(this.playerXPos - screenWidth / 2, 0);
         this.playerXPos = Math.max(this.playerXPos, 0);
-        // add another check for the max width of the stage when we get around to defining it
+
+        if (this.stageXPos + screenWidth > this.room.width) {
+            this.stageXPos = this.room.width - screenWidth;
+        }
+        if (this.playerXPos + charWidth > this.room.width) {
+            this.playerXPos = this.room.width - charWidth;
+        }
     };
 
     const checkXTerrain = (newXPos) => {
-        for (let t of this.terrain) {
+        for (let t of this.room.terrain) {
             let terrainYPos = t["yPos"];
             let terrainYSurface = t["yPos"] + terrainHeight;
             let playerYTopPos = this.playerYPos + charHeight;
