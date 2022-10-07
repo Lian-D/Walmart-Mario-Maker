@@ -34,6 +34,7 @@ function CreateEngine(setState) {
     // do not allow the player to be faster than this
 
     this.cumCoins = 0;
+    this.buttonMap = new Map();
     this.jump = false;
     this.xDirection = '';
 
@@ -148,9 +149,27 @@ function CreateEngine(setState) {
             ) {
                 this.room.coins.splice(coinsIndex, 1);
                 this.cumCoins++;
-//                alert(this.cumCoins);
             }
             coinsIndex++;
+        });
+    };
+
+    const checkButtons = () => {
+        const charXPos = this.playerXPos;
+        const charYPos = this.playerYPos;
+        let buttonIndex = 0;
+        this.room.buttons.forEach((button) => {
+            if (
+                charXPos + charWidth >= button.xPos + (button.width * 0.5)
+                && charYPos <= button.yPos + (button.height * 0.5)
+                && charYPos + charHeight >= button.yPos
+                && charXPos <= button.xPos + button.width
+            ) {
+                this.room.buttons.splice(buttonIndex, 1);
+                if (!this.buttonMap.get(button.name)) {
+                    this.buttonMap.set(button.name, "triggered");
+                }
+            }
         });
     };
 
@@ -252,6 +271,7 @@ function CreateEngine(setState) {
 
         checkDoors();
         checkCoins();
+        checkButtons();
 
         // set state for use in the component
         setState({
@@ -301,6 +321,7 @@ const initialState = {
     playerXDirection: '',
     room: STAGES['start'],
     cumCoins: 0,
+    buttonMap: new Map(),
     status: 'start',
 };
 
@@ -400,6 +421,7 @@ export default function Engine() {
                 platforms={gameState.room["platforms"]}
                 terrain={gameState.room["terrain"]}
                 doors={gameState.room["doors"]}
+                buttons={gameState.room["buttons"]}
                 stageX={gameState.stageX}
             />
         </div>

@@ -4,9 +4,10 @@ import Terrain from "./terrain";
 import Coin from "./coin";
 import Door from './door';
 import Platform from './platform';
+import Button from './button';
 import {enemyHeight, enemyWidth, platformHeight, terrainHeight} from '../constants';
 
-const Room = ({player, enemies, platforms, terrain, doors, coins, stageX}) => {
+const Room = ({player, enemies, platforms, terrain, doors, coins, buttons, stageX}) => {
     let style = {
         transform: `translate(-${stageX}px, 0px)`,
     };
@@ -77,6 +78,17 @@ const Room = ({player, enemies, platforms, terrain, doors, coins, stageX}) => {
                 />
             )
         )}
+        {buttons.map(
+            (button) => (
+                <Button
+                    height={button["height"]}
+                    width={button["width"]}
+                    xPos={button["xPos"]}
+                     yPos={button["yPos"]}
+                     key={button["name"]}
+                />
+            )
+        )}
     </div>);
 };
 
@@ -87,6 +99,7 @@ Room.propTypes = {
     terrain: PropTypes.array,
     coins: PropTypes.array,
     doors: PropTypes.array,
+    buttons: PropTypes.array,
     stageX: PropTypes.number,
 };
 

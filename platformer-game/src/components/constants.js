@@ -22,6 +22,16 @@ const PLATFORMS = [
     }
 ];
 
+const BUTTONS = [
+    {
+        "xPos": 10,
+        "yPos": 10,
+        "height": 50,
+        "width": 50,
+        "name": "red1"
+    }
+];
+
 const COINS = [
     {
         "xPos": 120,
@@ -126,6 +136,15 @@ const STAGES = {
             "name": c["name"],
             }
         )),
+        buttons: BUTTONS.map(s => (
+            {
+            "xPos": s["xPos"] * tile,
+            "yPos": s["yPos"] * tile,
+            "height": s["height"],
+            "width": s["width"],
+            "name": s["name"],
+            }
+        )),
         enemies: ENEMIES.map(b => (b * tile)),
         height: 900,
         width: 3000,
@@ -163,6 +182,15 @@ const STAGES = {
             "height": c["height"],
             "width": c["width"],
             "name": c["name"],
+            }
+        )),
+        buttons: BUTTONS.map(s => (
+            {
+            "xPos": s["xPos"] * tile,
+            "yPos": s["yPos"] * tile,
+            "height": s["height"],
+            "width": s["width"],
+            "name": s["name"],
             }
         )),
         enemies: ENEMIES.map(b => (b * tile)),
