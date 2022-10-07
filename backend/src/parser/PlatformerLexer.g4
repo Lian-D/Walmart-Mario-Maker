@@ -12,6 +12,9 @@ COIN: 'Coin' -> mode(EXP_MODE);
 LEVEL: 'Level ' -> mode(EXP_MODE);
 CHECKS: 'Checks ' -> mode(EXP_MODE);
 IF: 'if ' -> mode(EXP_MODE);
+ADD: 'Add' -> mode(EXP_MODE);
+REMOVE: 'Remove' -> mode(EXP_MODE);
+MONEY: 'MONEY' -> mode(EXP_MODE);
 OPEN_BRACE  : '{';
 CLOSE_BRACE : '}';
 STMT_NEWLINE: [\r\n]+; // newlines while in statement mode
@@ -21,9 +24,6 @@ mode EXP_MODE;
 NAME  : [A-Za-z][A-Za-z0-9]*;
 CONST : '-'?[0-9]+;
 COMMA : ',';
-ADD: 'Add';
-REMOVE: 'Remove';
-MONEY: 'MONEY';
 OPEN_PAREN  : '(';
 CLOSE_PAREN : ')';
 OPEN_SQUARE  : '[';
@@ -32,6 +32,7 @@ LARGER  : '>';
 SMALLER  : '<';
 SEMICOLON : ';';
 COLON : ':';
+
 // spaces and tabs can be ignored (apart from those immediately following a keyword above):
 SPACE : [ \t]+ -> channel(HIDDEN);
 // newline(s) indicate end of a statement and start of the next
