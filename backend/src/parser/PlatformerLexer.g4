@@ -6,8 +6,11 @@ PLAYER: 'Player ' -> mode(EXP_MODE);     // including a single space in the toke
 ENEMY: 'Enemy ' -> mode(EXP_MODE);
 DOOR: 'Door ' -> mode(EXP_MODE);
 TERRAIN: 'Terrain ' -> mode(EXP_MODE);
+PLATFORM: 'Platform ' -> mode(EXP_MODE);
 BUTTON: 'Button ' -> mode(EXP_MODE);
+COIN: 'Coin' -> mode(EXP_MODE);
 LEVEL: 'Level ' -> mode(EXP_MODE);
+CHECKS: 'Checks ' -> mode(EXP_MODE);
 IF: 'if ' -> mode(EXP_MODE);
 OPEN_BRACE  : '{';
 CLOSE_BRACE : '}';
@@ -18,8 +21,15 @@ mode EXP_MODE;
 NAME  : [A-Za-z][A-Za-z0-9]*;
 CONST : '-'?[0-9]+;
 COMMA : ',';
+ADD: 'Add';
+REMOVE: 'Remove';
+MONEY: 'MONEY';
 OPEN_PAREN  : '(';
 CLOSE_PAREN : ')';
+OPEN_SQUARE  : '[';
+CLOSED_SQUARE  : ']';
+LARGER  : '>';
+SMALLER  : '<';
 SEMICOLON : ';';
 COLON : ':';
 // spaces and tabs can be ignored (apart from those immediately following a keyword above):
