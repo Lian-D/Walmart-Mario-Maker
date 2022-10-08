@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useEvent } from '../../hooks';
 import Character from '../entities/character';
-import Room from "../entities/room";
+import Level from "../entities/level";
 import {
     charWidth, 
     charHeight, 
@@ -11,14 +11,17 @@ import {
     enemyWidth, 
     enemyHeight, 
     STAGES,
-} from '../constants';
+    doorWidth,
+    doorHeight,
+} from '../../data/constants';
 
-function CreateEngine(setState) {
-    this.room = STAGES['start'];
+function CreateEngine(setState, initialState) {
+    this.level = initialState.level;
+    this.game = initialState.status;
 
     // current stage position
-    this.game = 'start';
-    this.stageXPos = 0;
+    this.stageXPos = initialState.stageX;
+    this.stageYPos = initialState.stageY;
 
     this.inAir = true;
     this.playerYAcceleration = -1; // gravity, in m/s^2
@@ -33,12 +36,12 @@ function CreateEngine(setState) {
     this.playerTerminalVelocity = -40; // the maximum velocity a human can have
     // do not allow the player to be faster than this
 
-    this.cumCoins = 0;
+    this.cumCoins = initialState.cumCoins;
     this.jump = false;
-    this.xDirection = '';
+    this.xDirection = initialState.playerXDirection;
 
-    this.playerXPos = 200;
-    this.playerYPos = 50;
+    this.playerXPos = initialState.playerX;
+    this.playerYPos = initialState.playerY;
 
     const applyYAcceleration = () => {
         if ((this.playerYVelocity + this.playerYAcceleration) < this.playerTerminalVelocity){
@@ -72,7 +75,7 @@ function CreateEngine(setState) {
         const charCurrentYPos = this.playerYPos;
         const charCurrentHeadYPos = this.playerYPos + charHeight;
 
-        for (let t of this.room.terrain) {
+        for (let t of this.level.terrain) {
             let terrainSurfaceYPos = t["yPos"] + terrainHeight;
             let terrainBottomYPos = t["yPos"];
             if (charRightXPos >= t["xPos"]
@@ -97,7 +100,7 @@ function CreateEngine(setState) {
         const charRightXPos = this.playerXPos + charWidth;
         const charCurrentYPos = this.playerYPos;
 
-        for (let platform of this.room.platforms) {
+        for (let platform of this.level.platforms) {
             let platformSurfaceYPos = platform["yPos"] + platformHeight;
             if (this.playerYVelocity < 0
                 && charRightXPos >= platform["xPos"]
@@ -115,21 +118,19 @@ function CreateEngine(setState) {
         const charXPos = this.playerXPos;
         const charYPos = this.playerYPos;
 
-        this.room.doors.forEach((door) => {
+        this.level.doors.forEach((door) => {
             if (
-                charXPos + charWidth >= door.xPos + (door.width * 0.5)
-
-                && charYPos <= door.yPos + (door.height * 0.5)
+                charXPos + charWidth >= door.xPos + (doorWidth * 0.5)
+                && charYPos <= door.yPos + (doorHeight * 0.5)
                 && charYPos + charHeight >= door.yPos
-                && charXPos <= door.xPos + door.width
-                && door.isOpen
+                && charXPos <= door.xPos + doorWidth
             ) {
-                if (door.leadsTo === null) {
+                if (door.goesTo === 'win') {
                     this.game = 'win';
                 } else {
-                    this.room = STAGES[door.leadsTo];
-                    this.playerXPos = this.room.playerStartX;
-                    this.playerYPos = this.room.playerStartY;
+                    this.level = STAGES[door.goesTo];
+                    this.playerXPos = this.level.playerStartX;
+                    this.playerYPos = this.level.playerStartY;
                 }
             }
         });
@@ -139,16 +140,15 @@ function CreateEngine(setState) {
         const charXPos = this.playerXPos;
         const charYPos = this.playerYPos;
         let coinsIndex = 0;
-        this.room.coins.forEach((coin) => {
+        this.level.coins.forEach((coin) => {
             if (
                 charXPos + charWidth >= coin.xPos + (coin.width * 0.5)
                 && charYPos <= coin.yPos + (coin.height * 0.5)
                 && charYPos + charHeight >= coin.yPos
                 && charXPos <= coin.xPos + coin.width
             ) {
-                this.room.coins.splice(coinsIndex, 1);
+                this.level.coins.splice(coinsIndex, 1);
                 this.cumCoins++;
-//                alert(this.cumCoins);
             }
             coinsIndex++;
         });
@@ -159,11 +159,11 @@ function CreateEngine(setState) {
         const charYPos = this.playerYPos;
 
         // if the char has passed all enemies
-        if (charXPos > this.room.enemies[this.room.enemies.length - 1] + 200) {
+        if (charXPos > this.level.enemies[this.level.enemies.length - 1] + 200) {
             this.game = 'win';
         }
 
-        this.room.enemies.forEach((enemy) => {
+        this.level.enemies.forEach((enemy) => {
             // if char hits an enemy
             if (charXPos + charWidth >= enemy
                 && charYPos <= enemyHeight
@@ -200,20 +200,32 @@ function CreateEngine(setState) {
                 this.playerXPos -= tile;
             }
         }
-        let screenWidth = window.innerWidth;
-        this.stageXPos = Math.max(this.playerXPos - screenWidth / 2, 0);
         this.playerXPos = Math.max(this.playerXPos, 0);
 
-        if (this.stageXPos + screenWidth > this.room.width) {
-            this.stageXPos = this.room.width - screenWidth;
+        if (this.playerXPos + charWidth > this.level.width) {
+            this.playerXPos = this.level.width - charWidth;
         }
-        if (this.playerXPos + charWidth > this.room.width) {
-            this.playerXPos = this.room.width - charWidth;
+    };
+
+    const moveCamera = () => {
+        let screenWidth = window.innerWidth;
+        let screenHeight = window.innerHeight;
+        
+        this.stageXPos = Math.max(this.playerXPos - screenWidth / 2, 0);
+        this.stageYPos = Math.max(this.playerYPos - screenHeight / 2, 0);
+
+        if (this.stageXPos + screenWidth > this.level.width) {
+            this.stageXPos = this.level.width - screenWidth;
+        }
+
+        if (this.stageYPos + screenHeight > this.level.height) {
+            this.stageYPos = Math.max(this.level.height - screenHeight, 0);
+
         }
     };
 
     const checkXTerrain = (newXPos) => {
-        for (let t of this.room.terrain) {
+        for (let t of this.level.terrain) {
             let terrainYPos = t["yPos"];
             let terrainYSurface = t["yPos"] + terrainHeight;
             let playerYTopPos = this.playerYPos + charHeight;
@@ -247,6 +259,8 @@ function CreateEngine(setState) {
         applyYAcceleration();
         applyYVelocity();
 
+        moveCamera();
+
         // check if char has hit a enemy
         checkEnemies();
 
@@ -256,10 +270,11 @@ function CreateEngine(setState) {
         // set state for use in the component
         setState({
             stageX: this.stageXPos,
+            stageY: this.stageYPos,
             playerX: this.playerXPos,
             playerY: this.playerYPos,
             playerXDirection: this.xDirection,
-            room: this.room,
+            level: this.level,
             cumCoins: this.cumCoins,
             status: this.game,
         });
@@ -269,6 +284,7 @@ function CreateEngine(setState) {
             // reset and stop
             this.game = 'start';
             this.stageXPos = 0;
+            this.stageYPos = 0;
             this.jump = false;
             this.xDirection = '';
             this.playerYPos = 0;
@@ -294,17 +310,20 @@ function CreateEngine(setState) {
     });
 }
 
-const initialState = {
-    stageX: 0,
-    playerX: 200,
-    playerY: 50,
-    playerXDirection: '',
-    room: STAGES['start'],
-    cumCoins: 0,
-    status: 'start',
-};
-
 export default function Engine() {
+
+    // TODO: read the data json to get the initial state and other info
+    const initialState = {
+        stageX: 0,
+        stageY: 0,
+        playerX: STAGES['start'].playerStartX,
+        playerY: STAGES['start'].playerStartY,
+        playerXDirection: '',
+        level: STAGES['start'],
+        cumCoins: 0,
+        status: 'start',
+    };
+
     // game state
     const [gameState, setGameState] = useState(initialState);
 
@@ -360,6 +379,7 @@ export default function Engine() {
                 new CreateEngine(
                     // set state
                     state => setGameState(state),
+                    initialState
                 ),
             );
         }
@@ -382,25 +402,17 @@ export default function Engine() {
     return (
         <div className={'container'} >
             {started && <span className="coinCounter">Coins obtained: {gameState.cumCoins ? gameState.cumCoins : 0}</span>}
-            <Room  
-                player={<Character
-                    style={gameState.playerXDirection === 'left' ? 
-                    {
-                        height: {charHeight},
-                        width: {charWidth},
-                        transform: `translate(${gameState.playerX}px, -${gameState.playerY}px) scaleX(-1)`
-                    } 
-                    : {
-                        height: {charHeight},
-                        width: {charWidth},
-                        transform: `translate(${gameState.playerX}px, -${gameState.playerY}px) scaleX(1)`
-                    }}/>}
-                enemies={gameState.room["enemies"]}
-                coins={gameState.room["coins"]}
-                platforms={gameState.room["platforms"]}
-                terrain={gameState.room["terrain"]}
-                doors={gameState.room["doors"]}
+            <Level  
+                player={
+                    <Character
+                        playerXDirection={gameState.playerXDirection}
+                        playerX={gameState.playerX}
+                        playerY={gameState.playerY}
+                    />
+                }
                 stageX={gameState.stageX}
+                stageY={gameState.stageY}
+                level={gameState.level}
             />
         </div>
     );

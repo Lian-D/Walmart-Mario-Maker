@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { doorWidth, doorHeight } from '../../data/constants';
 
-const Door = ({height, width, xPos, yPos, name}) => {
+// just pass in the door and we create the style here
+const Door = ({xPos, yPos, name}) => {
     const style = {
-        height: height,
-        width: width,
+        height: doorHeight,
+        width: doorWidth,
         left: xPos,
         bottom: yPos
     };

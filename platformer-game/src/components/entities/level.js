@@ -4,11 +4,11 @@ import Terrain from "./terrain";
 import Coin from "./coin";
 import Door from './door';
 import Platform from './platform';
-import {enemyHeight, enemyWidth, platformHeight, terrainHeight} from '../constants';
+import {enemyHeight, enemyWidth, platformHeight, terrainHeight} from '../../data/constants';
 
-const Room = ({player, enemies, platforms, terrain, doors, coins, stageX}) => {
+const Level = ({player, stageX, stageY, level}) => {
     let style = {
-        transform: `translate(-${stageX}px, 0px)`,
+        transform: `translate(-${stageX}px, ${stageY}px)`,
     };
 
     return (<div
@@ -16,7 +16,7 @@ const Room = ({player, enemies, platforms, terrain, doors, coins, stageX}) => {
         style={style}
     >
         {player}
-        {enemies.map(
+        {level["enemies"].map(
             (enemy,index) => (
                 <span
                     className='enemy'
@@ -29,7 +29,7 @@ const Room = ({player, enemies, platforms, terrain, doors, coins, stageX}) => {
                 />
             ),
         )}
-        {platforms.map(
+        {level["platforms"].map(
             (platform, index) => (
                 <Platform
                     xPos={platform["xPos"]}
@@ -41,7 +41,7 @@ const Room = ({player, enemies, platforms, terrain, doors, coins, stageX}) => {
                 />
             )
         )}
-        {terrain.map(
+        {level["terrain"].map(
             (platform, index) => (
                 <Terrain
                     xPos={platform["xPos"]}
@@ -54,7 +54,7 @@ const Room = ({player, enemies, platforms, terrain, doors, coins, stageX}) => {
             )
         )}
         
-        {coins.map(
+        {level["coins"].map(
                 coin => (
                     <Coin
                         height={coin["height"]}
@@ -66,7 +66,7 @@ const Room = ({player, enemies, platforms, terrain, doors, coins, stageX}) => {
                 )
             )
         }
-        {doors.map(
+        {level["doors"].map(
             (door) => (
                 <Door 
                     height={door["height"]} 
@@ -80,14 +80,11 @@ const Room = ({player, enemies, platforms, terrain, doors, coins, stageX}) => {
     </div>);
 };
 
-Room.propTypes = {
+Level.propTypes = {
     player: PropTypes.object,
-    enemies: PropTypes.array,
-    platforms: PropTypes.array,
-    terrain: PropTypes.array,
-    coins: PropTypes.array,
-    doors: PropTypes.array,
     stageX: PropTypes.number,
+    stageY: PropTypes.number,
+    level: PropTypes.object
 };
 
-export default Room;
+export default Level;

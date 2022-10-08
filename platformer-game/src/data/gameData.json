@@ -1,0 +1,161 @@
+{
+    "level1": {
+        "doors": [
+            {
+                "xPos": 200,
+                "yPos": 5,
+                "name": "door1",
+                "key": "red",
+                "goesTo": "door2"
+            }
+        ],
+        "platforms": [
+            {
+                "key": "plat1",
+                "image": "",
+                "colour": "#008080",
+                "xPos": 100,
+                "yPos": 30,
+                "length": 50
+            },
+            {
+                "key": "plat2",
+                "image": "",
+                "colour": "#008080",
+                "xPos": 50,
+                "yPos": 20,
+                "length": 50 
+            },
+            {
+                "key": "plat3",
+                "image": "",
+                "colour": "#008080",
+                "xPos": 200,
+                "yPos": 30,
+                "length": 50
+            }
+        ],
+        "terrain": [
+            {
+                "key": "terrain1",
+                "xPos": 150,
+                "yPos": 30,
+                "length": 50,
+                "name": "terrain1"
+            },
+            {
+                "key": "terrain2",
+                "xPos": 0,
+                "yPos": 0,
+                "length": 50,
+                "name": "terrain2"
+            },
+            {
+                "key": "terrain3",
+                "xPos": 100,
+                "yPos": 0,
+                "length": 200,
+                "name": "terrain3"
+            }
+        ],
+        "coins": [
+            {
+                "xPos": 120,
+                "yPos": 50,
+                "height": 30,
+                "width": 30,
+                "name": "c1"
+            },
+            {
+                "xPos": 70,
+                "yPos": 40,
+                "height": 30,
+                "width": 30,
+                "name": "c2"
+            }
+        ],
+        "enemies": [
+            250,
+            390
+        ],
+        "checks": [],
+        "background": "https://i.pinimg.com/originals/a5/9b/73/a59b735200362f91e6735b2abcb787b2.png",
+        "height": 90,
+        "width": 300,
+        "playerStartX": 200,
+        "playerStartY": 50
+    },
+    "level2": {
+        "doors": [
+            {
+                "xPos": 150,
+                "yPos": 5,
+                "height": 170,
+                "width": 110,
+                "isOpen": true,
+                "name": "door1",
+                "goesTo": "win"
+            }
+        ],
+        "platforms": [
+            {
+                "xPos": 100,
+                "yPos": 30,
+                "length": 50
+            },
+            {
+                "xPos": 50,
+                "yPos": 20,
+                "length": 50 
+            },
+            {
+                "xPos": 200,
+                "yPos": 30,
+                "length": 50
+            }
+        ],
+        "terrain": [
+            {
+                "xPos": 150,
+                "yPos": 30,
+                "length": 50
+            },
+            {
+                "xPos": 0,
+                "yPos": 0,
+                "length": 50
+            },
+            {
+                "xPos": 100,
+                "yPos": 0,
+                "length": 200
+            }
+        ],
+        "coins": [
+            {
+                "xPos": 120,
+                "yPos": 50,
+                "height": 30,
+                "width": 30,
+                "name": "c1"
+            },
+            {
+                "xPos": 70,
+                "yPos": 40,
+                "height": 30,
+                "width": 30,
+                "name": "c2"
+            }
+        ],
+        "enemies": [
+            250,
+            390
+        ],
+        "checks": [],
+        "background": "",
+        "height": 90,
+        "width": 200,
+        "playerStartX": 500,
+        "playerStartY": 250
+    }
+}

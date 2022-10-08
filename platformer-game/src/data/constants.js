@@ -1,9 +1,21 @@
+const tile = 10; // width of one tile
+const platformHeight = 25;
+const terrainHeight = 50;
+
+const charWidth = 100;
+const charHeight = 100;
+
+const doorWidth = 110;
+const doorHeight = 170;
+
+const enemyWidth = 70;
+const enemyHeight = 150;
+
 const ENEMIES = [
     250,
     390,
 ];
 
-// Defining platforms here for now, but we can probably pass this in as a prop later
 const PLATFORMS = [
     {
         "xPos": 100,
@@ -16,9 +28,19 @@ const PLATFORMS = [
         "length": 50 
     },
     {
-        "xPos": 200,
-        "yPos": 30,
-        "length": 50
+        "xPos": 220,
+        "yPos": 40,
+        "length": 25
+    },
+    {
+        "xPos": 180,
+        "yPos": 65,
+        "length": 20
+    },
+    {
+        "xPos": 130,
+        "yPos": 80,
+        "length": 15
     }
 ];
 
@@ -61,11 +83,8 @@ const DOORS = [
     {
         "xPos": 200,
         "yPos": 5,
-        "height": 170,
-        "width": 110,
-        "isOpen": true,
         "name": "door1",
-        "leadsTo": "level2"
+        "goesTo": "level2"
     }
 ];
 
@@ -73,35 +92,18 @@ const DOORS2 = [
     {
         "xPos": 150,
         "yPos": 5,
-        "height": 170,
-        "width": 110,
-        "isOpen": true,
         "name": "door1",
-        "leadsTo": null
+        "goesTo": "win"
     }
 ];
 
-const charWidth = 100;
-const charHeight = 100;
-
-const platformHeight = 25;
-const terrainHeight = 50;
-const tile = 10; // width of one tile
-
-const enemyWidth = 80;
-const enemyHeight = 200;
-
-//temporarily defining a single room like this
 const STAGES = {
     "start": {
         doors: DOORS.map(d => ({
             "xPos": d["xPos"] * tile,
             "yPos": d["yPos"] * tile,
-            "height": d["height"],
-            "width": d["width"],
-            "isOpen": d["isOpen"],
             "name": d["name"],
-            "leadsTo": d["leadsTo"]
+            "goesTo": d["goesTo"]
         })),
         platforms: PLATFORMS.map(p => (
             {
@@ -127,20 +129,17 @@ const STAGES = {
             }
         )),
         enemies: ENEMIES.map(b => (b * tile)),
-        height: 900,
+        height: 1800,
         width: 3000,
-        playerStartX: 200,
-        playerStartY: 50,
+        playerStartX: 20 * tile,
+        playerStartY: 5 * tile,
     },
     "level2": {
         doors: DOORS2.map(d => ({
             "xPos": d["xPos"] * tile,
             "yPos": d["yPos"] * tile,
-            "height": d["height"],
-            "width": d["width"],
-            "isOpen": d["isOpen"],
             "name": d["name"],
-            "leadsTo": d["leadsTo"]
+            "goesTo": d["goesTo"]
         })),
         platforms: PLATFORMS.map(p => (
             {
@@ -168,14 +167,16 @@ const STAGES = {
         enemies: ENEMIES.map(b => (b * tile)),
         height: 900,
         width: 2000,
-        playerStartX: 500,
-        playerStartY: 250,
+        playerStartX: 50 * tile,
+        playerStartY: 25 * tile,
     },
 };
 
 export {
     charWidth, 
     charHeight, 
+    doorWidth,
+    doorHeight,
     platformHeight, 
     terrainHeight, 
     tile, 
