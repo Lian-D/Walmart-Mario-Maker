@@ -1,20 +1,22 @@
 parser grammar TinyVarsParser;
 options { tokenVocab=TinyVarsLexer; }
 
-program   : objects level* (statement (STMT_NEWLINE | NEWLINE))* EOF;
+program   : objects STMT_NEWLINE? level (STMT_NEWLINE? level)* EOF;
 
-proc_body : OPEN_BRACE STMT_NEWLINE? (statement (STMT_NEWLINE | NEWLINE))* CLOSE_BRACE;
+level    : LEVEL NAME OPEN_BRACE level_body CLOSE_BRACE;
+level_body: statements STMT_NEWLINE? level_objects STMT_NEWLINE? level_cond;
 
-
-level    : level_s component COLON STMT_NEWLINE? statement;
-lcond: IF OPEN_PAREN varname op exp CLOSE_PAREN;
-level_s  : LEVEL NAME OPEN_BRACE STMT_NEWLINE? (statement (STMT_NEWLINE | NEWLINE))* CLOSE_BRACE;
-objects : (PLAYER object_bod)? (component object_bod)*;
-object_bod: OPEN_BRACE STMT_NEWLINE? (statement (STMT_NEWLINE | NEWLINE)*)? CLOSE_BRACE;
-statement : property COLON exp;
-property: 'friction' | 'health' | 'height';
-statements: (statement NEWLINE)*;
+level_cond: IF OPEN_PAREN varname op exp CLOSE_PAREN OPEN_BRACE STMT_NEWLINE? statements CLOSE_BRACE;
+level_objects : component COLON STMT_NEWLINE? array ;
+objects : (PLAYER NAME object_bod)? STMT_NEWLINE? (component NAME object_bod)*;
+object_bod: OPEN_BRACE STMT_NEWLINE? statements? CLOSE_BRACE;
+statement : property COLON value;
+property: 'friction' | 'health' | 'height'; // Need to add more or just allow any text
+statements: (statement (STMT_NEWLINE | NEWLINE))+;
+array: OPEN_BRACK array_object (COMMA array_object)* CLOSE_BRACK;
 component: ENEMY | DOOR | BUTTON | TERRAIN;
+value : varname | CONST | array_object;
+array_object: OPEN_PAREN exp (COMMA exp)* CLOSE_PAREN;
 exp       : varname | CONST;
 op        : '>' | '<' | '=';
 varname   : NAME;
