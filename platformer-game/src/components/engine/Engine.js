@@ -10,10 +10,42 @@ import {
     tile, 
     enemyWidth, 
     enemyHeight, 
-    STAGES,
     doorWidth,
     doorHeight,
 } from '../../data/constants';
+
+let gameData = require('../../data/gameData.json');
+
+let initialState = {
+    stageX: 0,
+    stageY: 0,
+    playerX: gameData['level1'].playerStartX,
+    playerY: gameData['level1'].playerStartY,
+    playerXDirection: '',
+    level: gameData['level1'],
+    cumCoins: 0,
+    status: 'start',
+};
+
+const reloadGame = (setState, setStart) => {
+    delete require.cache['./src/data/gameData.json'];
+    gameData = require('../../data/gameData.json');
+
+    // reset initial stage
+    initialState = {
+        stageX: 0,
+        stageY: 0,
+        playerX: gameData['level1'].playerStartX,
+        playerY: gameData['level1'].playerStartY,
+        playerXDirection: '',
+        level: gameData['level1'],
+        cumCoins: 0,
+        status: 'start',
+    };
+
+    setState(initialState);
+    setStart(true);
+}
 
 function CreateEngine(setState, initialState) {
     this.level = initialState.level;
@@ -128,7 +160,8 @@ function CreateEngine(setState, initialState) {
                 if (door.goesTo === 'win') {
                     this.game = 'win';
                 } else {
-                    this.level = STAGES[door.goesTo];
+                    this.level = gameData[door.goesTo];
+                    console.log()
                     this.playerXPos = this.level.playerStartX;
                     this.playerYPos = this.level.playerStartY;
                 }
@@ -311,19 +344,6 @@ function CreateEngine(setState, initialState) {
 }
 
 export default function Engine() {
-
-    // TODO: read the data json to get the initial state and other info
-    const initialState = {
-        stageX: 0,
-        stageY: 0,
-        playerX: STAGES['start'].playerStartX,
-        playerY: STAGES['start'].playerStartY,
-        playerXDirection: '',
-        level: STAGES['start'],
-        cumCoins: 0,
-        status: 'start',
-    };
-
     // game state
     const [gameState, setGameState] = useState(initialState);
 
@@ -387,33 +407,41 @@ export default function Engine() {
         if (gameState.status === 'fail' && started) {
             setStarted(false);
             alert('You lost! Try again?');
-            setGameState(initialState);
-            setStart(true);
+            reloadGame(setGameState, setStart);
         }
 
         if (gameState.status === 'win' && started) {
             setStarted(false);
             alert('You won! Play again?');
-            setGameState(initialState);
-            setStart(true);
+            reloadGame(setGameState, setStart);
         }
     });
 
-    return (
-        <div className={'container'} >
-            {started && <span className="coinCounter">Coins obtained: {gameState.cumCoins ? gameState.cumCoins : 0}</span>}
-            <Level  
-                player={
-                    <Character
-                        playerXDirection={gameState.playerXDirection}
-                        playerX={gameState.playerX}
-                        playerY={gameState.playerY}
+    return ( 
+        <>
+            {!started && 
+                <div className='startScreen' >
+                    <div className="introText">Press Space to Start</div>
+                    <div className="introText">Insert error message here if there&apos;s an error in the json (after space is pressed)</div>
+                </div>
+            }
+            {started && 
+                <div className='container' >
+                    {started && <span className="coinCounter">Coins obtained: {gameState.cumCoins ? gameState.cumCoins : 0}</span>}
+                    <Level  
+                        player={
+                            <Character
+                                playerXDirection={gameState.playerXDirection}
+                                playerX={gameState.playerX}
+                                playerY={gameState.playerY}
+                            />
+                        }
+                        stageX={gameState.stageX}
+                        stageY={gameState.stageY}
+                        level={gameState.level}
                     />
-                }
-                stageX={gameState.stageX}
-                stageY={gameState.stageY}
-                level={gameState.level}
-            />
-        </div>
+                </div>
+            }
+        </>
     );
 }

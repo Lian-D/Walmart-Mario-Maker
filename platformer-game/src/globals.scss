@@ -1,18 +1,24 @@
 html, body {
-    height: 100vh;
-    width: 100vw;
-    margin: 0;
-    overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  overflow: hidden;
+}
+
+.startScreen {
+  background-color: #2b333d;
+  color: aliceblue;
+  height: 100vh;
+  width: 100vw;
 }
 
 .container {
-    position: relative;
-    background-color: #568cd2;
-    height: 100vh;
-    width: 100vw;
-    background-color: #ffd600;
-    background:url('https://i.pinimg.com/originals/a5/9b/73/a59b735200362f91e6735b2abcb787b2.png') no-repeat;
-    background-size: cover;
+  position: relative;
+  background-color: #568cd2;
+  height: 100vh;
+  width: 100vw;
+  background:url('https://i.pinimg.com/originals/a5/9b/73/a59b735200362f91e6735b2abcb787b2.png') no-repeat;
+  background-size: cover;
 }
 
 .stage {
@@ -83,11 +89,19 @@ html, body {
   background-color: #042b2b;
 }
 
-
 .coinCounter {
   position: absolute;
   left: 10px;
   top: 0;
+  font-family: 'Segoe UI Emoji';
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.introText {
+  position: relative;
+  top: 150px;
+  text-align: center;
   font-family: 'Segoe UI Emoji';
   font-size: 30px;
   font-weight: bold;
