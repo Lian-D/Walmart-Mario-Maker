@@ -29,6 +29,7 @@ const loadGame = (setState, setStart) => {
             playerY: gameData["level1"].playerStartY,
             playerXDirection: '',
             level: gameData["level1"],
+            buttonMap: new Map(),
             cumCoins: 0,
             status: 'start',
         };
@@ -64,7 +65,7 @@ function CreateEngine(setState, initialState) {
     // do not allow the player to be faster than this
 
     this.cumCoins = initialState.cumCoins;
-    this.buttonMap = new Map();
+    this.buttonMap = initialState.buttonMap;
     this.jump = false;
     this.xDirection = initialState.playerXDirection;
 
@@ -152,6 +153,7 @@ function CreateEngine(setState, initialState) {
                 && charYPos <= door.yPos + (doorHeight * 0.5)
                 && charYPos + charHeight >= door.yPos
                 && charXPos <= door.xPos + doorWidth
+                && this.buttonMap.has(door["key"])
             ) {
                 if (door.goesTo === 'win') {
                     this.game = 'win';
@@ -186,14 +188,14 @@ function CreateEngine(setState, initialState) {
         const charXPos = this.playerXPos;
         const charYPos = this.playerYPos;
         let buttonIndex = 0;
-        this.room.buttons.forEach((button) => {
+        this.level.buttons.forEach((button) => {
             if (
                 charXPos + charWidth >= button.xPos + (button.width * 0.5)
                 && charYPos <= button.yPos + (button.height * 0.5)
                 && charYPos + charHeight >= button.yPos
                 && charXPos <= button.xPos + button.width
             ) {
-                this.room.buttons.splice(buttonIndex, 1);
+                this.level.buttons.splice(buttonIndex, 1);
                 if (!this.buttonMap.get(button.name)) {
                     this.buttonMap.set(button.name, "triggered");
                 }
@@ -323,6 +325,7 @@ function CreateEngine(setState, initialState) {
             playerY: this.playerYPos,
             playerXDirection: this.xDirection,
             level: this.level,
+            buttonMap: this.buttonMap,
             cumCoins: this.cumCoins,
             status: this.game,
         });

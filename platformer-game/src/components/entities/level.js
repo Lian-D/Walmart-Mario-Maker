@@ -7,7 +7,7 @@ import Platform from './platform';
 import Button from './button';
 import {enemyHeight, enemyWidth, platformHeight, terrainHeight} from '../../data/constants';
 
-const Level = ({player, stageX, stageY, level}) => {
+const Level = ({player, stageX, stageY, level, buttonMap}) => {
     let style = {
         transform: `translate(-${stageX}px, ${stageY}px)`,
     };
@@ -67,22 +67,21 @@ const Level = ({player, stageX, stageY, level}) => {
         {level["doors"].map(
             (door) => (
                 <Door 
-                    height={door["height"]} 
-                    width={door["width"]} 
                     xPos={door["xPos"]} 
                     yPos={door["yPos"]} 
                     key={door["name"]}
+                    isOpen={buttonMap.has(door["key"])}
                 />
             )
         )}
-        {buttons.map(
+        {level["buttons"].map(
             (button) => (
                 <Button
                     height={button["height"]}
                     width={button["width"]}
                     xPos={button["xPos"]}
-                     yPos={button["yPos"]}
-                     key={button["name"]}
+                    yPos={button["yPos"]}
+                    key={button["name"]}
                 />
             )
         )}
@@ -93,7 +92,8 @@ Level.propTypes = {
     player: PropTypes.object,
     stageX: PropTypes.number,
     stageY: PropTypes.number,
-    level: PropTypes.object
+    level: PropTypes.object,
+    buttonMap: PropTypes.object
 };
 
 export default Level;

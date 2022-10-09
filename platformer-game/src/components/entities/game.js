@@ -26,6 +26,7 @@ const Game = ({gameState}) => {
                 stageX={gameState.stageX}
                 stageY={gameState.stageY}
                 level={gameState.level}
+                buttonMap={gameState.buttonMap}
             />
         </div>
     );

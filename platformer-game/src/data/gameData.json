@@ -79,6 +79,15 @@
                 2500,
                 3900
             ],
+            "buttons": [
+                {
+                    "xPos": 100,
+                    "yPos": 100,
+                    "height": 50,
+                    "width": 50,
+                    "name": "red"
+                }
+            ],
             "checks": [],
             "background": "https://i.pinimg.com/originals/a5/9b/73/a59b735200362f91e6735b2abcb787b2.png",
             "height": 900,
@@ -89,17 +98,16 @@
         "level2": {
             "doors": [
                 {
-                    "xPos": 1050,
+                    "xPos": 1550,
                     "yPos": 50,
-                    "height": 1700,
-                    "width": 1100,
-                    "name": "door1",
+                    "name": "door2",
+                    "key": "red1",
                     "goesTo": "win"
                 }
             ],
             "platforms": [
                 {
-                    "xPos": 1000,
+                    "xPos": 900,
                     "yPos": 300,
                     "length": 500
                 },
@@ -109,9 +117,19 @@
                     "length": 500 
                 },
                 {
-                    "xPos": 2000,
-                    "yPos": 300,
-                    "length": 500
+                    "xPos": 1700,
+                    "yPos": 500,
+                    "length": 100
+                },
+                {
+                    "xPos": 1300,
+                    "yPos": 650,
+                    "length": 100
+                },
+                {
+                    "xPos": 800,
+                    "yPos": 800,
+                    "length": 150
                 }
             ],
             "terrain": [
@@ -150,6 +168,15 @@
             "enemies": [
                 2500,
                 3900
+            ],
+            "buttons": [
+                {
+                    "xPos": 750,
+                    "yPos": 850,
+                    "height": 50,
+                    "width": 50,
+                    "name": "red1"
+                }
             ],
             "checks": [],
             "background": "",
