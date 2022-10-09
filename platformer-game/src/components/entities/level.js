@@ -11,10 +11,7 @@ const Level = ({player, stageX, stageY, level}) => {
         transform: `translate(-${stageX}px, ${stageY}px)`,
     };
 
-    return (<div
-        className='stage'
-        style={style}
-    >
+    return (<div className='stage' style={style} >
         {player}
         {level["enemies"].map(
             (enemy,index) => (
@@ -22,7 +19,7 @@ const Level = ({player, stageX, stageY, level}) => {
                     className='enemy'
                     key={index}
                     style={{
-                        transform: `translate(${enemy}px, 0px)`, // move stage
+                        transform: `translate(${enemy}px, 0px)`,
                         height: enemyHeight,
                         width: enemyWidth,
                     }}

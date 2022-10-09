@@ -20,5 +20,5 @@ export {
     terrainHeight, 
     tile, 
     enemyWidth, 
-    enemyHeight,
+    enemyHeight, 
 };

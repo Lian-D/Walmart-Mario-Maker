@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useEvent } from '../../hooks';
-import Character from '../entities/character';
-import Level from "../entities/level";
 import {
     charWidth, 
     charHeight, 
@@ -13,38 +11,35 @@ import {
     doorWidth,
     doorHeight,
 } from '../../data/constants';
+import Game from '../entities/game';
 
-let gameData = require('../../data/gameData.json');
+let gameData = {};
+let initialState = {};
 
-let initialState = {
-    stageX: 0,
-    stageY: 0,
-    playerX: gameData['level1'].playerStartX,
-    playerY: gameData['level1'].playerStartY,
-    playerXDirection: '',
-    level: gameData['level1'],
-    cumCoins: 0,
-    status: 'start',
-};
-
-const reloadGame = (setState, setStart) => {
+const loadGame = (setState, setStart) => {
     delete require.cache['./src/data/gameData.json'];
     gameData = require('../../data/gameData.json');
 
-    // reset initial stage
-    initialState = {
-        stageX: 0,
-        stageY: 0,
-        playerX: gameData['level1'].playerStartX,
-        playerY: gameData['level1'].playerStartY,
-        playerXDirection: '',
-        level: gameData['level1'],
-        cumCoins: 0,
-        status: 'start',
-    };
-
-    setState(initialState);
-    setStart(true);
+    if (Object.prototype.hasOwnProperty.call(gameData, "game")) {
+        gameData = gameData['game'];
+        initialState = {
+            stageX: 0,
+            stageY: 0,
+            playerX: gameData["level1"].playerStartX,
+            playerY: gameData["level1"].playerStartY,
+            playerXDirection: '',
+            level: gameData["level1"],
+            cumCoins: 0,
+            status: 'start',
+        };
+    
+        setState(initialState);
+        setStart(true);
+        return "";
+    } else {
+        setStart(false);
+        return gameData['error'];
+    }
 }
 
 function CreateEngine(setState, initialState) {
@@ -161,7 +156,6 @@ function CreateEngine(setState, initialState) {
                     this.game = 'win';
                 } else {
                     this.level = gameData[door.goesTo];
-                    console.log()
                     this.playerXPos = this.level.playerStartX;
                     this.playerYPos = this.level.playerStartY;
                 }
@@ -356,12 +350,15 @@ export default function Engine() {
     // instance of game engine
     const [engine, setEngine] = useState(null);
 
+    // record any error from the JSON
+    const [errorTxt, setErrorTxt] = useState("");
+
     const handleKeyPress = (e) => {
         // the ' ' char actually represents the space bar key.
         if (e.key === ' ') {
             // start the game when the user first presses the space bar
             if (!started && !start) {
-                setStart(true);
+                setErrorTxt(loadGame(setGameState, setStart));
             }
 
             // if the game has not been initialized return
@@ -407,13 +404,13 @@ export default function Engine() {
         if (gameState.status === 'fail' && started) {
             setStarted(false);
             alert('You lost! Try again?');
-            reloadGame(setGameState, setStart);
+            setErrorTxt(loadGame(setGameState, setStart));
         }
 
         if (gameState.status === 'win' && started) {
             setStarted(false);
             alert('You won! Play again?');
-            reloadGame(setGameState, setStart);
+            setErrorTxt(loadGame(setGameState, setStart));
         }
     });
 
@@ -421,27 +418,18 @@ export default function Engine() {
         <>
             {!started && 
                 <div className='startScreen' >
-                    <div className="introText">Press Space to Start</div>
-                    <div className="introText">Insert error message here if there&apos;s an error in the json (after space is pressed)</div>
+                    <div className="introText">
+                        Controls:<br/>WASD to move, SPACE to jump <br/><br/> Press Space to load game
+                    </div>
+                    {errorTxt !== "" && 
+                        <div className="errorText">
+                            Insert error message here if there&apos;s an error in the json (after space is pressed)
+                        </div>
+                    }
+                    
                 </div>
             }
-            {started && 
-                <div className='container' >
-                    {started && <span className="coinCounter">Coins obtained: {gameState.cumCoins ? gameState.cumCoins : 0}</span>}
-                    <Level  
-                        player={
-                            <Character
-                                playerXDirection={gameState.playerXDirection}
-                                playerX={gameState.playerX}
-                                playerY={gameState.playerY}
-                            />
-                        }
-                        stageX={gameState.stageX}
-                        stageY={gameState.stageY}
-                        level={gameState.level}
-                    />
-                </div>
-            }
+            {started && <Game gameState={gameState} /> }
         </>
     );
 }
