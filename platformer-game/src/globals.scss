@@ -45,7 +45,19 @@ html, body {
   display: block;
   bottom: 0;
   left: 0;
-  background-color: black;
+  background-color: brown;
+}
+
+.button{
+  position: absolute;
+  display: block;
+  height: 50px;
+  width: 50px;
+  bottom: 0;
+  left: 0;
+  background-color: orange;
+  background:url('https://media.discordapp.net/attachments/1017526051989106740/1027763213896515615/key-png-11.png') no-repeat;
+  background-size: cover;
 }
 
 .coin{

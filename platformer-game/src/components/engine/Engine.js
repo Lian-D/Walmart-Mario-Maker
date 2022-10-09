@@ -64,6 +64,7 @@ function CreateEngine(setState, initialState) {
     // do not allow the player to be faster than this
 
     this.cumCoins = initialState.cumCoins;
+    this.buttonMap = new Map();
     this.jump = false;
     this.xDirection = initialState.playerXDirection;
 
@@ -181,6 +182,25 @@ function CreateEngine(setState, initialState) {
         });
     };
 
+    const checkButtons = () => {
+        const charXPos = this.playerXPos;
+        const charYPos = this.playerYPos;
+        let buttonIndex = 0;
+        this.room.buttons.forEach((button) => {
+            if (
+                charXPos + charWidth >= button.xPos + (button.width * 0.5)
+                && charYPos <= button.yPos + (button.height * 0.5)
+                && charYPos + charHeight >= button.yPos
+                && charXPos <= button.xPos + button.width
+            ) {
+                this.room.buttons.splice(buttonIndex, 1);
+                if (!this.buttonMap.get(button.name)) {
+                    this.buttonMap.set(button.name, "triggered");
+                }
+            }
+        });
+    };
+
     const checkEnemies = () => {
         const charXPos = this.playerXPos;
         const charYPos = this.playerYPos;
@@ -293,6 +313,7 @@ function CreateEngine(setState, initialState) {
 
         checkDoors();
         checkCoins();
+        checkButtons();
 
         // set state for use in the component
         setState({

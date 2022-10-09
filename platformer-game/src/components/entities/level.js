@@ -4,6 +4,7 @@ import Terrain from "./terrain";
 import Coin from "./coin";
 import Door from './door';
 import Platform from './platform';
+import Button from './button';
 import {enemyHeight, enemyWidth, platformHeight, terrainHeight} from '../../data/constants';
 
 const Level = ({player, stageX, stageY, level}) => {
@@ -71,6 +72,17 @@ const Level = ({player, stageX, stageY, level}) => {
                     xPos={door["xPos"]} 
                     yPos={door["yPos"]} 
                     key={door["name"]}
+                />
+            )
+        )}
+        {buttons.map(
+            (button) => (
+                <Button
+                    height={button["height"]}
+                    width={button["width"]}
+                    xPos={button["xPos"]}
+                     yPos={button["yPos"]}
+                     key={button["name"]}
                 />
             )
         )}
