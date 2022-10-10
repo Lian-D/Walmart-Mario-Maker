@@ -16,13 +16,7 @@ const Game = ({gameState}) => {
         <div className='container' style={style} >
             <span className="coinCounter">Coins obtained: {gameState.cumCoins ? gameState.cumCoins : 0}</span>
             <Level  
-                player={
-                    <Character
-                        playerXDirection={gameState.playerXDirection}
-                        playerX={gameState.playerX}
-                        playerY={gameState.playerY}
-                    />
-                }
+                player={<Character player={gameState.player} />}
                 stageX={gameState.stageX}
                 stageY={gameState.stageY}
                 level={gameState.level}

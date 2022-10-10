@@ -10,6 +10,7 @@ import {
     enemyHeight, 
     doorWidth,
     doorHeight,
+    terminalVelocity,
 } from '../../data/constants';
 import Game from '../entities/game';
 
@@ -20,19 +21,29 @@ const loadGame = (setState, setStart) => {
     delete require.cache['./src/data/gameData.json'];
     gameData = require('../../data/gameData.json');
 
-    if (Object.prototype.hasOwnProperty.call(gameData, "game")) {
+    if (gameData.game) {
         gameData = gameData['game'];
+
+        // grouping player properties together so I can reuse some functions
+        let player = {
+            xPos: gameData["level1"].playerStartX,
+            yPos: gameData["level1"].playerStartY,
+            xDirection: '',
+            height: charHeight,
+            width: charWidth,
+        };
+
         initialState = {
             stageX: 0,
             stageY: 0,
-            playerX: gameData["level1"].playerStartX,
-            playerY: gameData["level1"].playerStartY,
-            playerXDirection: '',
+            player: player,
             level: gameData["level1"],
             buttonMap: new Map(),
             cumCoins: 0,
             status: 'start',
         };
+
+        loadLevel(initialState.level);
     
         setState(initialState);
         setStart(true);
@@ -43,6 +54,17 @@ const loadGame = (setState, setStart) => {
     }
 }
 
+const loadLevel = (level) => {
+    // do any mappings for level objects here
+    level.enemies = level.enemies.map(
+        enemy => ({
+            ...enemy, 
+            width: enemyWidth,
+            height: enemyHeight
+        }
+    ));
+};
+
 function CreateEngine(setState, initialState) {
     this.level = initialState.level;
     this.game = initialState.status;
@@ -51,6 +73,9 @@ function CreateEngine(setState, initialState) {
     this.stageXPos = initialState.stageX;
     this.stageYPos = initialState.stageY;
 
+    this.player = initialState.player;
+
+    this.jump = false;
     this.inAir = true;
     this.playerYAcceleration = -1; // gravity, in m/s^2
     // every second, add this onto the velocity
@@ -61,59 +86,53 @@ function CreateEngine(setState, initialState) {
     // when the player is on a surface, set the velocity to be 0
     // when a jump is triggered, add a positive amount to the Y velocity
 
-    this.playerTerminalVelocity = -40; // the maximum velocity a human can have
-    // do not allow the player to be faster than this
-
     this.cumCoins = initialState.cumCoins;
     this.buttonMap = initialState.buttonMap;
-    this.jump = false;
-    this.xDirection = initialState.playerXDirection;
-
-    this.playerXPos = initialState.playerX;
-    this.playerYPos = initialState.playerY;
 
     const applyYAcceleration = () => {
-        if ((this.playerYVelocity + this.playerYAcceleration) < this.playerTerminalVelocity){
-            this.playerYVelocity = this.playerTerminalVelocity;
+        if ((this.playerYVelocity + this.playerYAcceleration) < terminalVelocity){
+            this.playerYVelocity = terminalVelocity;
         } else {
             this.playerYVelocity += this.playerYAcceleration;
         }
     }
 
     const applyYVelocity = () => {
-        if (this.playerYPos + this.playerYVelocity < 0) {
+        let nextPos = this.player.yPos + this.playerYVelocity;
+
+        if (nextPos + this.player.height < 0) {
             this.game = 'fail';
-        } else if (checkPlatform(this.playerYPos + this.playerYVelocity)) {
-            this.playerYPos =  checkPlatform(this.playerYPos + this.playerYVelocity);
+        } else if (checkPlatform(this.player, nextPos, this.playerYVelocity)) {
+            this.player.yPos = checkPlatform(this.player, nextPos, this.playerYVelocity);
             this.playerYVelocity = 0;
             this.inAir = false;
-        } else if (checkYTerrain(this.playerYPos + this.playerYVelocity)) {
-            this.playerYPos = checkYTerrain(this.playerYPos + this.playerYVelocity);
+        } else if (checkYTerrain(this.player, nextPos, this.playerYVelocity)) {
+            this.player.yPos = checkYTerrain(this.player, nextPos, this.playerYVelocity);
             if (this.playerYVelocity < 0) {
                 this.inAir = false;
             }
             this.playerYVelocity = 0;
         } else {
-            this.playerYPos += this.playerYVelocity;
+            this.player.yPos += this.playerYVelocity;
         }
     }
 
-    const checkYTerrain = (newYPos) => {
-        const charLeftXPos = this.playerXPos;
-        const charRightXPos = this.playerXPos + charWidth;
-        const charCurrentYPos = this.playerYPos;
-        const charCurrentHeadYPos = this.playerYPos + charHeight;
+    const checkYTerrain = (entity, newYPos, velocity) => {
+        const charLeftXPos = entity.xPos;
+        const charRightXPos = entity.xPos + entity.width;
+        const charCurrentYPos = entity.yPos;
+        const charCurrentHeadYPos = entity.yPos + entity.height;
 
         for (let t of this.level.terrain) {
             let terrainSurfaceYPos = t["yPos"] + terrainHeight;
             let terrainBottomYPos = t["yPos"];
             if (charRightXPos >= t["xPos"]
                 && charLeftXPos <= t["xPos"] + t["length"]) {
-                if (this.playerYVelocity < 0
+                if (velocity < 0
                     && charCurrentYPos >= terrainSurfaceYPos
                     && newYPos <= terrainSurfaceYPos) {
                     return terrainSurfaceYPos;
-                } else if (this.playerYVelocity > 0
+                } else if (velocity > 0
                     && charCurrentHeadYPos <= terrainBottomYPos
                     && (newYPos + charHeight) >= terrainBottomYPos) {
                     return terrainBottomYPos - charHeight;
@@ -124,14 +143,14 @@ function CreateEngine(setState, initialState) {
     }
 
     // returns false if the player is not about to go through a platform, else return the y position of the surface of the platform
-    const checkPlatform = (newYPos) => {
-        const charLeftXPos = this.playerXPos;
-        const charRightXPos = this.playerXPos + charWidth;
-        const charCurrentYPos = this.playerYPos;
+    const checkPlatform = (entity, newYPos, velocity) => {
+        const charLeftXPos = entity.xPos;
+        const charRightXPos = entity.xPos + entity.width;
+        const charCurrentYPos = entity.yPos;
 
         for (let platform of this.level.platforms) {
             let platformSurfaceYPos = platform["yPos"] + platformHeight;
-            if (this.playerYVelocity < 0
+            if (velocity < 0
                 && charRightXPos >= platform["xPos"]
                 && charLeftXPos <= platform["xPos"] + platform["length"]
                 && charCurrentYPos >= platformSurfaceYPos
@@ -144,8 +163,8 @@ function CreateEngine(setState, initialState) {
     }
 
     const checkDoors = () => {
-        const charXPos = this.playerXPos;
-        const charYPos = this.playerYPos;
+        const charXPos = this.player.xPos;
+        const charYPos = this.player.yPos;
 
         this.level.doors.forEach((door) => {
             if (
@@ -159,16 +178,17 @@ function CreateEngine(setState, initialState) {
                     this.game = 'win';
                 } else {
                     this.level = gameData[door.goesTo];
-                    this.playerXPos = this.level.playerStartX;
-                    this.playerYPos = this.level.playerStartY;
+                    loadLevel(this.level);
+                    this.player.xPos = this.level.playerStartX;
+                    this.player.yPos = this.level.playerStartY;
                 }
             }
         });
     };
 
     const checkCoins = () => {
-        const charXPos = this.playerXPos;
-        const charYPos = this.playerYPos;
+        const charXPos = this.player.xPos;
+        const charYPos = this.player.yPos;
         let coinsIndex = 0;
         this.level.coins.forEach((coin) => {
             if (
@@ -185,8 +205,8 @@ function CreateEngine(setState, initialState) {
     };
 
     const checkButtons = () => {
-        const charXPos = this.playerXPos;
-        const charYPos = this.playerYPos;
+        const charXPos = this.player.xPos;
+        const charYPos = this.player.yPos;
         let buttonIndex = 0;
         this.level.buttons.forEach((button) => {
             if (
@@ -204,20 +224,15 @@ function CreateEngine(setState, initialState) {
     };
 
     const checkEnemies = () => {
-        const charXPos = this.playerXPos;
-        const charYPos = this.playerYPos;
-
-        // if the char has passed all enemies
-        if (charXPos > this.level.enemies[this.level.enemies.length - 1] + 200) {
-            this.game = 'win';
-        }
+        const charXPos = this.player.xPos;
+        const charYPos = this.player.yPos;
 
         this.level.enemies.forEach((enemy) => {
             // if char hits an enemy
-            if (charXPos + charWidth >= enemy
-                && charYPos <= enemyHeight
-                && charYPos + charHeight >= 0
-                && charXPos <= enemy + enemyWidth
+            if (charXPos + charWidth >= enemy["xPos"]
+                && charYPos <= enemy.yPos + enemyHeight
+                && charYPos + charHeight >= enemy.yPos
+                && charXPos <= enemy["xPos"] + enemyWidth
             ) {
                 this.game = 'fail';
             }
@@ -234,34 +249,84 @@ function CreateEngine(setState, initialState) {
         }
     };
 
-    const doMove = () => {
-        if (this.xDirection === 'right') {
-            if (checkXTerrain(this.playerXPos + tile)){
-                this.playerXPos = checkXTerrain(this.playerXPos + tile);
-            } else {
-                this.playerXPos += tile;
-            }
+    const moveXPos = (entity, speedMultiplier) => {
+        let newPos = entity["xPos"];
+        if (entity.xDirection === 'right') {
+            newPos = entity["xPos"] + tile * speedMultiplier;
         } 
-        else if (this.xDirection === 'left') {
-            if (checkXTerrain(this.playerXPos - tile)){
-                this.playerXPos = checkXTerrain(this.playerXPos - tile);
-            } else {
-                this.playerXPos -= tile;
-            }
+        else if (entity.xDirection === 'left') {
+            newPos = entity["xPos"] - tile * speedMultiplier;
         }
-        this.playerXPos = Math.max(this.playerXPos, 0);
 
-        if (this.playerXPos + charWidth > this.level.width) {
-            this.playerXPos = this.level.width - charWidth;
+        newPos = checkXTerrain(entity, newPos) ? checkXTerrain(entity, newPos) : newPos;
+        newPos = Math.max(newPos, 0);
+
+        if (newPos + entity.width > this.level.width) {
+            newPos = this.level.width - entity.width;
         }
+
+        entity.xPos = newPos;
     };
+
+    const movePlayer = () => {
+        moveXPos(this.player, 1);
+
+        // check and perform jump
+        doJump();
+        applyYAcceleration();
+        applyYVelocity();
+    }
+
+    const moveEnemies = () => {
+        let enemyIndex = 0;
+        this.level.enemies.forEach(enemy => {
+            if (enemy["behaviour"] === "FOLLOW" 
+                && Math.abs(this.player.xPos - enemy.xPos) < window.innerWidth / 2) {
+                if (this.player.xPos > enemy["xPos"]) {
+                    enemy["xDirection"] = "right";
+                } 
+                else if (this.player.xPos < enemy["xPos"]) {
+                    enemy["xDirection"] = "left";
+                } else {
+                    enemy["xDirection"] = "";
+                }
+
+                moveXPos(enemy, 0.5);
+                applyEnemyYVelocity(enemy, enemyIndex);
+            }
+            enemyIndex++;
+        });
+    };
+
+    const applyEnemyYVelocity = (enemy, enemyIndex) => {
+        if (enemy.velocity === undefined) {
+            enemy.velocity = 0;
+        }
+        let newVelocity = enemy.velocity - tile;
+        let nextYPos = enemy.yPos + newVelocity;
+
+        if (checkPlatform(enemy, nextYPos, newVelocity)) {
+            enemy.yPos = checkPlatform(enemy, nextYPos, newVelocity);
+            enemy.velocity = Math.max(terminalVelocity, newVelocity);
+        } else if (checkYTerrain(enemy, nextYPos, newVelocity)) {
+            enemy.yPos = checkYTerrain(enemy, nextYPos, newVelocity);
+            enemy.velocity = Math.max(terminalVelocity, newVelocity);
+        } else {
+            enemy.yPos = nextYPos;
+            enemy.velocity = 0;
+        }
+
+        if (enemy.yPos + enemy.height / 2 < 0) {
+            this.level.enemies.splice(enemyIndex, 1);
+        } 
+    }
 
     const moveCamera = () => {
         let screenWidth = window.innerWidth;
         let screenHeight = window.innerHeight;
         
-        this.stageXPos = Math.max(this.playerXPos - screenWidth / 2, 0);
-        this.stageYPos = Math.max(this.playerYPos - screenHeight / 2, 0);
+        this.stageXPos = Math.max(this.player.xPos - screenWidth / 2, 0);
+        this.stageYPos = Math.max(this.player.yPos - screenHeight / 2, 0);
 
         if (this.stageXPos + screenWidth > this.level.width) {
             this.stageXPos = this.level.width - screenWidth;
@@ -273,25 +338,25 @@ function CreateEngine(setState, initialState) {
         }
     };
 
-    const checkXTerrain = (newXPos) => {
+    const checkXTerrain = (entity, newXPos) => {
         for (let t of this.level.terrain) {
             let terrainYPos = t["yPos"];
             let terrainYSurface = t["yPos"] + terrainHeight;
-            let playerYTopPos = this.playerYPos + charHeight;
+            let entityYTopPos = entity.yPos + charHeight;
             if ( // TODO: player is at correct y value
-                (this.playerYPos >= terrainYPos && this.playerYPos < terrainYSurface)
-                || (playerYTopPos <= terrainYSurface && playerYTopPos > terrainYPos)
-                || (this.playerYPos >= terrainYPos && playerYTopPos <= terrainYSurface)
+                (entity.yPos >= terrainYPos && entity.yPos < terrainYSurface)
+                || (entityYTopPos <= terrainYSurface && entityYTopPos > terrainYPos)
+                || (entity.yPos >= terrainYPos && entityYTopPos <= terrainYSurface)
             ) {
                 let terrainLeftXPos = t["xPos"];
                 let terrainRightXPos = t["xPos"] + t["length"];
-                if (this.xDirection === 'right'
+                if (entity.xDirection === 'right'
                     && (newXPos + charWidth) > terrainLeftXPos
-                    && this.playerXPos < terrainLeftXPos) { // moving right, we only want to check the left wall
+                    && entity.xPos < terrainLeftXPos) { // moving right, we only want to check the left wall
                     return terrainLeftXPos - charWidth;
-                } else if (this.xDirection === 'left'
+                } else if (entity.xDirection === 'left'
                     && newXPos < terrainRightXPos
-                    && this.playerXPos > terrainLeftXPos) { // moving left
+                    && entity.xPos > terrainLeftXPos) { // moving left
                     return terrainRightXPos;
                 }
             }
@@ -301,14 +366,11 @@ function CreateEngine(setState, initialState) {
 
     // function that will be continuously ran
     this.repaint = () => {
-        doMove();
-        // check and perform jump
-        doJump();
-
-        applyYAcceleration();
-        applyYVelocity();
+        movePlayer();
 
         moveCamera();
+
+        moveEnemies();
 
         // check if char has hit a enemy
         checkEnemies();
@@ -321,9 +383,12 @@ function CreateEngine(setState, initialState) {
         setState({
             stageX: this.stageXPos,
             stageY: this.stageYPos,
-            playerX: this.playerXPos,
-            playerY: this.playerYPos,
-            playerXDirection: this.xDirection,
+            player: {
+                ...initialState.player,
+                xPos: this.player.xPos,
+                yPos: this.player.yPos,
+                xDirection: this.player.xDirection
+            },
             level: this.level,
             buttonMap: this.buttonMap,
             cumCoins: this.cumCoins,
@@ -337,8 +402,8 @@ function CreateEngine(setState, initialState) {
             this.stageXPos = 0;
             this.stageYPos = 0;
             this.jump = false;
-            this.xDirection = '';
-            this.playerYPos = 0;
+            this.player.xDirection = '';
+            this.player.yPos = 0;
             return null;
         }
 
@@ -356,7 +421,7 @@ function CreateEngine(setState, initialState) {
             }
         },
         move: (direction) => {
-            this.xDirection = direction;
+            this.player.xDirection = direction;
         },
     });
 }
@@ -445,12 +510,7 @@ export default function Engine() {
                     <div className="introText">
                         Controls:<br/>WASD to move, SPACE to jump <br/><br/> Press Space to load game
                     </div>
-                    {errorTxt !== "" && 
-                        <div className="errorText">
-                            Insert error message here if there&apos;s an error in the json (after space is pressed)
-                        </div>
-                    }
-                    
+                    <div className="errorText"> {errorTxt} </div>
                 </div>
             }
             {started && <Game gameState={gameState} /> }

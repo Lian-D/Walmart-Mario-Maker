@@ -1,29 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Button = ({height, width, xPos, yPos, name}) => {
+const Button = ({button}) => {
     const style = {
-        height: height,
-        width: width,
-        left: xPos,
-        bottom: yPos
+        height: button.height,
+        width: button.width,
+        left: button.xPos,
+        bottom: button.yPos,
+        background: `url("${button.image}") center / cover no-repeat`
     };
 
     return (
-        <span
-            className="button"
-            key={name}
-            style={style}
-        />
+        <span className="button" style={style} />
     );
 };
 
 Button.propTypes = {
-    height: PropTypes.number,
-    width: PropTypes.number,
-    xPos: PropTypes.number,
-    yPos: PropTypes.number,
-    name: PropTypes.string,
+    button: PropTypes.object
 };
 
 export default Button;
