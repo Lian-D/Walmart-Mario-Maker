@@ -1,5 +1,5 @@
 parser grammar PlatformerParser;
-options { tokenVocab=PlatformerParser; }
+options { tokenVocab=PlatformerLexer; }
 
 program   : objects STMT_NEWLINE? level (STMT_NEWLINE? level)* EOF;
 
@@ -13,7 +13,7 @@ object_bod: OPEN_BRACE STMT_NEWLINE? statements? CLOSE_BRACE;
 statement : property COLON value;
 property: NAME; // Need to add more or just allow any text
 statements: (statement (STMT_NEWLINE | NEWLINE))+;
-array: OPEN_BRACK array_object (COMMA array_object)* CLOSE_BRACK;
+array: OPEN_SQUARE array_object (COMMA array_object)* CLOSED_SQUARE;
 component: ENEMY | DOOR | BUTTON | TERRAIN;
 value : varname | CONST | array_object;
 array_object: OPEN_PAREN exp (COMMA exp)* CLOSE_PAREN;
