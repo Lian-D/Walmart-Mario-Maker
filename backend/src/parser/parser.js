@@ -1,5 +1,4 @@
 import { ANTLRInputStream, CommonTokenStream } from 'antlr4ts';
-import {PlatformerLexer, PlatformerPraser};
 
 // Create the lexer and parser
 let inputStream = new ANTLRInputStream("text");
