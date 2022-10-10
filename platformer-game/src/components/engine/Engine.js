@@ -229,8 +229,8 @@ function CreateEngine(setState, initialState) {
 
         this.level.enemies.forEach((enemy) => {
             // if char hits an enemy
-            if (charXPos + charWidth >= enemy["xPos"]
-                && charYPos <= enemy.yPos + enemyHeight
+            if (charXPos + charWidth >= enemy.xPos + (enemy.width * 0.5)
+                && charYPos <= enemy.yPos + (enemy.height * 0.5)
                 && charYPos + charHeight >= enemy.yPos
                 && charXPos <= enemy["xPos"] + enemyWidth
             ) {
