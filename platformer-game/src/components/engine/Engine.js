@@ -6,64 +6,14 @@ import {
     platformHeight, 
     terrainHeight, 
     tile, 
-    enemyWidth, 
-    enemyHeight, 
     doorWidth,
     doorHeight,
     terminalVelocity,
 } from '../../data/constants';
 import Game from '../entities/game';
+import { loadGame, loadProperties } from '../../data/jsonReader';
 
 let gameData = {};
-let initialState = {};
-
-const loadGame = (setState, setStart) => {
-    delete require.cache['./src/data/gameData.json'];
-    gameData = require('../../data/gameData.json');
-
-    if (gameData.game) {
-        gameData = gameData['game'];
-
-        // grouping player properties together so I can reuse some functions
-        let player = {
-            xPos: gameData["level1"].playerStartX,
-            yPos: gameData["level1"].playerStartY,
-            xDirection: '',
-            height: charHeight,
-            width: charWidth,
-        };
-
-        initialState = {
-            stageX: 0,
-            stageY: 0,
-            player: player,
-            level: gameData["level1"],
-            buttonMap: new Map(),
-            cumCoins: 0,
-            status: 'start',
-        };
-
-        loadLevel(initialState.level);
-    
-        setState(initialState);
-        setStart(true);
-        return "";
-    } else {
-        setStart(false);
-        return gameData['error'];
-    }
-}
-
-const loadLevel = (level) => {
-    // do any mappings for level objects here
-    level.enemies = level.enemies.map(
-        enemy => ({
-            ...enemy, 
-            width: enemyWidth,
-            height: enemyHeight
-        }
-    ));
-};
 
 function CreateEngine(setState, initialState) {
     this.level = initialState.level;
@@ -172,16 +122,31 @@ function CreateEngine(setState, initialState) {
                 && charYPos <= door.yPos + (doorHeight * 0.5)
                 && charYPos + charHeight >= door.yPos
                 && charXPos <= door.xPos + doorWidth
-                && this.buttonMap.has(door["key"])
+                && (this.buttonMap.has(door["key"]) || door["key"] === null)
+                && !door.tempClosed
             ) {
                 if (door.goesTo === 'win') {
                     this.game = 'win';
                 } else {
-                    this.level = gameData[door.goesTo];
-                    loadLevel(this.level);
-                    this.player.xPos = this.level.playerStartX;
-                    this.player.yPos = this.level.playerStartY;
+                    let location = door.goesTo.split(" ");
+                    this.level = gameData.levels.find(level => level.name === location[0]);
+                    loadProperties(this.level, gameData.types);
+
+                    let exitDoor = this.level.doors.find(door => door.name === location[1]);
+                    exitDoor.tempClosed = true;
+
+                    this.player.xPos = exitDoor.xPos;
+                    this.player.yPos = exitDoor.yPos;
+                    moveCamera();
                 }
+            } 
+            if (door.tempClosed && 
+                (charXPos >= door.xPos + doorWidth 
+                    || charXPos + charWidth <= door.xPos 
+                    || charYPos >= door.yPos + doorHeight 
+                    || charYPos + charHeight <= door.yPos)
+            ) {
+                door.tempClosed = false;
             }
         });
     };
@@ -216,8 +181,8 @@ function CreateEngine(setState, initialState) {
                 && charXPos <= button.xPos + button.width
             ) {
                 this.level.buttons.splice(buttonIndex, 1);
-                if (!this.buttonMap.get(button.name)) {
-                    this.buttonMap.set(button.name, "triggered");
+                if (!this.buttonMap.get(button.type)) {
+                    this.buttonMap.set(button.type, "triggered");
                 }
             }
         });
@@ -232,7 +197,7 @@ function CreateEngine(setState, initialState) {
             if (charXPos + charWidth >= enemy.xPos + (enemy.width * 0.5)
                 && charYPos <= enemy.yPos + (enemy.height * 0.5)
                 && charYPos + charHeight >= enemy.yPos
-                && charXPos <= enemy["xPos"] + enemyWidth
+                && charXPos <= enemy["xPos"] + enemy.width
             ) {
                 this.game = 'fail';
             }
@@ -299,9 +264,6 @@ function CreateEngine(setState, initialState) {
     };
 
     const applyEnemyYVelocity = (enemy, enemyIndex) => {
-        if (enemy.velocity === undefined) {
-            enemy.velocity = 0;
-        }
         let newVelocity = enemy.velocity - tile;
         let nextYPos = enemy.yPos + newVelocity;
 
@@ -364,12 +326,16 @@ function CreateEngine(setState, initialState) {
         return false;
     }
 
+    const runChecks = () => {
+        // TODO figure out how to run the checks
+    }
+
     // function that will be continuously ran
     this.repaint = () => {
+        runChecks();
+
         movePlayer();
-
         moveCamera();
-
         moveEnemies();
 
         // check if char has hit a enemy
@@ -428,7 +394,7 @@ function CreateEngine(setState, initialState) {
 
 export default function Engine() {
     // game state
-    const [gameState, setGameState] = useState(initialState);
+    const [gameState, setGameState] = useState({});
 
     // trigger game to start
     const [start, setStart] = useState(false);
@@ -447,7 +413,7 @@ export default function Engine() {
         if (e.key === ' ') {
             // start the game when the user first presses the space bar
             if (!started && !start) {
-                setErrorTxt(loadGame(setGameState, setStart));
+                gameData = loadGame(setGameState, setStart, setErrorTxt);
             }
 
             // if the game has not been initialized return
@@ -485,7 +451,7 @@ export default function Engine() {
                 new CreateEngine(
                     // set state
                     state => setGameState(state),
-                    initialState
+                    gameState
                 ),
             );
         }
@@ -493,13 +459,13 @@ export default function Engine() {
         if (gameState.status === 'fail' && started) {
             setStarted(false);
             alert('You lost! Try again?');
-            setErrorTxt(loadGame(setGameState, setStart));
+            gameData = loadGame(setGameState, setStart, setErrorTxt);
         }
 
         if (gameState.status === 'win' && started) {
             setStarted(false);
             alert('You won! Play again?');
-            setErrorTxt(loadGame(setGameState, setStart));
+            gameData = loadGame(setGameState, setStart, setErrorTxt);
         }
     });
 

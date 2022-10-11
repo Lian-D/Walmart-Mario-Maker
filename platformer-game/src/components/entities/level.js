@@ -40,7 +40,8 @@ const Level = ({player, stageX, stageY, level, buttonMap}) => {
                 <Door 
                     xPos={door["xPos"]} 
                     yPos={door["yPos"]} 
-                    isOpen={buttonMap.has(door["key"])}
+                    image={door["image"]}
+                    isOpen={buttonMap.has(door["key"]) || door["key"] === null}
                     key={door["name"]}
                 />
             )

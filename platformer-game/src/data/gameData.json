@@ -1,242 +1,279 @@
 {
     "game": {
-        "level1": {
-            "background": "https://media.discordapp.net/attachments/969645894616096858/1028917780617109564/bg.png",
-            "height": 900,
-            "width": 3000,
-            "playerStartX": 200,
-            "playerStartY": 50,
-            "doors": [
-                {
-                    "xPos": 2000,
-                    "yPos": 50,
-                    "name": "door1",
-                    "key": "red",
-                    "goesTo": "level2"
+        "types": {
+            "enemy": {
+                "slime": {
+                    "image": "https://media.discordapp.net/attachments/969645894616096858/1028893886124412949/theTriangle.png",
+                    "colour": "",
+                    "behaviour": "STILL",
+                    "speed": 0.2
+                },
+                "goblin": {
+                    "image": "https://media.discordapp.net/attachments/969645894616096858/1028893886124412949/theTriangle.png",
+                    "colour": "",
+                    "behaviour": "FOLLOW",
+                    "speed": 0.4
                 }
-            ],
-            "platforms": [
-                {
-                    "name": "plat1",
+            },
+            "terrain": {
+                "terrainType1": {
                     "image": "",
-                    "colour": "#008080",
-                    "xPos": 1000,
-                    "yPos": 300,
-                    "length": 500
-                },
-                {
-                    "name": "plat2",
-                    "image": "",
-                    "colour": "#008080",
-                    "xPos": 500,
-                    "yPos": 200,
-                    "length": 500 
-                },
-                {
-                    "name": "plat3",
-                    "image": "",
-                    "colour": "#008080",
-                    "xPos": 2000,
-                    "yPos": 300,
-                    "length": 500
+                    "colour": "#042b2b"
                 }
-            ],
-            "terrain": [
-                {
-                    "name": "terrain1",
+            },
+            "platform": {
+                "platformType1": {
                     "image": "",
-                    "colour": "#042b2b",
-                    "xPos": 1500,
-                    "yPos": 300,
-                    "length": 500
-                },
-                {
-                    "name": "terrain2",
-                    "image": "",
-                    "colour": "#042b2b",
-                    "xPos": 0,
-                    "yPos": 0,
-                    "length": 500
-                },
-                {
-                    "name": "terrain3",
-                    "image": "",
-                    "colour": "#042b2b",
-                    "xPos": 1000,
-                    "yPos": 0,
-                    "length": 2000
+                    "colour": "#008080"
                 }
-            ],
-            "coins": [
-                {
-                    "name": "c1",
+            },
+            "door": {
+                "doorType1": {
+                    "image": "https://cdn.discordapp.com/attachments/969645894616096858/1029102857728835604/door.png",
+                    "key": null
+                },
+                "doorType2": {
+                    "image": "https://cdn.discordapp.com/attachments/969645894616096858/1029102857728835604/door.png",
+                    "key": "buttonType1"
+                }
+            },
+            "coin": {
+                "coinType1": {
                     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Racket-logo.svg/1200px-Racket-logo.svg.png",
-                    "xPos": 1200,
-                    "yPos": 500,
-                    "height": 30,
-                    "width": 30
-                },
-                {
-                    "name": "c2",
-                    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Racket-logo.svg/1200px-Racket-logo.svg.png",
-                    "xPos": 700,
-                    "yPos": 400,
                     "height": 30,
                     "width": 30
                 }
-            ],
-            "enemies": [
-                {
-                    "name": "slime1",
-                    "image": "https://media.discordapp.net/attachments/969645894616096858/1028893886124412949/theTriangle.png",
-                    "colour": "",
-                    "xPos": 2500,
-                    "yPos": 50,
-                    "behaviour": "STILL"
-                },
-                {
-                    "name": "goblin1",
-                    "image": "https://media.discordapp.net/attachments/969645894616096858/1028893886124412949/theTriangle.png",
-                    "colour": "",
-                    "xPos": 1500,
-                    "yPos": 50,
-                    "behaviour": "FOLLOW"
-                }
-            ],
-            "buttons": [
-                {
-                    "name": "red",
+            },
+            "button": {
+                "buttonType1": {
                     "image": "https://media.discordapp.net/attachments/1017526051989106740/1027763213896515615/key-png-11.png",
-                    "xPos": 100,
-                    "yPos": 100,
                     "height": 50,
                     "width": 50
                 }
-            ],
-            "checks": []
+            }
         },
-        "level2": {
-            "background": "https://media.discordapp.net/attachments/969645894616096858/1028917780617109564/bg.png",
-            "height": 900,
-            "width": 2000,
-            "playerStartX": 500,
-            "playerStartY": 250,
-            "doors": [
-                {
-                    "xPos": 1550,
-                    "yPos": 50,
-                    "name": "door2",
-                    "key": "red1",
-                    "goesTo": "win"
-                }
-            ],
-            "platforms": [
-                {
-                    "name": "plat4",
-                    "image": "",
-                    "colour": "#008080",
-                    "xPos": 900,
-                    "yPos": 300,
-                    "length": 400
-                },
-                {
-                    "name": "plat5",
-                    "image": "",
-                    "colour": "#008080",
-                    "xPos": 500,
-                    "yPos": 200,
-                    "length": 400
-                },
-                {
-                    "name": "plat6",
-                    "image": "",
-                    "colour": "#008080",
-                    "xPos": 1700,
-                    "yPos": 500,
-                    "length": 100
-                },
-                {
-                    "name": "plat7",
-                    "image": "",
-                    "colour": "#008080",
-                    "xPos": 1300,
-                    "yPos": 650,
-                    "length": 100
-                },
-                {
-                    "name": "plat8",
-                    "image": "",
-                    "colour": "#008080",
-                    "xPos": 750,
-                    "yPos": 800,
-                    "length": 200
-                }
-            ],
-            "terrain": [
-                {
-                    "name": "terrain1",
-                    "image": "",
-                    "colour": "#042b2b",
-                    "xPos": 1500,
-                    "yPos": 300,
-                    "length": 500
-                },
-                {
-                    "name": "terrain2",
-                    "image": "",
-                    "colour": "#042b2b",
-                    "xPos": 0,
-                    "yPos": 0,
-                    "length": 500
-                },
-                {
-                    "name": "terrain3",
-                    "image": "",
-                    "colour": "#042b2b",
-                    "xPos": 1000,
-                    "yPos": 0,
-                    "length": 2000
-                }
-            ],
-            "coins": [
-                {
-                    "name": "c1",
-                    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Racket-logo.svg/1200px-Racket-logo.svg.png",
-                    "xPos": 1200,
-                    "yPos": 500,
-                    "height": 30,
-                    "width": 30
-                },
-                {
-                    "name": "c2",
-                    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Racket-logo.svg/1200px-Racket-logo.svg.png",
-                    "xPos": 700,
-                    "yPos": 400,
-                    "height": 30,
-                    "width": 30
-                }
-            ],
-            "enemies": [
-                {
-                    "name": "goblin2",
-                    "image": "https://media.discordapp.net/attachments/969645894616096858/1028893886124412949/theTriangle.png",
-                    "colour": "",
-                    "xPos": 1800,
-                    "yPos": 350,
-                    "behaviour": "FOLLOW"
-                }
-            ],
-            "buttons": [
-                {
-                    "name": "red1",
-                    "image": "https://media.discordapp.net/attachments/1017526051989106740/1027763213896515615/key-png-11.png",
-                    "xPos": 750,
-                    "yPos": 850,
-                    "height": 50,
-                    "width": 50
-                }
-            ],
-            "checks": []
-        }
+        "levels": [
+            {
+                "name": "level1",
+                "background": "https://media.discordapp.net/attachments/969645894616096858/1028917780617109564/bg.png",
+                "height": 900,
+                "width": 3000,
+                "playerStartX": 200,
+                "playerStartY": 50,
+                "doors": [
+                    {
+                        "name": "door1",
+                        "type": "doorType1",
+                        "goesTo": "level2 door2",
+                        "xPos": 2000,
+                        "yPos": 50
+                    }
+                ],
+                "platforms": [
+                    {
+                        "name": "plat1",
+                        "type": "platformType1",
+                        "xPos": 1000,
+                        "yPos": 300,
+                        "length": 500
+                    },
+                    {
+                        "name": "plat2",
+                        "type": "platformType1",
+                        "xPos": 500,
+                        "yPos": 200,
+                        "length": 500 
+                    },
+                    {
+                        "name": "plat3",
+                        "type": "platformType1",
+                        "xPos": 2000,
+                        "yPos": 300,
+                        "length": 500
+                    }
+                ],
+                "terrain": [
+                    {
+                        "name": "terrain1",
+                        "type": "terrainType1",
+                        "xPos": 1500,
+                        "yPos": 300,
+                        "length": 500
+                    },
+                    {
+                        "name": "terrain2",
+                        "type": "terrainType1",
+                        "xPos": 0,
+                        "yPos": 0,
+                        "length": 500
+                    },
+                    {
+                        "name": "terrain3",
+                        "type": "terrainType1",
+                        "xPos": 1000,
+                        "yPos": 0,
+                        "length": 2000
+                    }
+                ],
+                "coins": [
+                    {
+                        "name": "c1",
+                        "type": "coinType1",
+                        "xPos": 1200,
+                        "yPos": 500
+                    },
+                    {
+                        "name": "c2",
+                        "type": "coinType1",
+                        "xPos": 700,
+                        "yPos": 400
+                    }
+                ],
+                "enemies": [
+                    {
+                        "name": "slime1",
+                        "type": "slime",
+                        "xPos": 2500,
+                        "yPos": 50
+                    },
+                    {
+                        "name": "goblin1",
+                        "type": "goblin",
+                        "xPos": 1500,
+                        "yPos": 50
+                    }
+                ],
+                "buttons": [
+                    {
+                        "name": "button1",
+                        "type": "buttonType1",
+                        "xPos": 100,
+                        "yPos": 100
+                    }
+                ],
+                "checks": [
+                    {
+                        "parameters": ["MONEY", "button1"],
+                        "conditions": "MONEY > 10 || button1",
+                        "actions": ["door1: Add (d1spawn,1,9)", "platform: remove (key)"]
+                    }
+                ]
+            },
+            {
+                "name": "level2",
+                "background": "https://media.discordapp.net/attachments/969645894616096858/1028917780617109564/bg.png",
+                "height": 900,
+                "width": 2000,
+                "playerStartX": 500,
+                "playerStartY": 250,
+                "doors": [
+                    {
+                        "name": "door2",
+                        "type": "doorType1",
+                        "goesTo": "level1 door1",
+                        "xPos": 200,
+                        "yPos": 50
+                    },
+                    {
+                        "name": "door3",
+                        "type": "doorType2",
+                        "goesTo": "win",
+                        "xPos": 1550,
+                        "yPos": 50
+                    }
+                ],
+                "platforms": [
+                    {
+                        "name": "plat4",
+                        "type": "platformType1",
+                        "xPos": 900,
+                        "yPos": 300,
+                        "length": 400
+                    },
+                    {
+                        "name": "plat5",
+                        "type": "platformType1",
+                        "xPos": 500,
+                        "yPos": 200,
+                        "length": 400
+                    },
+                    {
+                        "name": "plat6",
+                        "type": "platformType1",
+                        "xPos": 1700,
+                        "yPos": 500,
+                        "length": 100
+                    },
+                    {
+                        "name": "plat7",
+                        "type": "platformType1",
+                        "xPos": 1300,
+                        "yPos": 650,
+                        "length": 100
+                    },
+                    {
+                        "name": "plat8",
+                        "type": "platformType1",
+                        "xPos": 750,
+                        "yPos": 800,
+                        "length": 200
+                    }
+                ],
+                "terrain": [
+                    {
+                        "name": "terrain1",
+                        "type": "terrainType1",
+                        "xPos": 1500,
+                        "yPos": 300,
+                        "length": 500
+                    },
+                    {
+                        "name": "terrain2",
+                        "type": "terrainType1",
+                        "xPos": 0,
+                        "yPos": 0,
+                        "length": 500
+                    },
+                    {
+                        "name": "terrain3",
+                        "type": "terrainType1",
+                        "xPos": 1000,
+                        "yPos": 0,
+                        "length": 2000
+                    }
+                ],
+                "coins": [
+                    {
+                        "name": "c1",
+                        "type": "coinType1",
+                        "xPos": 1200,
+                        "yPos": 500
+                    },
+                    {
+                        "name": "c2",
+                        "type": "coinType1",
+                        "xPos": 700,
+                        "yPos": 400
+                    }
+                ],
+                "enemies": [
+                    {
+                        "name": "goblin2",
+                        "type": "goblin",
+                        "xPos": 1800,
+                        "yPos": 350
+                    }
+                ],
+                "buttons": [
+                    {
+                        "name": "red1",
+                        "type": "buttonType1",
+                        "xPos": 750,
+                        "yPos": 850
+                    }
+                ],
+                "checks": []
+            }
+        ]
     }
 }

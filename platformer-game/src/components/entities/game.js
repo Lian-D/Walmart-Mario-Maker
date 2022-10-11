@@ -8,7 +8,7 @@ const Game = ({gameState}) => {
 
     if (Object.prototype.hasOwnProperty.call(gameState.level, "background") && gameState.level.background !== null) {
         style = {
-            background: `#568cd2 url("${gameState.level.background}") center / cover no-repeat`
+            background: `#568cd2 url("${gameState.level.background}") left / cover no-repeat`
         }
     }
 
