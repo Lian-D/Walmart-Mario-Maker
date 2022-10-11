@@ -333,8 +333,18 @@ function CreateEngine(setState, initialState) {
             // console.log(evalRes);
             let evalRes2 = evaluate("OR", evaluate("<", 6, 8), evaluate(">", 6, 8));
             console.log(evalRes2);
-        })
+        });
     }
+
+//    const enforceResult = (action, category, obj) => {
+//        switch (action) {
+//            case 'spawn': return null;
+//            case 'Increment': return null;
+//            case 'set': return null;
+//            case 'goto': return null;
+//        }
+//
+//    }
 
     const evaluate = (operand, operandA, operandB) => {
         switch (operand) {
@@ -350,6 +360,7 @@ function CreateEngine(setState, initialState) {
         }
     }
 
+    //Byte functions for operands
     const evalGreater = (operandA, operandB) => {
         return operandA > operandB;
     }
