@@ -112,3 +112,18 @@ We have started with our user studies and had our users try to implement simple 
 - Back-end that interprets DSL
 - DSL (Mockup of language can be found in samples.md)
 
+# Milestone 4
+### Status of implementation
+Frontend development is in progress and is making good progress (Platforms, buttons, coins, terrain, multiple levels currently supported)<br>
+Backend development has begun and is in progress<br>
+We have decided to remove the while loops since they are extremely similar to the conditionals feature. This is due to the way the game is rendered
+
+
+### Plans for final user study
+Ask users to create platformer game with entire set of features that our DSL supports (Buttons, enemies, coins, user conditionals, user functions, multiple levels)
+
+
+### Timeline 
+Finish frontend and backend implementation by Wednesday<br>
+Perform final user study on Thursday<br>
+Complete final changes and video on Sunday<br>

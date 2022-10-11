@@ -1,28 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { terrainHeight } from '../../data/constants';
 
-const Terrain = ({xPos, yPos, length, height, name}) => {
+const Terrain = ({terrain}) => {
     const style = {
-        transform: `translate(${xPos}px, -${yPos}px)`,
-        height: height,
-        width: length
+        transform: `translate(${terrain.xPos}px, -${terrain.yPos}px)`,
+        background: `${terrain.colour} url("${terrain.image}")`,
+        height: terrainHeight,
+        width: terrain.length
     };
 
-    return (
-        <span 
-            className="terrain"
-            key={name}
-            style={style}
-        />
+    return ( 
+        <span className="terrain" style={style} /> 
     );
 };
 
 Terrain.propTypes = {
-    xPos: PropTypes.number,
-    yPos: PropTypes.number,
-    length: PropTypes.number,
-    height: PropTypes.number,
-    name: PropTypes.string,
+    terrain: PropTypes.object
 };
 
 export default Terrain;
