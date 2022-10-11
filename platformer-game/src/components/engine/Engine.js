@@ -323,11 +323,23 @@ function CreateEngine(setState, initialState) {
                 }
             }
         }
-        return false;
+        return false
     }
 
     const runChecks = () => {
         // TODO figure out how to run the checks
+    }
+
+    const evaluate = (operand, operandA, operandB) => {
+        switch (operand) {
+            case '<': return null;
+            case '>': return null;
+            case '=>': return null;
+            case '<=': return null;
+            case '==': return null;
+            case '!': return null;
+            case 'buttonCheck': return null;
+        }
     }
 
     // function that will be continuously ran
