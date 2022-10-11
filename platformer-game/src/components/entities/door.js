@@ -1,29 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { doorWidth, doorHeight } from '../../data/constants';
 
-const Door = ({height, width, xPos, yPos, name}) => {
+// just pass in the door and we create the style here
+const Door = ({xPos, yPos, image, isOpen}) => {
+    let background = `url("${image}") center / 100% 100% no-repeat`;
+
     const style = {
-        height: height,
-        width: width,
+        height: doorHeight,
+        width: doorWidth,
         left: xPos,
-        bottom: yPos
+        bottom: yPos,
+        background: background
     };
 
-    return (
-        <span 
-            className="door"
-            key={name}
-            style={style}
-        />
-    );
+    return (isOpen && <span className="door" style={style} />);
 };
 
 Door.propTypes = {
-    height: PropTypes.number,
-    width: PropTypes.number,
     xPos: PropTypes.number,
     yPos: PropTypes.number,
-    name: PropTypes.string,
+    image: PropTypes.string,
+    isOpen: PropTypes.bool,
 };
 
 export default Door;
