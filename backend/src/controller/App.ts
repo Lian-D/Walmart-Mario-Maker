@@ -14,4 +14,4 @@ export class App {
 
 const app = new App();
 
-app.initServer(8080);
+app.initServer(3300);

@@ -39,5 +39,6 @@
     "eslint-plugin-react": "^7.31.8",
     "node-sass": "^7.0.3",
     "prop-types": "^15.8.1"
-  }
+  },
+  "proxy": "http://localhost:3300"
 }

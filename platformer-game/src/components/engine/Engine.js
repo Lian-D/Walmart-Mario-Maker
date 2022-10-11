@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { useEvent } from '../../hooks';
 import {
     charWidth, 
@@ -16,9 +17,9 @@ import Game from '../entities/game';
 let gameData = {};
 let initialState = {};
 
-const loadGame = (setState, setStart) => {
+const loadGame = (setState, setStart, propsGameData) => {
     delete require.cache['./src/data/gameData.json'];
-    gameData = require('../../data/gameData.json');
+    gameData = propsGameData;
 
     if (Object.prototype.hasOwnProperty.call(gameData, "game")) {
         gameData = gameData['game'];
@@ -361,7 +362,7 @@ function CreateEngine(setState, initialState) {
     });
 }
 
-export default function Engine() {
+export default function Engine(props) {
     // game state
     const [gameState, setGameState] = useState(initialState);
 
@@ -382,7 +383,7 @@ export default function Engine() {
         if (e.key === ' ') {
             // start the game when the user first presses the space bar
             if (!started && !start) {
-                setErrorTxt(loadGame(setGameState, setStart));
+                setErrorTxt(loadGame(setGameState, setStart, props.gameData));
             }
 
             // if the game has not been initialized return
@@ -428,32 +429,35 @@ export default function Engine() {
         if (gameState.status === 'fail' && started) {
             setStarted(false);
             alert('You lost! Try again?');
-            setErrorTxt(loadGame(setGameState, setStart));
+            setErrorTxt(loadGame(setGameState, setStart, props.gameData));
         }
 
         if (gameState.status === 'win' && started) {
             setStarted(false);
             alert('You won! Play again?');
-            setErrorTxt(loadGame(setGameState, setStart));
+            setErrorTxt(loadGame(setGameState, setStart, props.gameData));
         }
     });
 
     return ( 
         <>
             {!started && 
+            <div className="startContainer">
                 <div className='startScreen' >
                     <div className="introText">
-                        Controls:<br/>WASD to move, SPACE to jump <br/><br/> Press Space to load game
+                        Your game has been generated! Press SPACE to load game <br/><br/> Controls: <br/>WASD to move, SPACE to jump <br /> 
                     </div>
-                    {errorTxt !== "" && 
-                        <div className="errorText">
-                            Insert error message here if there&apos;s an error in the json (after space is pressed)
-                        </div>
-                    }
-                    
+                    <div className="errorText"> {errorTxt} </div>
                 </div>
+            </div>
+                
             }
             {started && <Game gameState={gameState} /> }
         </>
     );
+}
+
+
+Engine.propTypes = {
+    gameData: PropTypes.object
 }
