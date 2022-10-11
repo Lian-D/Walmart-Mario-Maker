@@ -12,7 +12,6 @@ import { ObjectsContext } from "./PlatformerParser";
 import { Object_bodContext } from "./PlatformerParser";
 import { StatementContext } from "./PlatformerParser";
 import { PropertyContext } from "./PlatformerParser";
-import { StatementsContext } from "./PlatformerParser";
 import { ArrayContext } from "./PlatformerParser";
 import { ComponentContext } from "./PlatformerParser";
 import { ValueContext } from "./PlatformerParser";
@@ -92,13 +91,6 @@ export interface PlatformerParserVisitor<Result> extends ParseTreeVisitor<Result
 	 * @return the visitor result
 	 */
 	visitProperty?: (ctx: PropertyContext) => Result;
-
-	/**
-	 * Visit a parse tree produced by `PlatformerParser.statements`.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	visitStatements?: (ctx: StatementsContext) => Result;
 
 	/**
 	 * Visit a parse tree produced by `PlatformerParser.array`.

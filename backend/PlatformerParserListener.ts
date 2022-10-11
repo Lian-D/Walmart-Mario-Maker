@@ -12,7 +12,6 @@ import { ObjectsContext } from "./PlatformerParser";
 import { Object_bodContext } from "./PlatformerParser";
 import { StatementContext } from "./PlatformerParser";
 import { PropertyContext } from "./PlatformerParser";
-import { StatementsContext } from "./PlatformerParser";
 import { ArrayContext } from "./PlatformerParser";
 import { ComponentContext } from "./PlatformerParser";
 import { ValueContext } from "./PlatformerParser";
@@ -125,17 +124,6 @@ export interface PlatformerParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitProperty?: (ctx: PropertyContext) => void;
-
-	/**
-	 * Enter a parse tree produced by `PlatformerParser.statements`.
-	 * @param ctx the parse tree
-	 */
-	enterStatements?: (ctx: StatementsContext) => void;
-	/**
-	 * Exit a parse tree produced by `PlatformerParser.statements`.
-	 * @param ctx the parse tree
-	 */
-	exitStatements?: (ctx: StatementsContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `PlatformerParser.array`.
