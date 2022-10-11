@@ -327,19 +327,67 @@ function CreateEngine(setState, initialState) {
     }
 
     const runChecks = () => {
-        // TODO figure out how to run the checks
+        this.level.checks.forEach( e => {
+            console.log(e);
+            // let evalRes = evaluate("<", 6, 8);
+            // console.log(evalRes);
+            let evalRes2 = evaluate("OR", evaluate("<", 6, 8), evaluate(">", 6, 8));
+            console.log(evalRes2);
+        })
     }
 
     const evaluate = (operand, operandA, operandB) => {
         switch (operand) {
-            case '<': return null;
-            case '>': return null;
-            case '=>': return null;
-            case '<=': return null;
-            case '==': return null;
-            case '!': return null;
-            case 'buttonCheck': return null;
+            case '<': return evalGreater(operandA, operandB);
+            case '>': return evalLesser(operandA, operandB);
+            case '=>': return evalGreaterEqual(operandA, operandB);
+            case '<=': return evalLesserEqual(operandA, operandB);
+            case '==': return evalEqual(operandA, operandB);
+            case '!': return evalNot(operandA);
+            case 'buttonCheck': return evalButtonCheck(operandA);
+            case 'OR': return evalOr(operandA, operandB);
+            case 'AND': return evalAnd(operandA, operandB);
         }
+    }
+
+    const evalGreater = (operandA, operandB) => {
+        return operandA > operandB;
+    }
+
+    const evalLesser = (operandA, operandB) => {
+        return operandA < operandB;
+    }
+
+    const evalEqual = (operandA, operandB) => {
+        return operandA == operandB;
+    }
+
+    const evalGreaterEqual = (operandA, operandB) => {
+        return operandA >= operandB;
+    }
+
+    const evalLesserEqual = (operandA, operandB) => {
+        return operandA <= operandB;
+    }
+
+    const evalNot = (operandA) => {
+        return !operandA;
+    }
+
+    const evalButtonCheck = (operandA) => {
+        if (operandA) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    const evalOr = (operandA, operandB) => {
+        return operandA || operandB;
+    }
+
+    const evalAnd = (operandA, operandB) => {
+        return operandA && operandB;
     }
 
     // function that will be continuously ran
@@ -356,6 +404,8 @@ function CreateEngine(setState, initialState) {
         checkDoors();
         checkCoins();
         checkButtons();
+
+        runChecks();
 
         // set state for use in the component
         setState({
