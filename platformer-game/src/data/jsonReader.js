@@ -5,9 +5,10 @@ import {
     enemyHeight, 
 } from './constants';
 
-const loadGame = (setState, setStart, setErrorTxt) => {
-    delete require.cache['./src/data/gameData.json'];
-    let gameData = require('./gameData.json');
+const loadGame = (setState, setStart, setErrorTxt, propsGameData) => {
+    // delete require.cache['./src/data/gameData.json'];
+    // let gameData = require('./gameData.json');
+    let gameData = propsGameData;
 
     if (gameData.game) {
         gameData = gameData['game'];

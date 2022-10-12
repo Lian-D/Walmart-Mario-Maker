@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { useEvent } from '../../hooks';
 import {
     charWidth, 
@@ -588,7 +589,7 @@ function CreateEngine(setState, initialState) {
     });
 }
 
-export default function Engine() {
+export default function Engine(props) {
     // game state
     const [gameState, setGameState] = useState({});
 
@@ -609,7 +610,7 @@ export default function Engine() {
         if (e.key === ' ') {
             // start the game when the user first presses the space bar
             if (!started && !start) {
-                gameData = loadGame(setGameState, setStart, setErrorTxt);
+                gameData = loadGame(setGameState, setStart, setErrorTxt, props.gameData);
             }
 
             // if the game has not been initialized return
@@ -655,27 +656,35 @@ export default function Engine() {
         if (gameState.status === 'fail' && started) {
             setStarted(false);
             alert('You lost! Try again?');
-            gameData = loadGame(setGameState, setStart, setErrorTxt);
+            gameData = loadGame(setGameState, setStart, setErrorTxt, props.gameData);
         }
 
         if (gameState.status === 'win' && started) {
             setStarted(false);
             alert('You won! Play again?');
-            gameData = loadGame(setGameState, setStart, setErrorTxt);
+            gameData = loadGame(setGameState, setStart, setErrorTxt, props.gameData);
         }
     });
 
     return ( 
         <>
             {!started && 
+            <div className="startContainer">
                 <div className='startScreen' >
                     <div className="introText">
-                        Controls:<br/>WASD to move, SPACE to jump <br/><br/> Press Space to load game
+                        Your game has been generated! Press SPACE to load game <br/><br/> Controls: <br/>WASD to move, SPACE to jump <br /> 
                     </div>
                     <div className="errorText"> {errorTxt} </div>
                 </div>
+            </div>
+                
             }
             {started && <Game gameState={gameState} /> }
         </>
     );
+}
+
+
+Engine.propTypes = {
+    gameData: PropTypes.object
 }
