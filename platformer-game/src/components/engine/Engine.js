@@ -331,37 +331,63 @@ function CreateEngine(setState, initialState) {
 
     const addEnemy = (obj) => {
         let enemyTypes = gameData.types.enemy;
-        // console.log(this.level.enemies);
-        // console.log(gameData.types.enemy);
         let enemy = {
             name: obj[0],
             type: obj[1],
-            xpos: obj[2],
-            ypos: obj[3],
+            xPos: obj[2],
+            yPos: obj[3],
             velocity: 0,
             width: enemyWidth,
             height: enemyHeight,
             ... enemyTypes[obj[1]]
         };
-    
         if (!(this.level.enemies.find(e => e.name == obj[0]))){
             this.level.enemies.push(enemy);
-            console.log(this.level.enemies);
-            alert("enemy spawned");
         }
-        console.log(this.level.enemies);
     } 
 
     const addPlatform = (obj) => {
-        obj;
+        let platformTypes = gameData.types.platform;
+        let platform = {
+            name: obj[0],
+            type: obj[1],
+            xPos: obj[2],
+            yPos: obj[3],
+            length: obj[4],
+            ... platformTypes[obj[1]]
+        };
+        if (!(this.level.platforms.find(e => e.name == obj[0]))){
+            this.level.platforms.push(platform);
+        }
     } 
 
     const addDoor = (obj) => {
-        obj;
+        let doorTypes = gameData.types.door;
+        let door = {
+            name: obj[0],
+            type: obj[1],
+            xPos: obj[2],
+            yPos: obj[3],
+            goesTo: obj[4],
+            ... doorTypes[obj[1]]
+        };
+        if (!(this.level.doors.find(e => e.name == obj[0]))){
+            this.level.doors.push(door);
+        }
     } 
 
     const addButton = (obj) => {
-        obj;
+        let buttonTypes = gameData.types.button;
+        let button = {
+            name: obj[0],
+            type: obj[1],
+            xPos: obj[2],
+            yPos: obj[3],
+            ... buttonTypes[obj[1]]
+        };
+        if (!(this.level.buttons.find(e => e.name == obj[0]))){
+            this.level.buttons.push(button);
+        }
     } 
 
     const delEnemy = (obj) => {
@@ -395,8 +421,6 @@ function CreateEngine(setState, initialState) {
             let b = e.conditions.opB;
             let evalRes = evaluate(operation, evaluate(a.op, a.opA, a.opB), evaluate(b.op, b.opA, b.opB));
             if (evalRes) {
-                // alert("true!!");
-                // console.log(e.actions);
                 e.actions.forEach( act => {
                     enforceResult(act.effect, act.category, act.payload);
                 })
