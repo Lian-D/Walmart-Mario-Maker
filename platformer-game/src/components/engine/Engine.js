@@ -163,7 +163,7 @@ function CreateEngine(setState, initialState) {
                 && charXPos <= coin.xPos + coin.width
             ) {
                 this.level.coins.splice(coinsIndex, 1);
-                this.cumCoins++;
+                this.cumCoins += coin.value;
             }
             coinsIndex++;
         });
@@ -192,6 +192,10 @@ function CreateEngine(setState, initialState) {
         const charXPos = this.player.xPos;
         const charYPos = this.player.yPos;
 
+        if (this.player.invulnerable) {
+            this.player.invulnerable--;
+        }
+
         this.level.enemies.forEach((enemy) => {
             // if char hits an enemy
             if (charXPos + charWidth >= enemy.xPos + (enemy.width * 0.5)
@@ -199,7 +203,13 @@ function CreateEngine(setState, initialState) {
                 && charYPos + charHeight >= enemy.yPos
                 && charXPos <= enemy["xPos"] + enemy.width
             ) {
-                this.game = 'fail';
+                if (!this.player.invulnerable) {
+                    this.player.health -= 1;
+                    this.player.invulnerable = 70;
+                }
+                if (this.player.health === 0) {
+                    this.game = 'fail';
+                }
             }
         });
     };
@@ -234,7 +244,7 @@ function CreateEngine(setState, initialState) {
     };
 
     const movePlayer = () => {
-        moveXPos(this.player, 1);
+        moveXPos(this.player, this.player.speed);
 
         // check and perform jump
         doJump();
@@ -256,7 +266,7 @@ function CreateEngine(setState, initialState) {
                     enemy["xDirection"] = "";
                 }
 
-                moveXPos(enemy, 0.5);
+                moveXPos(enemy, enemy.speed);
                 applyEnemyYVelocity(enemy, enemyIndex);
             }
             enemyIndex++;
