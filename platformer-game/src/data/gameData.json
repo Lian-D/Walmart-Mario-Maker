@@ -154,17 +154,17 @@
                 "checks": [
                     {
                         "conditions": {
-                            "OPA": 
+                            "opA": 
                                 {
                                     "opA": "coins",
-                                    "op": ">",
-                                    "opB": 60
+                                    "op": ">=",
+                                    "opB": 2
                                 },
-                            "OP": "OR",
-                            "OPB":
+                            "op": "OR",
+                            "opB":
                                 {
-                                    "opA": "button1",
-                                    "op": null,
+                                    "opA": "buttonType1",
+                                    "op": "buttonCheck",
                                     "opB": null
                                 }
                             },
