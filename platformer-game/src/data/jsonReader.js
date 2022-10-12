@@ -6,7 +6,7 @@ import {
 } from './constants';
 
 const loadGame = (setState, setStart, setErrorTxt, propsGameData) => {
-    delete require.cache['./src/data/gameData.json'];
+    // delete require.cache['./src/data/gameData.json'];
     // let gameData = require('./gameData.json');
     let gameData = propsGameData;
 
