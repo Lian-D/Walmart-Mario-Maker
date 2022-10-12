@@ -333,11 +333,108 @@ function CreateEngine(setState, initialState) {
                 }
             }
         }
-        return false;
+        return false
     }
 
     const runChecks = () => {
-        // TODO figure out how to run the checks
+        this.level.checks.forEach( e => {
+            let operation = e.conditions.op;
+            let a = e.conditions.opA;
+            let b = e.conditions.opB;
+            let evalRes = evaluate(operation, evaluate(a.op, a.opA, a.opB), evaluate(b.op, b.opA, b.opB));
+            if (evalRes) {
+                // alert("true!!");
+                console.log(e.actions);
+                e.actions.forEach( act => {
+                    enforceResult(act.effect, act.category, act.payload);
+                })
+            }
+        });
+    }
+
+   const enforceResult = (action, category, obj) => {
+       switch (action) {
+           case 'add': return enforceAdd(category, obj);
+           case 'remove': return enforceRemove(category, obj);
+       }
+   }
+
+   const enforceAdd = (category, obj) => {
+        switch (category) {
+            case 'enemy': console.log("add e "+ obj); break;
+            case 'door': console.log("add d "+obj); break;
+            case 'button': console.log("add b "+obj); break;
+            case 'platform': console.log("add p "+obj); break;
+        }
+   }
+
+   const enforceRemove = (category, obj) => {
+        switch (category) {
+            case 'enemy': console.log("remove e "+obj); break;
+            case 'door': console.log("remove d "+obj); break;
+            case 'button': console.log("remove b "+obj); break;
+            case 'platform': console.log("remove p "+obj); break;
+        }
+   }
+
+    const evaluate = (operand, operandA, operandB) => {
+        operandA = EvaluateOperandVariable(operandA);
+        operandB = EvaluateOperandVariable(operandB);
+        // console.log(operandA);
+        switch (operand) {
+            case '<': return evalLesser(operandA, operandB);
+            case '>': return evalGreater(operandA, operandB);
+            case '>=': return evalGreaterEqual(operandA, operandB);
+            case '<=': return evalLesserEqual(operandA, operandB);
+            case '==': return evalEqual(operandA, operandB);
+            case '!': return evalNot(operandA);
+            case 'buttonCheck': return evalButtonCheck(operandA);
+            case 'OR': return evalOr(operandA, operandB);
+            case 'AND': return evalAnd(operandA, operandB);
+        }
+    }
+
+    const EvaluateOperandVariable = (operand) => {
+        switch (operand) {
+            case 'coins': return this.cumCoins;
+            case 'health': return null; //TODO: Need Len's PR for player health
+            default: return operand;
+        }
+    }
+
+    //Byte functions for operands
+    const evalGreater = (operandA, operandB) => {
+        return operandA > operandB;
+    }
+    const evalLesser = (operandA, operandB) => {
+        return operandA < operandB;
+    }
+    const evalEqual = (operandA, operandB) => {
+        return operandA == operandB;
+    }
+    const evalGreaterEqual = (operandA, operandB) => {
+        return operandA >= operandB;
+    }
+    const evalLesserEqual = (operandA, operandB) => {
+        return operandA <= operandB;
+    }
+    const evalNot = (operandA) => {
+        return !operandA;
+    }
+    const evalButtonCheck = (operandA) => {
+        // console.log(operandA);
+        // console.log(this.buttonMap);
+        if (this.buttonMap.get(operandA) == "triggered") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    const evalOr = (operandA, operandB) => {
+        return operandA || operandB;
+    }
+    const evalAnd = (operandA, operandB) => {
+        return operandA && operandB;
     }
 
     // function that will be continuously ran
@@ -354,6 +451,8 @@ function CreateEngine(setState, initialState) {
         checkDoors();
         checkCoins();
         checkButtons();
+
+        runChecks();
 
         // set state for use in the component
         setState({
