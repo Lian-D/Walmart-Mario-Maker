@@ -15,6 +15,7 @@ const loadGame = (setState, setStart, setErrorTxt) => {
         let level1 = gameData.levels[0];
 
         let player = {
+            ...gameData.types.player,
             xPos: level1.playerStartX,
             yPos: level1.playerStartY,
             xDirection: '',
