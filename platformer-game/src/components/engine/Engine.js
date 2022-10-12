@@ -10,6 +10,8 @@ import {
     doorWidth,
     doorHeight,
     terminalVelocity,
+    enemyHeight,
+    enemyWidth,
 } from '../../data/constants';
 import Game from '../entities/game';
 import { loadGame, loadProperties } from '../../data/jsonReader';
@@ -334,8 +336,94 @@ function CreateEngine(setState, initialState) {
                 }
             }
         }
-        return false
+        return false;
     }
+
+
+    const addEnemy = (obj) => {
+        let enemyTypes = gameData.types.enemy;
+        let enemy = {
+            name: obj[0],
+            type: obj[1],
+            xPos: obj[2],
+            yPos: obj[3],
+            velocity: 0,
+            width: enemyWidth,
+            height: enemyHeight,
+            ... enemyTypes[obj[1]]
+        };
+        if (!(this.level.enemies.find(e => e.name == obj[0]))){
+            this.level.enemies.push(enemy);
+        }
+    } 
+
+    const addPlatform = (obj) => {
+        let platformTypes = gameData.types.platform;
+        let platform = {
+            name: obj[0],
+            type: obj[1],
+            xPos: obj[2],
+            yPos: obj[3],
+            length: obj[4],
+            ... platformTypes[obj[1]]
+        };
+        if (!(this.level.platforms.find(e => e.name == obj[0]))){
+            this.level.platforms.push(platform);
+        }
+    } 
+
+    const addDoor = (obj) => {
+        let doorTypes = gameData.types.door;
+        let door = {
+            name: obj[0],
+            type: obj[1],
+            xPos: obj[2],
+            yPos: obj[3],
+            goesTo: obj[4],
+            ... doorTypes[obj[1]]
+        };
+        if (!(this.level.doors.find(e => e.name == obj[0]))){
+            this.level.doors.push(door);
+        }
+    } 
+
+    const addButton = (obj) => {
+        let buttonTypes = gameData.types.button;
+        let button = {
+            name: obj[0],
+            type: obj[1],
+            xPos: obj[2],
+            yPos: obj[3],
+            ... buttonTypes[obj[1]]
+        };
+        if (!(this.level.buttons.find(e => e.name == obj[0]))){
+            this.level.buttons.push(button);
+        }
+    } 
+
+    const delEnemy = (obj) => {
+        this.level.enemies = this.level.enemies.filter( (e) => {
+            return !(e.name == obj[0]);
+       });
+    } 
+
+    const delPlatform = (obj) => {
+        this.level.platforms = this.level.platforms.filter( (e) => {
+            return !(e.name == obj[0]);
+       });
+    } 
+
+    const delDoor = (obj) => {
+        this.level.door = this.level.door.filter( (e) => {
+            return !(e.name == obj[0]);
+       });
+    } 
+
+    const delButton = (obj) => {
+        this.level.buttons = this.level.buttons.filter( (e) => {
+            return !(e.name == obj[0]);
+       });
+    } 
 
     const runChecks = () => {
         this.level.checks.forEach( e => {
@@ -344,8 +432,6 @@ function CreateEngine(setState, initialState) {
             let b = e.conditions.opB;
             let evalRes = evaluate(operation, evaluate(a.op, a.opA, a.opB), evaluate(b.op, b.opA, b.opB));
             if (evalRes) {
-                // alert("true!!");
-                console.log(e.actions);
                 e.actions.forEach( act => {
                     enforceResult(act.effect, act.category, act.payload);
                 })
@@ -361,20 +447,21 @@ function CreateEngine(setState, initialState) {
    }
 
    const enforceAdd = (category, obj) => {
+        // console.log(this.level);
         switch (category) {
-            case 'enemy': console.log("add e "+ obj); break;
-            case 'door': console.log("add d "+obj); break;
-            case 'button': console.log("add b "+obj); break;
-            case 'platform': console.log("add p "+obj); break;
+            case 'enemy': return addEnemy(obj);
+            case 'door': return addDoor(obj);
+            case 'button': return addButton(obj);
+            case 'platform': return addPlatform(obj);
         }
    }
 
    const enforceRemove = (category, obj) => {
         switch (category) {
-            case 'enemy': console.log("remove e "+obj); break;
-            case 'door': console.log("remove d "+obj); break;
-            case 'button': console.log("remove b "+obj); break;
-            case 'platform': console.log("remove p "+obj); break;
+            case 'enemy': return delEnemy(obj);
+            case 'door': return delDoor(obj);
+            case 'button': return delButton(obj);
+            case 'platform': return delPlatform(obj);
         }
    }
 
