@@ -10,10 +10,12 @@ const Character = ({player}) => {
         height: player.height,
         width: player.width,
         transform: transform
-    } ;
+    };
+
+    let className = "character" + (player.invulnerable ? " damaged" : " normal")
 
     return ( 
-        <span className="character" style={style} /> 
+        <span className={className} style={style} /> 
     );
 };
 

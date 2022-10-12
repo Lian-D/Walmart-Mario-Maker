@@ -1,6 +1,10 @@
 {
     "game": {
         "types": {
+            "player": {
+                "speed": 1,
+                "health": 4
+            },
             "enemy": {
                 "slime": {
                     "image": "https://media.discordapp.net/attachments/969645894616096858/1028893886124412949/theTriangle.png",
@@ -41,7 +45,8 @@
                 "coinType1": {
                     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Racket-logo.svg/1200px-Racket-logo.svg.png",
                     "height": 30,
-                    "width": 30
+                    "width": 30,
+                    "value": 1
                 }
             },
             "button": {
@@ -55,7 +60,7 @@
         "levels": [
             {
                 "name": "level1",
-                "background": "https://media.discordapp.net/attachments/969645894616096858/1028917780617109564/bg.png",
+                "background": "https://media.discordapp.net/attachments/1019466411044765716/1029542966185971822/bg.png",
                 "height": 900,
                 "width": 3000,
                 "playerStartX": 200,
@@ -161,7 +166,7 @@
             },
             {
                 "name": "level2",
-                "background": "https://media.discordapp.net/attachments/969645894616096858/1028917780617109564/bg.png",
+                "background": "https://media.discordapp.net/attachments/1019466411044765716/1029542966185971822/bg.png",
                 "height": 900,
                 "width": 2000,
                 "playerStartX": 500,
