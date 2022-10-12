@@ -158,9 +158,37 @@
                 ],
                 "checks": [
                     {
-                        "parameters": ["MONEY", "button1"],
-                        "conditions": "MONEY > 10 || button1",
-                        "actions": ["door1: Add (d1spawn,1,9)", "platform: remove (key)"]
+                        "conditions": {
+                            "opA": 
+                                {
+                                    "opA": "coins",
+                                    "op": ">=",
+                                    "opB": 2
+                                },
+                            "op": "OR",
+                            "opB":
+                                {
+                                    "opA": "buttonType1",
+                                    "op": "buttonCheck",
+                                    "opB": null
+                                }
+                            },
+                        "actions": [ {
+                            "effect": "add",
+                            "category": "door",
+                            "payload": ["d1spawn", "doorType1", "level2 door2", 100, 90]
+                        }, 
+                        {
+                            "effect": "remove",
+                            "category": "platform",
+                            "payload": ["platform1"]
+                        },
+                        {
+                            "effect": "add",
+                            "category": "enemy",
+                            "payload": ["g1spawn", "goblin", 10, 110]
+                        }
+                    ]   
                     }
                 ]
             },
