@@ -8,21 +8,16 @@ const Game = ({gameState}) => {
 
     if (Object.prototype.hasOwnProperty.call(gameState.level, "background") && gameState.level.background !== null) {
         style = {
-            background: `#568cd2 url("${gameState.level.background}") center / cover no-repeat`
+            background: `#000 url("${gameState.level.background}") left / cover no-repeat`
         }
     }
 
     return (
         <div className='container' style={style} >
-            <span className="coinCounter">Coins obtained: {gameState.cumCoins ? gameState.cumCoins : 0}</span>
+            <span className="coinCounter">Score: {gameState.cumCoins}</span>
+            <div className="healthCounter"><div className='heart'/><div> {gameState.player.health}</div></div>
             <Level  
-                player={
-                    <Character
-                        playerXDirection={gameState.playerXDirection}
-                        playerX={gameState.playerX}
-                        playerY={gameState.playerY}
-                    />
-                }
+                player={<Character player={gameState.player} />}
                 stageX={gameState.stageX}
                 stageY={gameState.stageY}
                 level={gameState.level}

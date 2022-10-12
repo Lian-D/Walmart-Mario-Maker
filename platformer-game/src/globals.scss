@@ -30,8 +30,6 @@ html, body {
   display: block;
   bottom: 0;
   left: 0;
-  height: 100vh;
-  width: calc(10 * 100vw);
 }
 
 .character {
@@ -41,10 +39,27 @@ html, body {
   width: 100px;
   bottom: 0;
   left: 0;
-  background-color: #ffd600;
   background:url('https://media.discordapp.net/attachments/1019466411044765716/1024926081033195561/owi.png') no-repeat;
   background-size: contain;
   z-index: 10;
+}
+
+.normal {
+  background:url('https://media.discordapp.net/attachments/1019466411044765716/1024926081033195561/owi.png') no-repeat;
+  background-size: contain;
+}
+
+.damaged {
+  background: url("https://media.discordapp.net/attachments/1017526051989106740/1029539659396685834/damage.png") no-repeat;
+  background-size: contain;
+  animation: flicker 0.5s infinite;
+}
+
+@keyframes flicker 
+{
+    0%   {opacity:0;}
+    50%   {opacity:0.5;}
+    100% {opacity:0;}
 }
 
 .door {
@@ -63,28 +78,16 @@ html, body {
   bottom: 0;
   left: 0;
   background-color: orange;
-  background:url('https://media.discordapp.net/attachments/1017526051989106740/1027763213896515615/key-png-11.png') no-repeat;
-  background-size: cover;
 }
 
 .coin{
   position: absolute;
   display: block;
-  height: 20px;
-  width: 20px;
+  height: 30px;
+  width: 30px;
   bottom: 0;
   left: 0;
   background-color: yellow;
-  background:url('https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Racket-logo.svg/1200px-Racket-logo.svg.png') no-repeat;
-  background-size: cover;
-}
-
-.platform {
-  position: absolute;
-  display: block;
-  bottom: 0;
-  left: 0;
-  background-color: #008080;
 }
 
 .enemy {
@@ -95,6 +98,14 @@ html, body {
     bottom: 0;
     left: 0;
     background-color: red;
+    z-index: 5;
+}
+
+.platform {
+  position: absolute;
+  display: block;
+  bottom: 0;
+  left: 0;
 }
 
 .terrain {
@@ -102,11 +113,10 @@ html, body {
   display: block;
   bottom: 0;
   left: 0;
-  background-color: #042b2b;
 }
 
 .coinCounter {
-  position: absolute;
+  position: relative;
   left: 2%;
   top: 2%;
   font-family: 'Segoe UI Emoji';
@@ -114,6 +124,28 @@ html, body {
   font-weight: bold;
   color: #dba102;
   text-shadow: -1px -1px 0 hwb(19 7% 51% / 0.5), 1px -1px 0 hwb(19 7% 51% / 0.5), -1px 1px 0 hwb(19 7% 51% / 0.5), 1px 1px 0 hwb(19 7% 51% / 0.5);
+}
+
+.healthCounter {
+  position: relative;
+  left: 2%;
+  top: 3%;
+  font-family: 'Segoe UI Emoji';
+  font-size: 30px;
+  font-weight: bold;
+  color:crimson;
+  text-shadow: -1px -1px 0 hwb(19 7% 51% / 0.5), 1px -1px 0 hwb(19 7% 51% / 0.5), -1px 1px 0 hwb(19 7% 51% / 0.5), 1px 1px 0 hwb(19 7% 51% / 0.5);
+}
+
+.heart {
+  float: left;
+  margin: 8px 10px 5px 5px;
+  height: 30px;
+  width: 30px;
+  background-image: url("https://www.freeiconspng.com/uploads/heart-png-15.png");
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .introText {

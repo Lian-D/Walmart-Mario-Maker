@@ -1,4 +1,7 @@
 const tile = 10; // width of one tile
+const terminalVelocity = -40; // the maximum velocity a human can have
+// do not allow the player to be faster than this
+
 const platformHeight = 25;
 const terrainHeight = 50;
 
@@ -8,17 +11,18 @@ const charHeight = 100;
 const doorWidth = 110;
 const doorHeight = 170;
 
-const enemyWidth = 70;
-const enemyHeight = 150;
+const enemyWidth = 110;
+const enemyHeight = 100;
 
 export {
+    tile, 
+    terminalVelocity,
     charWidth, 
     charHeight, 
     doorWidth,
     doorHeight,
     platformHeight, 
     terrainHeight, 
-    tile, 
     enemyWidth, 
     enemyHeight, 
 };

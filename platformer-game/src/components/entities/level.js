@@ -5,7 +5,7 @@ import Coin from "./coin";
 import Door from './door';
 import Platform from './platform';
 import Button from './button';
-import {enemyHeight, enemyWidth, platformHeight, terrainHeight} from '../../data/constants';
+import Enemy from './enemy';
 
 const Level = ({player, stageX, stageY, level, buttonMap}) => {
     let style = {
@@ -15,52 +15,23 @@ const Level = ({player, stageX, stageY, level, buttonMap}) => {
     return (<div className='stage' style={style} >
         {player}
         {level["enemies"].map(
-            (enemy,index) => (
-                <span
-                    className='enemy'
-                    key={index}
-                    style={{
-                        transform: `translate(${enemy}px, 0px)`,
-                        height: enemyHeight,
-                        width: enemyWidth,
-                    }}
-                />
-            ),
+            (enemy) => (
+                <Enemy enemy={enemy} key={enemy["name"]} />
+            )
         )}
         {level["platforms"].map(
-            (platform, index) => (
-                <Platform
-                    xPos={platform["xPos"]}
-                    yPos={platform["yPos"]}
-                    length={platform["length"]}
-                    height={platformHeight}
-                    key={index}
-                    name={`${index}`}
-                />
+            (platform) => (
+                <Platform platform={platform} key={platform["name"]} />
             )
         )}
         {level["terrain"].map(
-            (platform, index) => (
-                <Terrain
-                    xPos={platform["xPos"]}
-                    yPos={platform["yPos"]}
-                    length={platform["length"]}
-                    height={terrainHeight}
-                    key={index}
-                    name={`${index}`}
-                />
+            (terrain) => (
+                <Terrain terrain={terrain} key={terrain["name"]} />
             )
         )}
-        
         {level["coins"].map(
                 coin => (
-                    <Coin
-                        height={coin["height"]}
-                        width={coin["width"]}
-                        xPos={coin["xPos"]}
-                        yPos={coin["yPos"]}
-                        key={coin["name"]}
-                    />
+                    <Coin coin={coin} key={coin["name"]} />
                 )
             )
         }
@@ -69,20 +40,15 @@ const Level = ({player, stageX, stageY, level, buttonMap}) => {
                 <Door 
                     xPos={door["xPos"]} 
                     yPos={door["yPos"]} 
+                    image={door["image"]}
+                    isOpen={buttonMap.has(door["key"]) || door["key"] === null}
                     key={door["name"]}
-                    isOpen={buttonMap.has(door["key"])}
                 />
             )
         )}
         {level["buttons"].map(
             (button) => (
-                <Button
-                    height={button["height"]}
-                    width={button["width"]}
-                    xPos={button["xPos"]}
-                    yPos={button["yPos"]}
-                    key={button["name"]}
-                />
+                <Button button={button} key={button["name"]} />
             )
         )}
     </div>);

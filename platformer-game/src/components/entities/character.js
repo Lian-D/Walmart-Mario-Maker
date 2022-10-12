@@ -1,30 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { charHeight, charWidth } from '../../data/constants';
 
-const Character = ({playerXDirection, playerX, playerY}) => {
-    let transform = playerXDirection === 'left' 
-        ? `translate(${playerX}px, -${playerY}px) scaleX(-1)`
-        : `translate(${playerX}px, -${playerY}px) scaleX(1)`;
+const Character = ({player}) => {
+    let transform = player.xDirection === 'left' 
+        ? `translate(${player.xPos}px, ${-player.yPos}px) scaleX(-1)`
+        : `translate(${player.xPos}px, ${-player.yPos}px) scaleX(1)`;
 
     let style = {
-        height: charHeight,
-        width: charWidth,
+        height: player.height,
+        width: player.width,
         transform: transform
-    } ;
+    };
 
-    return (
-        <span 
-            className="character"
-            style={style}
-        />
+    let className = "character" + (player.invulnerable ? " damaged" : " normal")
+
+    return ( 
+        <span className={className} style={style} /> 
     );
 };
 
 Character.propTypes = {
-    playerXDirection: PropTypes.string,
-    playerX: PropTypes.number,
-    playerY: PropTypes.number
+    player: PropTypes.object
 };
 
 export default Character;
