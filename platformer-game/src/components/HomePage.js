@@ -26,7 +26,7 @@ export default function HomePage() {
     function sendUserCode() {
         // Set error to null everytime a new request is made
         setError(null);
-        let url = '/game';
+        let url = 'http://localhost:3300/game';
         // Display error if the fileContent has not been set yet after it has been uploaded. It should work within 2 seconds after file upload
         if (!fileContents) {
             setError("No file detected, please upload a file or wait 2 seconds before trying again");
@@ -39,7 +39,8 @@ export default function HomePage() {
         let init = {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                
             },
             body: JSON.stringify(body)
         };

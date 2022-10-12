@@ -1,5 +1,5 @@
 import express from 'express';
-
+const cors = require('cors');
 
 export default class Server {
 
@@ -10,7 +10,7 @@ export default class Server {
         this.port = port;
         this.server = express();
         this.server.use(express.json());
-        
+        this.server.use(cors());
     }
     
     public start(): Promise<boolean> {
