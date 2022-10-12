@@ -523,7 +523,7 @@ export default function Engine(props) {
         if (e.key === ' ') {
             // start the game when the user first presses the space bar
             if (!started && !start) {
-                gameData = loadGame(setGameState, setStart, setErrorTxt);
+                gameData = loadGame(setGameState, setStart, setErrorTxt, props.gameData);
             }
 
             // if the game has not been initialized return
@@ -569,13 +569,13 @@ export default function Engine(props) {
         if (gameState.status === 'fail' && started) {
             setStarted(false);
             alert('You lost! Try again?');
-            gameData = loadGame(setGameState, setStart, setErrorTxt);
+            gameData = loadGame(setGameState, setStart, setErrorTxt, props.gameData);
         }
 
         if (gameState.status === 'win' && started) {
             setStarted(false);
             alert('You won! Play again?');
-            gameData = loadGame(setGameState, setStart, setErrorTxt);
+            gameData = loadGame(setGameState, setStart, setErrorTxt, props.gameData);
         }
     });
 
