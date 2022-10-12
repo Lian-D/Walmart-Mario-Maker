@@ -9,6 +9,8 @@ import {
     doorWidth,
     doorHeight,
     terminalVelocity,
+    enemyHeight,
+    enemyWidth,
 } from '../../data/constants';
 import Game from '../entities/game';
 import { loadGame, loadProperties } from '../../data/jsonReader';
@@ -328,36 +330,62 @@ function CreateEngine(setState, initialState) {
 
 
     const addEnemy = (obj) => {
-        console.log(obj);
-
+        let enemyTypes = gameData.types.enemy;
+        // console.log(this.level.enemies);
+        // console.log(gameData.types.enemy);
+        let enemy = {
+            name: obj[0],
+            type: obj[1],
+            xpos: obj[2],
+            ypos: obj[3],
+            velocity: 0,
+            width: enemyWidth,
+            height: enemyHeight,
+            ... enemyTypes[obj[1]]
+        };
+    
+        if (!(this.level.enemies.find(e => e.name == obj[0]))){
+            this.level.enemies.push(enemy);
+            console.log(this.level.enemies);
+            alert("enemy spawned");
+        }
+        console.log(this.level.enemies);
     } 
 
     const addPlatform = (obj) => {
-        console.log(obj);
+        obj;
     } 
 
     const addDoor = (obj) => {
-        console.log(obj);
+        obj;
     } 
 
     const addButton = (obj) => {
-        console.log(obj);
+        obj;
     } 
 
     const delEnemy = (obj) => {
-        console.log(obj);
+        this.level.enemies = this.level.enemies.filter( (e) => {
+            return !(e.name == obj[0]);
+       });
     } 
 
     const delPlatform = (obj) => {
-        console.log(obj);
+        this.level.platforms = this.level.platforms.filter( (e) => {
+            return !(e.name == obj[0]);
+       });
     } 
 
     const delDoor = (obj) => {
-        console.log(obj);
+        this.level.door = this.level.door.filter( (e) => {
+            return !(e.name == obj[0]);
+       });
     } 
 
     const delButton = (obj) => {
-        console.log(obj);
+        this.level.buttons = this.level.buttons.filter( (e) => {
+            return !(e.name == obj[0]);
+       });
     } 
 
     const runChecks = () => {
@@ -384,8 +412,7 @@ function CreateEngine(setState, initialState) {
    }
 
    const enforceAdd = (category, obj) => {
-        console.log(this.level);
-        console.log(gameData.types);
+        // console.log(this.level);
         switch (category) {
             case 'enemy': return addEnemy(obj);
             case 'door': return addDoor(obj);
