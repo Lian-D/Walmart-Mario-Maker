@@ -63,23 +63,23 @@ export class PlatformerParser extends Parser {
 	public static readonly RULE_level = 1;
 	public static readonly RULE_level_body = 2;
 	public static readonly RULE_level_cond = 3;
-	public static readonly RULE_level_objects = 4;
-	public static readonly RULE_objects = 5;
-	public static readonly RULE_object_bod = 6;
+	public static readonly RULE_level_entities = 4;
+	public static readonly RULE_entities = 5;
+	public static readonly RULE_entity_bod = 6;
 	public static readonly RULE_statement = 7;
 	public static readonly RULE_property = 8;
-	public static readonly RULE_array = 9;
+	public static readonly RULE_list = 9;
 	public static readonly RULE_component = 10;
 	public static readonly RULE_value = 11;
-	public static readonly RULE_array_object = 12;
+	public static readonly RULE_list_object = 12;
 	public static readonly RULE_exp = 13;
 	public static readonly RULE_op = 14;
 	public static readonly RULE_varname = 15;
 	// tslint:disable:no-trailing-whitespace
 	public static readonly ruleNames: string[] = [
-		"program", "level", "level_body", "level_cond", "level_objects", "objects", 
-		"object_bod", "statement", "property", "array", "component", "value", 
-		"array_object", "exp", "op", "varname",
+		"program", "level", "level_body", "level_cond", "level_entities", "entities", 
+		"entity_bod", "statement", "property", "list", "component", "value", "list_object", 
+		"exp", "op", "varname",
 	];
 
 	private static readonly _LITERAL_NAMES: Array<string | undefined> = [
@@ -130,7 +130,7 @@ export class PlatformerParser extends Parser {
 			this.enterOuterAlt(_localctx, 1);
 			{
 			this.state = 32;
-			this.objects();
+			this.entities();
 			this.state = 34;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
@@ -284,7 +284,7 @@ export class PlatformerParser extends Parser {
 			}
 
 			this.state = 71;
-			this.level_objects();
+			this.level_entities();
 			this.state = 73;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
@@ -390,9 +390,9 @@ export class PlatformerParser extends Parser {
 		return _localctx;
 	}
 	// @RuleVersion(0)
-	public level_objects(): Level_objectsContext {
-		let _localctx: Level_objectsContext = new Level_objectsContext(this._ctx, this.state);
-		this.enterRule(_localctx, 8, PlatformerParser.RULE_level_objects);
+	public level_entities(): Level_entitiesContext {
+		let _localctx: Level_entitiesContext = new Level_entitiesContext(this._ctx, this.state);
+		this.enterRule(_localctx, 8, PlatformerParser.RULE_level_entities);
 		let _la: number;
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -412,7 +412,7 @@ export class PlatformerParser extends Parser {
 			}
 
 			this.state = 102;
-			this.array();
+			this.list();
 			}
 		}
 		catch (re) {
@@ -430,9 +430,9 @@ export class PlatformerParser extends Parser {
 		return _localctx;
 	}
 	// @RuleVersion(0)
-	public objects(): ObjectsContext {
-		let _localctx: ObjectsContext = new ObjectsContext(this._ctx, this.state);
-		this.enterRule(_localctx, 10, PlatformerParser.RULE_objects);
+	public entities(): EntitiesContext {
+		let _localctx: EntitiesContext = new EntitiesContext(this._ctx, this.state);
+		this.enterRule(_localctx, 10, PlatformerParser.RULE_entities);
 		let _la: number;
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -447,7 +447,7 @@ export class PlatformerParser extends Parser {
 				this.state = 105;
 				this.match(PlatformerParser.NAME);
 				this.state = 106;
-				this.object_bod();
+				this.entity_bod();
 				}
 			}
 
@@ -472,7 +472,7 @@ export class PlatformerParser extends Parser {
 				this.state = 113;
 				this.match(PlatformerParser.NAME);
 				this.state = 114;
-				this.object_bod();
+				this.entity_bod();
 				}
 				}
 				this.state = 120;
@@ -496,9 +496,9 @@ export class PlatformerParser extends Parser {
 		return _localctx;
 	}
 	// @RuleVersion(0)
-	public object_bod(): Object_bodContext {
-		let _localctx: Object_bodContext = new Object_bodContext(this._ctx, this.state);
-		this.enterRule(_localctx, 12, PlatformerParser.RULE_object_bod);
+	public entity_bod(): Entity_bodContext {
+		let _localctx: Entity_bodContext = new Entity_bodContext(this._ctx, this.state);
+		this.enterRule(_localctx, 12, PlatformerParser.RULE_entity_bod);
 		let _la: number;
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -614,9 +614,9 @@ export class PlatformerParser extends Parser {
 		return _localctx;
 	}
 	// @RuleVersion(0)
-	public array(): ArrayContext {
-		let _localctx: ArrayContext = new ArrayContext(this._ctx, this.state);
-		this.enterRule(_localctx, 18, PlatformerParser.RULE_array);
+	public list(): ListContext {
+		let _localctx: ListContext = new ListContext(this._ctx, this.state);
+		this.enterRule(_localctx, 18, PlatformerParser.RULE_list);
 		let _la: number;
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -624,7 +624,7 @@ export class PlatformerParser extends Parser {
 			this.state = 141;
 			this.match(PlatformerParser.OPEN_SQUARE);
 			this.state = 142;
-			this.array_object();
+			this.list_object();
 			this.state = 147;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
@@ -634,7 +634,7 @@ export class PlatformerParser extends Parser {
 				this.state = 143;
 				this.match(PlatformerParser.COMMA);
 				this.state = 144;
-				this.array_object();
+				this.list_object();
 				}
 				}
 				this.state = 149;
@@ -721,7 +721,7 @@ export class PlatformerParser extends Parser {
 				this.enterOuterAlt(_localctx, 3);
 				{
 				this.state = 156;
-				this.array_object();
+				this.list_object();
 				}
 				break;
 			default:
@@ -743,9 +743,9 @@ export class PlatformerParser extends Parser {
 		return _localctx;
 	}
 	// @RuleVersion(0)
-	public array_object(): Array_objectContext {
-		let _localctx: Array_objectContext = new Array_objectContext(this._ctx, this.state);
-		this.enterRule(_localctx, 24, PlatformerParser.RULE_array_object);
+	public list_object(): List_objectContext {
+		let _localctx: List_objectContext = new List_objectContext(this._ctx, this.state);
+		this.enterRule(_localctx, 24, PlatformerParser.RULE_list_object);
 		let _la: number;
 		try {
 			this.enterOuterAlt(_localctx, 1);
@@ -978,8 +978,8 @@ export class PlatformerParser extends Parser {
 }
 
 export class ProgramContext extends ParserRuleContext {
-	public objects(): ObjectsContext {
-		return this.getRuleContext(0, ObjectsContext);
+	public entities(): EntitiesContext {
+		return this.getRuleContext(0, EntitiesContext);
 	}
 	public level(): LevelContext[];
 	public level(i: number): LevelContext;
@@ -1074,8 +1074,8 @@ export class LevelContext extends ParserRuleContext {
 
 
 export class Level_bodyContext extends ParserRuleContext {
-	public level_objects(): Level_objectsContext {
-		return this.getRuleContext(0, Level_objectsContext);
+	public level_entities(): Level_entitiesContext {
+		return this.getRuleContext(0, Level_entitiesContext);
 	}
 	public level_cond(): Level_condContext {
 		return this.getRuleContext(0, Level_condContext);
@@ -1205,36 +1205,36 @@ export class Level_condContext extends ParserRuleContext {
 }
 
 
-export class Level_objectsContext extends ParserRuleContext {
+export class Level_entitiesContext extends ParserRuleContext {
 	public component(): ComponentContext {
 		return this.getRuleContext(0, ComponentContext);
 	}
 	public COLON(): TerminalNode { return this.getToken(PlatformerParser.COLON, 0); }
-	public array(): ArrayContext {
-		return this.getRuleContext(0, ArrayContext);
+	public list(): ListContext {
+		return this.getRuleContext(0, ListContext);
 	}
 	public STMT_NEWLINE(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.STMT_NEWLINE, 0); }
 	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
 		super(parent, invokingState);
 	}
 	// @Override
-	public get ruleIndex(): number { return PlatformerParser.RULE_level_objects; }
+	public get ruleIndex(): number { return PlatformerParser.RULE_level_entities; }
 	// @Override
 	public enterRule(listener: PlatformerParserListener): void {
-		if (listener.enterLevel_objects) {
-			listener.enterLevel_objects(this);
+		if (listener.enterLevel_entities) {
+			listener.enterLevel_entities(this);
 		}
 	}
 	// @Override
 	public exitRule(listener: PlatformerParserListener): void {
-		if (listener.exitLevel_objects) {
-			listener.exitLevel_objects(this);
+		if (listener.exitLevel_entities) {
+			listener.exitLevel_entities(this);
 		}
 	}
 	// @Override
 	public accept<Result>(visitor: PlatformerParserVisitor<Result>): Result {
-		if (visitor.visitLevel_objects) {
-			return visitor.visitLevel_objects(this);
+		if (visitor.visitLevel_entities) {
+			return visitor.visitLevel_entities(this);
 		} else {
 			return visitor.visitChildren(this);
 		}
@@ -1242,7 +1242,7 @@ export class Level_objectsContext extends ParserRuleContext {
 }
 
 
-export class ObjectsContext extends ParserRuleContext {
+export class EntitiesContext extends ParserRuleContext {
 	public PLAYER(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.PLAYER, 0); }
 	public NAME(): TerminalNode[];
 	public NAME(i: number): TerminalNode;
@@ -1253,13 +1253,13 @@ export class ObjectsContext extends ParserRuleContext {
 			return this.getToken(PlatformerParser.NAME, i);
 		}
 	}
-	public object_bod(): Object_bodContext[];
-	public object_bod(i: number): Object_bodContext;
-	public object_bod(i?: number): Object_bodContext | Object_bodContext[] {
+	public entity_bod(): Entity_bodContext[];
+	public entity_bod(i: number): Entity_bodContext;
+	public entity_bod(i?: number): Entity_bodContext | Entity_bodContext[] {
 		if (i === undefined) {
-			return this.getRuleContexts(Object_bodContext);
+			return this.getRuleContexts(Entity_bodContext);
 		} else {
-			return this.getRuleContext(i, Object_bodContext);
+			return this.getRuleContext(i, Entity_bodContext);
 		}
 	}
 	public STMT_NEWLINE(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.STMT_NEWLINE, 0); }
@@ -1276,23 +1276,23 @@ export class ObjectsContext extends ParserRuleContext {
 		super(parent, invokingState);
 	}
 	// @Override
-	public get ruleIndex(): number { return PlatformerParser.RULE_objects; }
+	public get ruleIndex(): number { return PlatformerParser.RULE_entities; }
 	// @Override
 	public enterRule(listener: PlatformerParserListener): void {
-		if (listener.enterObjects) {
-			listener.enterObjects(this);
+		if (listener.enterEntities) {
+			listener.enterEntities(this);
 		}
 	}
 	// @Override
 	public exitRule(listener: PlatformerParserListener): void {
-		if (listener.exitObjects) {
-			listener.exitObjects(this);
+		if (listener.exitEntities) {
+			listener.exitEntities(this);
 		}
 	}
 	// @Override
 	public accept<Result>(visitor: PlatformerParserVisitor<Result>): Result {
-		if (visitor.visitObjects) {
-			return visitor.visitObjects(this);
+		if (visitor.visitEntities) {
+			return visitor.visitEntities(this);
 		} else {
 			return visitor.visitChildren(this);
 		}
@@ -1300,7 +1300,7 @@ export class ObjectsContext extends ParserRuleContext {
 }
 
 
-export class Object_bodContext extends ParserRuleContext {
+export class Entity_bodContext extends ParserRuleContext {
 	public OPEN_BRACE(): TerminalNode { return this.getToken(PlatformerParser.OPEN_BRACE, 0); }
 	public CLOSE_BRACE(): TerminalNode { return this.getToken(PlatformerParser.CLOSE_BRACE, 0); }
 	public STMT_NEWLINE(): TerminalNode[];
@@ -1334,23 +1334,23 @@ export class Object_bodContext extends ParserRuleContext {
 		super(parent, invokingState);
 	}
 	// @Override
-	public get ruleIndex(): number { return PlatformerParser.RULE_object_bod; }
+	public get ruleIndex(): number { return PlatformerParser.RULE_entity_bod; }
 	// @Override
 	public enterRule(listener: PlatformerParserListener): void {
-		if (listener.enterObject_bod) {
-			listener.enterObject_bod(this);
+		if (listener.enterEntity_bod) {
+			listener.enterEntity_bod(this);
 		}
 	}
 	// @Override
 	public exitRule(listener: PlatformerParserListener): void {
-		if (listener.exitObject_bod) {
-			listener.exitObject_bod(this);
+		if (listener.exitEntity_bod) {
+			listener.exitEntity_bod(this);
 		}
 	}
 	// @Override
 	public accept<Result>(visitor: PlatformerParserVisitor<Result>): Result {
-		if (visitor.visitObject_bod) {
-			return visitor.visitObject_bod(this);
+		if (visitor.visitEntity_bod) {
+			return visitor.visitEntity_bod(this);
 		} else {
 			return visitor.visitChildren(this);
 		}
@@ -1424,15 +1424,15 @@ export class PropertyContext extends ParserRuleContext {
 }
 
 
-export class ArrayContext extends ParserRuleContext {
+export class ListContext extends ParserRuleContext {
 	public OPEN_SQUARE(): TerminalNode { return this.getToken(PlatformerParser.OPEN_SQUARE, 0); }
-	public array_object(): Array_objectContext[];
-	public array_object(i: number): Array_objectContext;
-	public array_object(i?: number): Array_objectContext | Array_objectContext[] {
+	public list_object(): List_objectContext[];
+	public list_object(i: number): List_objectContext;
+	public list_object(i?: number): List_objectContext | List_objectContext[] {
 		if (i === undefined) {
-			return this.getRuleContexts(Array_objectContext);
+			return this.getRuleContexts(List_objectContext);
 		} else {
-			return this.getRuleContext(i, Array_objectContext);
+			return this.getRuleContext(i, List_objectContext);
 		}
 	}
 	public CLOSED_SQUARE(): TerminalNode { return this.getToken(PlatformerParser.CLOSED_SQUARE, 0); }
@@ -1449,23 +1449,23 @@ export class ArrayContext extends ParserRuleContext {
 		super(parent, invokingState);
 	}
 	// @Override
-	public get ruleIndex(): number { return PlatformerParser.RULE_array; }
+	public get ruleIndex(): number { return PlatformerParser.RULE_list; }
 	// @Override
 	public enterRule(listener: PlatformerParserListener): void {
-		if (listener.enterArray) {
-			listener.enterArray(this);
+		if (listener.enterList) {
+			listener.enterList(this);
 		}
 	}
 	// @Override
 	public exitRule(listener: PlatformerParserListener): void {
-		if (listener.exitArray) {
-			listener.exitArray(this);
+		if (listener.exitList) {
+			listener.exitList(this);
 		}
 	}
 	// @Override
 	public accept<Result>(visitor: PlatformerParserVisitor<Result>): Result {
-		if (visitor.visitArray) {
-			return visitor.visitArray(this);
+		if (visitor.visitList) {
+			return visitor.visitList(this);
 		} else {
 			return visitor.visitChildren(this);
 		}
@@ -1511,8 +1511,8 @@ export class ValueContext extends ParserRuleContext {
 		return this.tryGetRuleContext(0, VarnameContext);
 	}
 	public CONST(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.CONST, 0); }
-	public array_object(): Array_objectContext | undefined {
-		return this.tryGetRuleContext(0, Array_objectContext);
+	public list_object(): List_objectContext | undefined {
+		return this.tryGetRuleContext(0, List_objectContext);
 	}
 	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
 		super(parent, invokingState);
@@ -1542,7 +1542,7 @@ export class ValueContext extends ParserRuleContext {
 }
 
 
-export class Array_objectContext extends ParserRuleContext {
+export class List_objectContext extends ParserRuleContext {
 	public OPEN_PAREN(): TerminalNode { return this.getToken(PlatformerParser.OPEN_PAREN, 0); }
 	public exp(): ExpContext[];
 	public exp(i: number): ExpContext;
@@ -1567,23 +1567,23 @@ export class Array_objectContext extends ParserRuleContext {
 		super(parent, invokingState);
 	}
 	// @Override
-	public get ruleIndex(): number { return PlatformerParser.RULE_array_object; }
+	public get ruleIndex(): number { return PlatformerParser.RULE_list_object; }
 	// @Override
 	public enterRule(listener: PlatformerParserListener): void {
-		if (listener.enterArray_object) {
-			listener.enterArray_object(this);
+		if (listener.enterList_object) {
+			listener.enterList_object(this);
 		}
 	}
 	// @Override
 	public exitRule(listener: PlatformerParserListener): void {
-		if (listener.exitArray_object) {
-			listener.exitArray_object(this);
+		if (listener.exitList_object) {
+			listener.exitList_object(this);
 		}
 	}
 	// @Override
 	public accept<Result>(visitor: PlatformerParserVisitor<Result>): Result {
-		if (visitor.visitArray_object) {
-			return visitor.visitArray_object(this);
+		if (visitor.visitList_object) {
+			return visitor.visitList_object(this);
 		} else {
 			return visitor.visitChildren(this);
 		}

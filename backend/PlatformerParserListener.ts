@@ -7,15 +7,15 @@ import { ProgramContext } from "./PlatformerParser";
 import { LevelContext } from "./PlatformerParser";
 import { Level_bodyContext } from "./PlatformerParser";
 import { Level_condContext } from "./PlatformerParser";
-import { Level_objectsContext } from "./PlatformerParser";
-import { ObjectsContext } from "./PlatformerParser";
-import { Object_bodContext } from "./PlatformerParser";
+import { Level_entitiesContext } from "./PlatformerParser";
+import { EntitiesContext } from "./PlatformerParser";
+import { Entity_bodContext } from "./PlatformerParser";
 import { StatementContext } from "./PlatformerParser";
 import { PropertyContext } from "./PlatformerParser";
-import { ArrayContext } from "./PlatformerParser";
+import { ListContext } from "./PlatformerParser";
 import { ComponentContext } from "./PlatformerParser";
 import { ValueContext } from "./PlatformerParser";
-import { Array_objectContext } from "./PlatformerParser";
+import { List_objectContext } from "./PlatformerParser";
 import { ExpContext } from "./PlatformerParser";
 import { OpContext } from "./PlatformerParser";
 import { VarnameContext } from "./PlatformerParser";
@@ -71,37 +71,37 @@ export interface PlatformerParserListener extends ParseTreeListener {
 	exitLevel_cond?: (ctx: Level_condContext) => void;
 
 	/**
-	 * Enter a parse tree produced by `PlatformerParser.level_objects`.
+	 * Enter a parse tree produced by `PlatformerParser.level_entities`.
 	 * @param ctx the parse tree
 	 */
-	enterLevel_objects?: (ctx: Level_objectsContext) => void;
+	enterLevel_entities?: (ctx: Level_entitiesContext) => void;
 	/**
-	 * Exit a parse tree produced by `PlatformerParser.level_objects`.
+	 * Exit a parse tree produced by `PlatformerParser.level_entities`.
 	 * @param ctx the parse tree
 	 */
-	exitLevel_objects?: (ctx: Level_objectsContext) => void;
+	exitLevel_entities?: (ctx: Level_entitiesContext) => void;
 
 	/**
-	 * Enter a parse tree produced by `PlatformerParser.objects`.
+	 * Enter a parse tree produced by `PlatformerParser.entities`.
 	 * @param ctx the parse tree
 	 */
-	enterObjects?: (ctx: ObjectsContext) => void;
+	enterEntities?: (ctx: EntitiesContext) => void;
 	/**
-	 * Exit a parse tree produced by `PlatformerParser.objects`.
+	 * Exit a parse tree produced by `PlatformerParser.entities`.
 	 * @param ctx the parse tree
 	 */
-	exitObjects?: (ctx: ObjectsContext) => void;
+	exitEntities?: (ctx: EntitiesContext) => void;
 
 	/**
-	 * Enter a parse tree produced by `PlatformerParser.object_bod`.
+	 * Enter a parse tree produced by `PlatformerParser.entity_bod`.
 	 * @param ctx the parse tree
 	 */
-	enterObject_bod?: (ctx: Object_bodContext) => void;
+	enterEntity_bod?: (ctx: Entity_bodContext) => void;
 	/**
-	 * Exit a parse tree produced by `PlatformerParser.object_bod`.
+	 * Exit a parse tree produced by `PlatformerParser.entity_bod`.
 	 * @param ctx the parse tree
 	 */
-	exitObject_bod?: (ctx: Object_bodContext) => void;
+	exitEntity_bod?: (ctx: Entity_bodContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `PlatformerParser.statement`.
@@ -126,15 +126,15 @@ export interface PlatformerParserListener extends ParseTreeListener {
 	exitProperty?: (ctx: PropertyContext) => void;
 
 	/**
-	 * Enter a parse tree produced by `PlatformerParser.array`.
+	 * Enter a parse tree produced by `PlatformerParser.list`.
 	 * @param ctx the parse tree
 	 */
-	enterArray?: (ctx: ArrayContext) => void;
+	enterList?: (ctx: ListContext) => void;
 	/**
-	 * Exit a parse tree produced by `PlatformerParser.array`.
+	 * Exit a parse tree produced by `PlatformerParser.list`.
 	 * @param ctx the parse tree
 	 */
-	exitArray?: (ctx: ArrayContext) => void;
+	exitList?: (ctx: ListContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `PlatformerParser.component`.
@@ -159,15 +159,15 @@ export interface PlatformerParserListener extends ParseTreeListener {
 	exitValue?: (ctx: ValueContext) => void;
 
 	/**
-	 * Enter a parse tree produced by `PlatformerParser.array_object`.
+	 * Enter a parse tree produced by `PlatformerParser.list_object`.
 	 * @param ctx the parse tree
 	 */
-	enterArray_object?: (ctx: Array_objectContext) => void;
+	enterList_object?: (ctx: List_objectContext) => void;
 	/**
-	 * Exit a parse tree produced by `PlatformerParser.array_object`.
+	 * Exit a parse tree produced by `PlatformerParser.list_object`.
 	 * @param ctx the parse tree
 	 */
-	exitArray_object?: (ctx: Array_objectContext) => void;
+	exitList_object?: (ctx: List_objectContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `PlatformerParser.exp`.

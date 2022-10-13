@@ -7,15 +7,15 @@ import { ProgramContext } from "./PlatformerParser";
 import { LevelContext } from "./PlatformerParser";
 import { Level_bodyContext } from "./PlatformerParser";
 import { Level_condContext } from "./PlatformerParser";
-import { Level_objectsContext } from "./PlatformerParser";
-import { ObjectsContext } from "./PlatformerParser";
-import { Object_bodContext } from "./PlatformerParser";
+import { Level_entitiesContext } from "./PlatformerParser";
+import { EntitiesContext } from "./PlatformerParser";
+import { Entity_bodContext } from "./PlatformerParser";
 import { StatementContext } from "./PlatformerParser";
 import { PropertyContext } from "./PlatformerParser";
-import { ArrayContext } from "./PlatformerParser";
+import { ListContext } from "./PlatformerParser";
 import { ComponentContext } from "./PlatformerParser";
 import { ValueContext } from "./PlatformerParser";
-import { Array_objectContext } from "./PlatformerParser";
+import { List_objectContext } from "./PlatformerParser";
 import { ExpContext } from "./PlatformerParser";
 import { OpContext } from "./PlatformerParser";
 import { VarnameContext } from "./PlatformerParser";
@@ -58,25 +58,25 @@ export interface PlatformerParserVisitor<Result> extends ParseTreeVisitor<Result
 	visitLevel_cond?: (ctx: Level_condContext) => Result;
 
 	/**
-	 * Visit a parse tree produced by `PlatformerParser.level_objects`.
+	 * Visit a parse tree produced by `PlatformerParser.level_entities`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	visitLevel_objects?: (ctx: Level_objectsContext) => Result;
+	visitLevel_entities?: (ctx: Level_entitiesContext) => Result;
 
 	/**
-	 * Visit a parse tree produced by `PlatformerParser.objects`.
+	 * Visit a parse tree produced by `PlatformerParser.entities`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	visitObjects?: (ctx: ObjectsContext) => Result;
+	visitEntities?: (ctx: EntitiesContext) => Result;
 
 	/**
-	 * Visit a parse tree produced by `PlatformerParser.object_bod`.
+	 * Visit a parse tree produced by `PlatformerParser.entity_bod`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	visitObject_bod?: (ctx: Object_bodContext) => Result;
+	visitEntity_bod?: (ctx: Entity_bodContext) => Result;
 
 	/**
 	 * Visit a parse tree produced by `PlatformerParser.statement`.
@@ -93,11 +93,11 @@ export interface PlatformerParserVisitor<Result> extends ParseTreeVisitor<Result
 	visitProperty?: (ctx: PropertyContext) => Result;
 
 	/**
-	 * Visit a parse tree produced by `PlatformerParser.array`.
+	 * Visit a parse tree produced by `PlatformerParser.list`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	visitArray?: (ctx: ArrayContext) => Result;
+	visitList?: (ctx: ListContext) => Result;
 
 	/**
 	 * Visit a parse tree produced by `PlatformerParser.component`.
@@ -114,11 +114,11 @@ export interface PlatformerParserVisitor<Result> extends ParseTreeVisitor<Result
 	visitValue?: (ctx: ValueContext) => Result;
 
 	/**
-	 * Visit a parse tree produced by `PlatformerParser.array_object`.
+	 * Visit a parse tree produced by `PlatformerParser.list_object`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	visitArray_object?: (ctx: Array_objectContext) => Result;
+	visitList_object?: (ctx: List_objectContext) => Result;
 
 	/**
 	 * Visit a parse tree produced by `PlatformerParser.exp`.

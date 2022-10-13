@@ -23,14 +23,14 @@ public class PlatformerParser extends Parser {
 		EQUAL=27, SEMICOLON=28, COLON=29, SPACE=30, NEWLINE=31;
 	public static final int
 		RULE_program = 0, RULE_level = 1, RULE_level_body = 2, RULE_level_cond = 3, 
-		RULE_level_objects = 4, RULE_objects = 5, RULE_object_bod = 6, RULE_statement = 7, 
-		RULE_property = 8, RULE_array = 9, RULE_component = 10, RULE_value = 11, 
-		RULE_array_object = 12, RULE_exp = 13, RULE_op = 14, RULE_varname = 15;
+		RULE_level_entities = 4, RULE_entities = 5, RULE_entity_bod = 6, RULE_statement = 7, 
+		RULE_property = 8, RULE_list = 9, RULE_component = 10, RULE_value = 11, 
+		RULE_list_object = 12, RULE_exp = 13, RULE_op = 14, RULE_varname = 15;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"program", "level", "level_body", "level_cond", "level_objects", "objects", 
-			"object_bod", "statement", "property", "array", "component", "value", 
-			"array_object", "exp", "op", "varname"
+			"program", "level", "level_body", "level_cond", "level_entities", "entities", 
+			"entity_bod", "statement", "property", "list", "component", "value", 
+			"list_object", "exp", "op", "varname"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -105,8 +105,8 @@ public class PlatformerParser extends Parser {
 	}
 
 	public static class ProgramContext extends ParserRuleContext {
-		public ObjectsContext objects() {
-			return getRuleContext(ObjectsContext.class,0);
+		public EntitiesContext entities() {
+			return getRuleContext(EntitiesContext.class,0);
 		}
 		public List<LevelContext> level() {
 			return getRuleContexts(LevelContext.class);
@@ -133,7 +133,7 @@ public class PlatformerParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(32);
-			objects();
+			entities();
 			setState(34);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -254,8 +254,8 @@ public class PlatformerParser extends Parser {
 	}
 
 	public static class Level_bodyContext extends ParserRuleContext {
-		public Level_objectsContext level_objects() {
-			return getRuleContext(Level_objectsContext.class,0);
+		public Level_entitiesContext level_entities() {
+			return getRuleContext(Level_entitiesContext.class,0);
 		}
 		public Level_condContext level_cond() {
 			return getRuleContext(Level_condContext.class,0);
@@ -322,7 +322,7 @@ public class PlatformerParser extends Parser {
 			}
 
 			setState(71);
-			level_objects();
+			level_entities();
 			setState(73);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -453,24 +453,24 @@ public class PlatformerParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Level_objectsContext extends ParserRuleContext {
+	public static class Level_entitiesContext extends ParserRuleContext {
 		public ComponentContext component() {
 			return getRuleContext(ComponentContext.class,0);
 		}
 		public TerminalNode COLON() { return getToken(PlatformerParser.COLON, 0); }
-		public ArrayContext array() {
-			return getRuleContext(ArrayContext.class,0);
+		public ListContext list() {
+			return getRuleContext(ListContext.class,0);
 		}
 		public TerminalNode STMT_NEWLINE() { return getToken(PlatformerParser.STMT_NEWLINE, 0); }
-		public Level_objectsContext(ParserRuleContext parent, int invokingState) {
+		public Level_entitiesContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_level_objects; }
+		@Override public int getRuleIndex() { return RULE_level_entities; }
 	}
 
-	public final Level_objectsContext level_objects() throws RecognitionException {
-		Level_objectsContext _localctx = new Level_objectsContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_level_objects);
+	public final Level_entitiesContext level_entities() throws RecognitionException {
+		Level_entitiesContext _localctx = new Level_entitiesContext(_ctx, getState());
+		enterRule(_localctx, 8, RULE_level_entities);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
@@ -490,7 +490,7 @@ public class PlatformerParser extends Parser {
 			}
 
 			setState(102);
-			array();
+			list();
 			}
 		}
 		catch (RecognitionException re) {
@@ -504,17 +504,17 @@ public class PlatformerParser extends Parser {
 		return _localctx;
 	}
 
-	public static class ObjectsContext extends ParserRuleContext {
+	public static class EntitiesContext extends ParserRuleContext {
 		public TerminalNode PLAYER() { return getToken(PlatformerParser.PLAYER, 0); }
 		public List<TerminalNode> NAME() { return getTokens(PlatformerParser.NAME); }
 		public TerminalNode NAME(int i) {
 			return getToken(PlatformerParser.NAME, i);
 		}
-		public List<Object_bodContext> object_bod() {
-			return getRuleContexts(Object_bodContext.class);
+		public List<Entity_bodContext> entity_bod() {
+			return getRuleContexts(Entity_bodContext.class);
 		}
-		public Object_bodContext object_bod(int i) {
-			return getRuleContext(Object_bodContext.class,i);
+		public Entity_bodContext entity_bod(int i) {
+			return getRuleContext(Entity_bodContext.class,i);
 		}
 		public TerminalNode STMT_NEWLINE() { return getToken(PlatformerParser.STMT_NEWLINE, 0); }
 		public List<ComponentContext> component() {
@@ -523,15 +523,15 @@ public class PlatformerParser extends Parser {
 		public ComponentContext component(int i) {
 			return getRuleContext(ComponentContext.class,i);
 		}
-		public ObjectsContext(ParserRuleContext parent, int invokingState) {
+		public EntitiesContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_objects; }
+		@Override public int getRuleIndex() { return RULE_entities; }
 	}
 
-	public final ObjectsContext objects() throws RecognitionException {
-		ObjectsContext _localctx = new ObjectsContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_objects);
+	public final EntitiesContext entities() throws RecognitionException {
+		EntitiesContext _localctx = new EntitiesContext(_ctx, getState());
+		enterRule(_localctx, 10, RULE_entities);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
@@ -546,7 +546,7 @@ public class PlatformerParser extends Parser {
 				setState(105);
 				match(NAME);
 				setState(106);
-				object_bod();
+				entity_bod();
 				}
 			}
 
@@ -571,7 +571,7 @@ public class PlatformerParser extends Parser {
 				setState(113);
 				match(NAME);
 				setState(114);
-				object_bod();
+				entity_bod();
 				}
 				}
 				setState(120);
@@ -591,7 +591,7 @@ public class PlatformerParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Object_bodContext extends ParserRuleContext {
+	public static class Entity_bodContext extends ParserRuleContext {
 		public TerminalNode OPEN_BRACE() { return getToken(PlatformerParser.OPEN_BRACE, 0); }
 		public TerminalNode CLOSE_BRACE() { return getToken(PlatformerParser.CLOSE_BRACE, 0); }
 		public List<TerminalNode> STMT_NEWLINE() { return getTokens(PlatformerParser.STMT_NEWLINE); }
@@ -608,15 +608,15 @@ public class PlatformerParser extends Parser {
 		public TerminalNode NEWLINE(int i) {
 			return getToken(PlatformerParser.NEWLINE, i);
 		}
-		public Object_bodContext(ParserRuleContext parent, int invokingState) {
+		public Entity_bodContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_object_bod; }
+		@Override public int getRuleIndex() { return RULE_entity_bod; }
 	}
 
-	public final Object_bodContext object_bod() throws RecognitionException {
-		Object_bodContext _localctx = new Object_bodContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_object_bod);
+	public final Entity_bodContext entity_bod() throws RecognitionException {
+		Entity_bodContext _localctx = new Entity_bodContext(_ctx, getState());
+		enterRule(_localctx, 12, RULE_entity_bod);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
@@ -740,28 +740,28 @@ public class PlatformerParser extends Parser {
 		return _localctx;
 	}
 
-	public static class ArrayContext extends ParserRuleContext {
+	public static class ListContext extends ParserRuleContext {
 		public TerminalNode OPEN_SQUARE() { return getToken(PlatformerParser.OPEN_SQUARE, 0); }
-		public List<Array_objectContext> array_object() {
-			return getRuleContexts(Array_objectContext.class);
+		public List<List_objectContext> list_object() {
+			return getRuleContexts(List_objectContext.class);
 		}
-		public Array_objectContext array_object(int i) {
-			return getRuleContext(Array_objectContext.class,i);
+		public List_objectContext list_object(int i) {
+			return getRuleContext(List_objectContext.class,i);
 		}
 		public TerminalNode CLOSED_SQUARE() { return getToken(PlatformerParser.CLOSED_SQUARE, 0); }
 		public List<TerminalNode> COMMA() { return getTokens(PlatformerParser.COMMA); }
 		public TerminalNode COMMA(int i) {
 			return getToken(PlatformerParser.COMMA, i);
 		}
-		public ArrayContext(ParserRuleContext parent, int invokingState) {
+		public ListContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_array; }
+		@Override public int getRuleIndex() { return RULE_list; }
 	}
 
-	public final ArrayContext array() throws RecognitionException {
-		ArrayContext _localctx = new ArrayContext(_ctx, getState());
-		enterRule(_localctx, 18, RULE_array);
+	public final ListContext list() throws RecognitionException {
+		ListContext _localctx = new ListContext(_ctx, getState());
+		enterRule(_localctx, 18, RULE_list);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
@@ -769,7 +769,7 @@ public class PlatformerParser extends Parser {
 			setState(141);
 			match(OPEN_SQUARE);
 			setState(142);
-			array_object();
+			list_object();
 			setState(147);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -779,7 +779,7 @@ public class PlatformerParser extends Parser {
 				setState(143);
 				match(COMMA);
 				setState(144);
-				array_object();
+				list_object();
 				}
 				}
 				setState(149);
@@ -847,8 +847,8 @@ public class PlatformerParser extends Parser {
 			return getRuleContext(VarnameContext.class,0);
 		}
 		public TerminalNode CONST() { return getToken(PlatformerParser.CONST, 0); }
-		public Array_objectContext array_object() {
-			return getRuleContext(Array_objectContext.class,0);
+		public List_objectContext list_object() {
+			return getRuleContext(List_objectContext.class,0);
 		}
 		public ValueContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -881,7 +881,7 @@ public class PlatformerParser extends Parser {
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(156);
-				array_object();
+				list_object();
 				}
 				break;
 			default:
@@ -899,7 +899,7 @@ public class PlatformerParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Array_objectContext extends ParserRuleContext {
+	public static class List_objectContext extends ParserRuleContext {
 		public TerminalNode OPEN_PAREN() { return getToken(PlatformerParser.OPEN_PAREN, 0); }
 		public List<ExpContext> exp() {
 			return getRuleContexts(ExpContext.class);
@@ -912,15 +912,15 @@ public class PlatformerParser extends Parser {
 		public TerminalNode COMMA(int i) {
 			return getToken(PlatformerParser.COMMA, i);
 		}
-		public Array_objectContext(ParserRuleContext parent, int invokingState) {
+		public List_objectContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_array_object; }
+		@Override public int getRuleIndex() { return RULE_list_object; }
 	}
 
-	public final Array_objectContext array_object() throws RecognitionException {
-		Array_objectContext _localctx = new Array_objectContext(_ctx, getState());
-		enterRule(_localctx, 24, RULE_array_object);
+	public final List_objectContext list_object() throws RecognitionException {
+		List_objectContext _localctx = new List_objectContext(_ctx, getState());
+		enterRule(_localctx, 24, RULE_list_object);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);

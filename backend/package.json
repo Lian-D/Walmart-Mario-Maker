@@ -13,6 +13,5 @@
     "antlr4ts": "antlr4ts -visitor src/parser/PlatformerParser.g4",
     "build": "tsc --build",
     "start": "node src/controller/App.js"
-    "antlr4tsLex": "antlr4ts -visitor src/parser/PlatformerLexer.g4"
   }
 }
