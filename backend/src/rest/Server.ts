@@ -208,7 +208,7 @@ export default class Server {
                                 "actions": [ {
                                     "effect": "add",
                                     "category": "door",
-                                    "payload": ["d1spawn", "doorType1", "level2 door2", 100, 90]
+                                    "payload": ["d1spawn", "doorType1", 100, 90, "level2 door2"]
                                 }, 
                                 {
                                     "effect": "remove",
