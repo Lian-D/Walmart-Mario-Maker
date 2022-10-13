@@ -430,7 +430,13 @@ function CreateEngine(setState, initialState) {
             let operation = e.conditions.op;
             let a = e.conditions.opA;
             let b = e.conditions.opB;
-            let evalRes = evaluate(operation, evaluate(a.op, a.opA, a.opB), evaluate(b.op, b.opA, b.opB));
+            let evalRes;
+            if ((operation == "OR" || operation == "AND") && (a.op != undefined && b.op != undefined)) {
+                evalRes = evaluate(operation, evaluate(a.op, a.opA, a.opB), evaluate(b.op, b.opA, b.opB));
+            } else {
+                evalRes = evaluate(operation, a, b);
+            }
+
             if (evalRes) {
                 e.actions.forEach( act => {
                     enforceResult(act.effect, act.category, act.payload);
@@ -485,7 +491,7 @@ function CreateEngine(setState, initialState) {
     const EvaluateOperandVariable = (operand) => {
         switch (operand) {
             case 'coins': return this.cumCoins;
-            case 'health': return null; //TODO: Need Len's PR for player health
+            case 'health': return this.player.health;
             default: return operand;
         }
     }
