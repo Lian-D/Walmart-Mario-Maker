@@ -31,6 +31,7 @@ OPEN_SQUARE  : '[';
 CLOSED_SQUARE  : ']';
 LARGER  : '>';
 SMALLER  : '<';
+EQUAL   : '=';
 SEMICOLON : ';';
 COLON : ':';
 
