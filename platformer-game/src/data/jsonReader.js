@@ -8,7 +8,7 @@ import {
 const loadGame = (setState, setStart, setErrorTxt, propsGameData) => {
     // delete require.cache['./src/data/gameData.json'];
     // let gameData = require('./gameData.json');
-    let gameData = propsGameData;
+    let gameData = structuredClone(propsGameData);
 
     if (gameData.game) {
         gameData = gameData['game'];

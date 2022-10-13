@@ -590,6 +590,7 @@ function CreateEngine(setState, initialState) {
 }
 
 export default function Engine(props) {
+    const [originalJSON, setOriginalJSON] = useState({});
     // game state
     const [gameState, setGameState] = useState({});
 
@@ -610,7 +611,8 @@ export default function Engine(props) {
         if (e.key === ' ') {
             // start the game when the user first presses the space bar
             if (!started && !start) {
-                gameData = loadGame(setGameState, setStart, setErrorTxt, props.gameData);
+                setOriginalJSON(props.gameData); // maybe not the right place for it, but let's put this here for now
+                gameData = loadGame(setGameState, setStart, setErrorTxt, originalJSON);
             }
 
             // if the game has not been initialized return
