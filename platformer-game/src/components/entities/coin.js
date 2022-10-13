@@ -1,29 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Coin = ({height, width, xPos, yPos, name}) => {
+const Coin = ({coin}) => {
     const style = {
-        height: height,
-        width: width,
-        left: xPos,
-        bottom: yPos
+        height: coin.height,
+        width: coin.width,
+        left: coin.xPos,
+        bottom: coin.yPos,
+        background: `url("${coin.image}") center / cover no-repeat`
     };
 
     return (
-        <span
-            className="coin"
-            key={name}
-            style={style}
-        />
+        <span className="coin" style={style} />
     );
 };
 
 Coin.propTypes = {
-    height: PropTypes.number,
-    width: PropTypes.number,
-    xPos: PropTypes.number,
-    yPos: PropTypes.number,
-    name: PropTypes.string,
+    coin: PropTypes.object
 };
 
 export default Coin;

@@ -1,28 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { platformHeight } from '../../data/constants';
 
-const Platform = ({xPos, yPos, length, height, name}) => {
+const Platform = ({platform}) => {
     const style = {
-        transform: `translate(${xPos}px, -${yPos}px)`,
-        height: height,
-        width: length
+        transform: `translate(${platform.xPos}px, -${platform.yPos}px)`,
+        background: `${platform.colour} url("${platform.image}")`,
+        height: platformHeight,
+        width: platform.length
     };
 
-    return (
-        <span 
-            className="platform"
-            key={name}
-            style={style}
-        />
+    return ( 
+        <span className="platform"style={style}/> 
     );
 };
 
 Platform.propTypes = {
-    xPos: PropTypes.number,
-    yPos: PropTypes.number,
-    length: PropTypes.number,
-    height: PropTypes.number,
-    name: PropTypes.string,
+    platform: PropTypes.object
 };
 
 export default Platform;

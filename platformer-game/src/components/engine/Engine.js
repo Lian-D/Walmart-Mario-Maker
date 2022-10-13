@@ -1,101 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import styles from './engine.module.scss';
+import PropTypes from 'prop-types';
 import { useEvent } from '../../hooks';
-import Door from '../entities/door';
-import Platform from '../entities/platform';
-import Character from '../entities/character';
-import Terrain from "../entities/terrain";
-import Coin from "../entities/coin";
+import {
+    charWidth, 
+    charHeight, 
+    platformHeight, 
+    terrainHeight, 
+    tile, 
+    doorWidth,
+    doorHeight,
+    terminalVelocity,
+    enemyHeight,
+    enemyWidth,
+} from '../../data/constants';
+import Game from '../entities/game';
+import { loadGame, loadProperties } from '../../data/jsonReader';
 
-const ENEMIES = [
-    250,
-    390,
-];
+let gameData = {};
 
-// Defining platforms here for now, but we can probably pass this in as a prop later
-
-const PLATFORMS = [
-    {
-        "xPos": 100,
-        "yPos": 30,
-        "length": 50
-    },
-    {
-        "xPos": 50,
-        "yPos": 20,
-        "length": 50 
-    },
-    {
-        "xPos": 200,
-        "yPos": 30,
-        "length": 50
-    }
-];
-
-const TERRAIN = [
-    {
-        "xPos": 150,
-        "yPos": 30,
-        "length": 50
-    },
-    {
-        "xPos": 0,
-        "yPos": 0,
-        "length": 50
-    },
-    {
-        "xPos": 100,
-        "yPos": 0,
-        "length": 200
-    }
-]
-
-const DOORS = [
-    {
-        "xPos": 200,
-        "yPos": 0,
-        "height": 130,
-        "width": 110,
-        "isOpen": true,
-        "name": "door1"
-    }
-];
-
-const COINS = [
-    {
-        "xPos": 120,
-        "yPos": 50,
-        "height": 30,
-        "width": 30,
-        "name": "c1"
-    },
-    {
-        "xPos": 70,
-        "yPos": 40,
-        "height": 30,
-        "width": 30,
-        "name": "c2"
-    }
-];
-
-const charWidth = 100;
-const charHeight = 100;
-
-const platformHeight = 25;
-const terrainHeight = 50;
-
-const enemyWidth = 80;
-const enemyHeight = 200;
-
-function CreateEngine(setState) {
-    this.settings = {
-        tile: 10, // width of one tile
-    };
+function CreateEngine(setState, initialState) {
+    this.level = initialState.level;
+    this.game = initialState.status;
 
     // current stage position
-    this.game = 'start';
-    this.stageXPos = 0;
+    this.stageXPos = initialState.stageX;
+    this.stageYPos = initialState.stageY;
 
+    this.player = initialState.player;
+
+    this.jump = false;
     this.inAir = true;
     this.playerYAcceleration = -1; // gravity, in m/s^2
     // every second, add this onto the velocity
@@ -106,91 +39,53 @@ function CreateEngine(setState) {
     // when the player is on a surface, set the velocity to be 0
     // when a jump is triggered, add a positive amount to the Y velocity
 
-    this.playerTerminalVelocity = -40; // the maximum velocity a human can have
-    // do not allow the player to be faster than this
-
-    this.cumCoins = 0;
-    this.jump = false;
-    this.xDirection = '';
-
-    this.playerXPos = 200;
-    this.playerYPos = 100;
-    this.enemies = ENEMIES.map(b => (b * this.settings.tile));
-    this.platforms = PLATFORMS.map(p => (
-        {
-            "xPos": p["xPos"] * this.settings.tile,
-            "yPos": p["yPos"] * this.settings.tile,
-            "length": p["length"] * this.settings.tile,
-        }
-    ));
-    this.terrain = TERRAIN.map(t => (
-        {
-            "xPos": t["xPos"] * this.settings.tile,
-            "yPos": t["yPos"] * this.settings.tile,
-            "length": t["length"] * this.settings.tile,
-        }
-    ));
-    this.doors = DOORS.map(d => ({
-        "xPos": d["xPos"] * this.settings.tile,
-        "yPos": d["yPos"] * this.settings.tile,
-        "height": d["height"],
-        "width": d["width"],
-        "isOpen": d["isOpen"],
-        "name": d["name"],
-    }));
-
-    this.coins = COINS.map(c => (
-        {
-        "xPos": c["xPos"] * this.settings.tile,
-        "yPos": c["yPos"] * this.settings.tile,
-        "height": c["height"],
-        "width": c["width"],
-        "name": c["name"],
-        }
-    ));
+    this.cumCoins = initialState.cumCoins;
+    this.buttonMap = initialState.buttonMap;
 
     const applyYAcceleration = () => {
-        if ((this.playerYVelocity + this.playerYAcceleration) < this.playerTerminalVelocity){
-            this.playerYVelocity = this.playerTerminalVelocity;
+        if ((this.playerYVelocity + this.playerYAcceleration) < terminalVelocity){
+            this.playerYVelocity = terminalVelocity;
         } else {
             this.playerYVelocity += this.playerYAcceleration;
         }
     }
 
     const applyYVelocity = () => {
-        if (this.playerYPos + this.playerYVelocity < 0) {
+        let nextPos = this.player.yPos + this.playerYVelocity;
+
+        if (nextPos + this.player.height < 0) {
             this.game = 'fail';
-        } else if (checkPlatform(this.playerYPos + this.playerYVelocity)) {
-            this.playerYPos =  checkPlatform(this.playerYPos + this.playerYVelocity);
+        } else if (checkPlatform(this.player, nextPos, this.playerYVelocity)) {
+            this.player.yPos = checkPlatform(this.player, nextPos, this.playerYVelocity);
             this.playerYVelocity = 0;
             this.inAir = false;
-        } else if (checkYTerrain(this.playerYPos + this.playerYVelocity)) {
-            this.playerYPos = checkYTerrain(this.playerYPos + this.playerYVelocity);
+        } else if (checkYTerrain(this.player, nextPos, this.playerYVelocity)) {
+            this.player.yPos = checkYTerrain(this.player, nextPos, this.playerYVelocity);
             if (this.playerYVelocity < 0) {
                 this.inAir = false;
             }
             this.playerYVelocity = 0;
         } else {
-            this.playerYPos += this.playerYVelocity;
+            this.player.yPos += this.playerYVelocity;
         }
     }
 
-    const checkYTerrain = (newYPos) => {
-        const charLeftXPos = this.playerXPos;
-        const charRightXPos = this.playerXPos + charWidth;
-        const charCurrentYPos = this.playerYPos;
-        const charCurrentHeadYPos = this.playerYPos + charHeight;
+    const checkYTerrain = (entity, newYPos, velocity) => {
+        const charLeftXPos = entity.xPos;
+        const charRightXPos = entity.xPos + entity.width;
+        const charCurrentYPos = entity.yPos;
+        const charCurrentHeadYPos = entity.yPos + entity.height;
 
-        for (let t of this.terrain) {
+        for (let t of this.level.terrain) {
             let terrainSurfaceYPos = t["yPos"] + terrainHeight;
             let terrainBottomYPos = t["yPos"];
             if (charRightXPos >= t["xPos"]
                 && charLeftXPos <= t["xPos"] + t["length"]) {
-                if (this.playerYVelocity < 0
+                if (velocity < 0
                     && charCurrentYPos >= terrainSurfaceYPos
                     && newYPos <= terrainSurfaceYPos) {
                     return terrainSurfaceYPos;
-                } else if (this.playerYVelocity > 0
+                } else if (velocity > 0
                     && charCurrentHeadYPos <= terrainBottomYPos
                     && (newYPos + charHeight) >= terrainBottomYPos) {
                     return terrainBottomYPos - charHeight;
@@ -201,14 +96,14 @@ function CreateEngine(setState) {
     }
 
     // returns false if the player is not about to go through a platform, else return the y position of the surface of the platform
-    const checkPlatform = (newYPos) => {
-        const charLeftXPos = this.playerXPos;
-        const charRightXPos = this.playerXPos + charWidth;
-        const charCurrentYPos = this.playerYPos;
+    const checkPlatform = (entity, newYPos, velocity) => {
+        const charLeftXPos = entity.xPos;
+        const charRightXPos = entity.xPos + entity.width;
+        const charCurrentYPos = entity.yPos;
 
-        for (let platform of this.platforms) {
+        for (let platform of this.level.platforms) {
             let platformSurfaceYPos = platform["yPos"] + platformHeight;
-            if (this.playerYVelocity < 0
+            if (velocity < 0
                 && charRightXPos >= platform["xPos"]
                 && charLeftXPos <= platform["xPos"] + platform["length"]
                 && charCurrentYPos >= platformSurfaceYPos
@@ -221,59 +116,103 @@ function CreateEngine(setState) {
     }
 
     const checkDoors = () => {
-        const charXPos = this.playerXPos;
-        const charYPos = this.playerYPos;
+        const charXPos = this.player.xPos;
+        const charYPos = this.player.yPos;
 
-        this.doors.forEach((door) => {
+        this.level.doors.forEach((door) => {
             if (
-                charXPos + charWidth >= door.xPos + (door.width * 0.5)
-
-                && charYPos <= door.yPos + (door.height * 0.5)
+                charXPos + charWidth >= door.xPos + (doorWidth * 0.5)
+                && charYPos <= door.yPos + (doorHeight * 0.5)
                 && charYPos + charHeight >= door.yPos
-                && charXPos <= door.xPos + door.width
-                && door.isOpen
+                && charXPos <= door.xPos + doorWidth
+                && (this.buttonMap.has(door["key"]) || door["key"] === null)
+                && !door.tempClosed
             ) {
-                this.game = 'win';
+                if (door.goesTo === 'win') {
+                    this.game = 'win';
+                } else {
+                    let location = door.goesTo.split(" ");
+                    this.level = gameData.levels.find(level => level.name === location[0]);
+                    loadProperties(this.level, gameData.types);
+
+                    let exitDoor = this.level.doors.find(door => door.name === location[1]);
+                    exitDoor.tempClosed = true;
+
+                    this.player.xPos = exitDoor.xPos;
+                    this.player.yPos = exitDoor.yPos;
+                    moveCamera();
+                }
+            } 
+            if (door.tempClosed && 
+                (charXPos >= door.xPos + doorWidth 
+                    || charXPos + charWidth <= door.xPos 
+                    || charYPos >= door.yPos + doorHeight 
+                    || charYPos + charHeight <= door.yPos)
+            ) {
+                door.tempClosed = false;
             }
         });
     };
 
     const checkCoins = () => {
-        const charXPos = this.playerXPos;
-        const charYPos = this.playerYPos;
+        const charXPos = this.player.xPos;
+        const charYPos = this.player.yPos;
         let coinsIndex = 0;
-        this.coins.forEach((coin) => {
+        this.level.coins.forEach((coin) => {
             if (
                 charXPos + charWidth >= coin.xPos + (coin.width * 0.5)
                 && charYPos <= coin.yPos + (coin.height * 0.5)
                 && charYPos + charHeight >= coin.yPos
                 && charXPos <= coin.xPos + coin.width
             ) {
-                this.coins.splice(coinsIndex, 1);
-                this.cumCoins++;
-//                alert(this.cumCoins);
+                this.level.coins.splice(coinsIndex, 1);
+                this.cumCoins += coin.value;
             }
             coinsIndex++;
         });
     };
 
-    const checkEnemies = () => {
-        const charXPos = this.playerXPos;
-        const charYPos = this.playerYPos;
+    const checkButtons = () => {
+        const charXPos = this.player.xPos;
+        const charYPos = this.player.yPos;
+        let buttonIndex = 0;
+        this.level.buttons.forEach((button) => {
+            if (
+                charXPos + charWidth >= button.xPos + (button.width * 0.5)
+                && charYPos <= button.yPos + (button.height * 0.5)
+                && charYPos + charHeight >= button.yPos
+                && charXPos <= button.xPos + button.width
+            ) {
+                this.level.buttons.splice(buttonIndex, 1);
+                if (!this.buttonMap.get(button.type)) {
+                    this.buttonMap.set(button.type, "triggered");
+                }
+            }
+        });
+    };
 
-        // if the char has passed all enemies
-        if (charXPos > this.enemies[this.enemies.length - 1] + 200) {
-            this.game = 'win';
+    const checkEnemies = () => {
+        const charXPos = this.player.xPos;
+        const charYPos = this.player.yPos;
+
+        if (this.player.invulnerable) {
+            this.player.invulnerable--;
         }
 
-        this.enemies.forEach((enemy) => {
+        this.level.enemies.forEach((enemy) => {
             // if char hits an enemy
-            if (charXPos + charWidth >= enemy
-                && charYPos <= enemyHeight
-                && charYPos + charHeight >= 0
-                && charXPos <= enemy + enemyWidth
+            if (charXPos + charWidth >= enemy.xPos + (enemy.width * 0.5)
+                && charYPos <= enemy.yPos + (enemy.height * 0.5)
+                && charYPos + charHeight >= enemy.yPos
+                && charXPos <= enemy["xPos"] + enemy.width
             ) {
-                this.game = 'fail';
+                if (!this.player.invulnerable) {
+                    this.player.health -= 1;
+                    this.player.invulnerable = 70;
+                }
+                if (this.player.health === 0) {
+                    this.game = 'fail';
+                }
             }
         });
     };
@@ -288,45 +227,111 @@ function CreateEngine(setState) {
         }
     };
 
-    const doMove = () => {
-        if (this.xDirection === 'right') {
-            if (checkXTerrain(this.playerXPos + this.settings.tile)){
-                this.playerXPos = checkXTerrain(this.playerXPos + this.settings.tile);
-            } else {
-                this.playerXPos += this.settings.tile;
-            }
+    const moveXPos = (entity, speedMultiplier) => {
+        let newPos = entity["xPos"];
+        if (entity.xDirection === 'right') {
+            newPos = entity["xPos"] + tile * speedMultiplier;
         } 
-        else if (this.xDirection === 'left') {
-            if (checkXTerrain(this.playerXPos - this.settings.tile)){
-                this.playerXPos = checkXTerrain(this.playerXPos - this.settings.tile);
-            } else {
-                this.playerXPos -= this.settings.tile;
-            }
+        else if (entity.xDirection === 'left') {
+            newPos = entity["xPos"] - tile * speedMultiplier;
         }
-        this.stageXPos = Math.max(this.playerXPos - 700, 0);
-        this.playerXPos = Math.max(this.playerXPos, 0);
-        // add another check for the max width of the stage when we get around to defining it
+
+        newPos = checkXTerrain(entity, newPos) ? checkXTerrain(entity, newPos) : newPos;
+        newPos = Math.max(newPos, 0);
+
+        if (newPos + entity.width > this.level.width) {
+            newPos = this.level.width - entity.width;
+        }
+
+        entity.xPos = newPos;
     };
 
-    const checkXTerrain = (newXPos) => {
-        for (let t of this.terrain) {
+    const movePlayer = () => {
+        moveXPos(this.player, this.player.speed);
+
+        // check and perform jump
+        doJump();
+        applyYAcceleration();
+        applyYVelocity();
+    }
+
+    const moveEnemies = () => {
+        let enemyIndex = 0;
+        this.level.enemies.forEach(enemy => {
+            if (enemy["behaviour"] === "FOLLOW" 
+                && Math.abs(this.player.xPos - enemy.xPos) < window.innerWidth / 2) {
+                if (this.player.xPos > enemy["xPos"]) {
+                    enemy["xDirection"] = "right";
+                } 
+                else if (this.player.xPos < enemy["xPos"]) {
+                    enemy["xDirection"] = "left";
+                } else {
+                    enemy["xDirection"] = "";
+                }
+
+                moveXPos(enemy, enemy.speed);
+                applyEnemyYVelocity(enemy, enemyIndex);
+            }
+            enemyIndex++;
+        });
+    };
+
+    const applyEnemyYVelocity = (enemy, enemyIndex) => {
+        let newVelocity = enemy.velocity - tile;
+        let nextYPos = enemy.yPos + newVelocity;
+
+        if (checkPlatform(enemy, nextYPos, newVelocity)) {
+            enemy.yPos = checkPlatform(enemy, nextYPos, newVelocity);
+            enemy.velocity = Math.max(terminalVelocity, newVelocity);
+        } else if (checkYTerrain(enemy, nextYPos, newVelocity)) {
+            enemy.yPos = checkYTerrain(enemy, nextYPos, newVelocity);
+            enemy.velocity = Math.max(terminalVelocity, newVelocity);
+        } else {
+            enemy.yPos = nextYPos;
+            enemy.velocity = 0;
+        }
+
+        if (enemy.yPos + enemy.height / 2 < 0) {
+            this.level.enemies.splice(enemyIndex, 1);
+        } 
+    }
+
+    const moveCamera = () => {
+        let screenWidth = window.innerWidth;
+        let screenHeight = window.innerHeight;
+        
+        this.stageXPos = Math.max(this.player.xPos - screenWidth / 2, 0);
+        this.stageYPos = Math.max(this.player.yPos - screenHeight / 2, 0);
+
+        if (this.stageXPos + screenWidth > this.level.width) {
+            this.stageXPos = this.level.width - screenWidth;
+        }
+
+        if (this.stageYPos + screenHeight > this.level.height) {
+            this.stageYPos = Math.max(this.level.height - screenHeight, 0);
+
+        }
+    };
+
+    const checkXTerrain = (entity, newXPos) => {
+        for (let t of this.level.terrain) {
             let terrainYPos = t["yPos"];
             let terrainYSurface = t["yPos"] + terrainHeight;
-            let playerYTopPos = this.playerYPos + charHeight;
+            let entityYTopPos = entity.yPos + charHeight;
             if ( // TODO: player is at correct y value
-                (this.playerYPos >= terrainYPos && this.playerYPos < terrainYSurface)
-                || (playerYTopPos <= terrainYSurface && playerYTopPos > terrainYPos)
-                || (this.playerYPos >= terrainYPos && playerYTopPos <= terrainYSurface)
+                (entity.yPos >= terrainYPos && entity.yPos < terrainYSurface)
+                || (entityYTopPos <= terrainYSurface && entityYTopPos > terrainYPos)
+                || (entity.yPos >= terrainYPos && entityYTopPos <= terrainYSurface)
             ) {
                 let terrainLeftXPos = t["xPos"];
                 let terrainRightXPos = t["xPos"] + t["length"];
-                if (this.xDirection === 'right'
+                if (entity.xDirection === 'right'
                     && (newXPos + charWidth) > terrainLeftXPos
-                    && this.playerXPos < terrainLeftXPos) { // moving right, we only want to check the left wall
+                    && entity.xPos < terrainLeftXPos) { // moving right, we only want to check the left wall
                     return terrainLeftXPos - charWidth;
-                } else if (this.xDirection === 'left'
+                } else if (entity.xDirection === 'left'
                     && newXPos < terrainRightXPos
-                    && this.playerXPos > terrainLeftXPos) { // moving left
+                    && entity.xPos > terrainLeftXPos) { // moving left
                     return terrainRightXPos;
                 }
             }
@@ -334,33 +339,221 @@ function CreateEngine(setState) {
         return false;
     }
 
+
+    const addEnemy = (obj) => {
+        let enemyTypes = gameData.types.enemy;
+        let enemy = {
+            name: obj[0],
+            type: obj[1],
+            xPos: obj[2],
+            yPos: obj[3],
+            velocity: 0,
+            width: enemyWidth,
+            height: enemyHeight,
+            ... enemyTypes[obj[1]]
+        };
+        if (!(this.level.enemies.find(e => e.name == obj[0]))){
+            this.level.enemies.push(enemy);
+        }
+    } 
+
+    const addPlatform = (obj) => {
+        let platformTypes = gameData.types.platform;
+        let platform = {
+            name: obj[0],
+            type: obj[1],
+            xPos: obj[2],
+            yPos: obj[3],
+            length: obj[4],
+            ... platformTypes[obj[1]]
+        };
+        if (!(this.level.platforms.find(e => e.name == obj[0]))){
+            this.level.platforms.push(platform);
+        }
+    } 
+
+    const addDoor = (obj) => {
+        let doorTypes = gameData.types.door;
+        let door = {
+            name: obj[0],
+            type: obj[1],
+            xPos: obj[2],
+            yPos: obj[3],
+            goesTo: obj[4],
+            ... doorTypes[obj[1]]
+        };
+        if (!(this.level.doors.find(e => e.name == obj[0]))){
+            this.level.doors.push(door);
+        }
+    } 
+
+    const addButton = (obj) => {
+        let buttonTypes = gameData.types.button;
+        let button = {
+            name: obj[0],
+            type: obj[1],
+            xPos: obj[2],
+            yPos: obj[3],
+            ... buttonTypes[obj[1]]
+        };
+        if (!(this.level.buttons.find(e => e.name == obj[0]))){
+            this.level.buttons.push(button);
+        }
+    } 
+
+    const delEnemy = (obj) => {
+        this.level.enemies = this.level.enemies.filter( (e) => {
+            return !(e.name == obj[0]);
+       });
+    } 
+
+    const delPlatform = (obj) => {
+        this.level.platforms = this.level.platforms.filter( (e) => {
+            return !(e.name == obj[0]);
+       });
+    } 
+
+    const delDoor = (obj) => {
+        this.level.door = this.level.door.filter( (e) => {
+            return !(e.name == obj[0]);
+       });
+    } 
+
+    const delButton = (obj) => {
+        this.level.buttons = this.level.buttons.filter( (e) => {
+            return !(e.name == obj[0]);
+       });
+    } 
+
+    const runChecks = () => {
+        this.level.checks.forEach( e => {
+            let operation = e.conditions.op;
+            let a = e.conditions.opA;
+            let b = e.conditions.opB;
+            let evalRes = evaluate(operation, evaluate(a.op, a.opA, a.opB), evaluate(b.op, b.opA, b.opB));
+            if (evalRes) {
+                e.actions.forEach( act => {
+                    enforceResult(act.effect, act.category, act.payload);
+                })
+            }
+        });
+    }
+
+   const enforceResult = (action, category, obj) => {
+       switch (action) {
+           case 'add': return enforceAdd(category, obj);
+           case 'remove': return enforceRemove(category, obj);
+       }
+   }
+
+   const enforceAdd = (category, obj) => {
+        // console.log(this.level);
+        switch (category) {
+            case 'enemy': return addEnemy(obj);
+            case 'door': return addDoor(obj);
+            case 'button': return addButton(obj);
+            case 'platform': return addPlatform(obj);
+        }
+   }
+
+   const enforceRemove = (category, obj) => {
+        switch (category) {
+            case 'enemy': return delEnemy(obj);
+            case 'door': return delDoor(obj);
+            case 'button': return delButton(obj);
+            case 'platform': return delPlatform(obj);
+        }
+   }
+
+    const evaluate = (operand, operandA, operandB) => {
+        operandA = EvaluateOperandVariable(operandA);
+        operandB = EvaluateOperandVariable(operandB);
+        // console.log(operandA);
+        switch (operand) {
+            case '<': return evalLesser(operandA, operandB);
+            case '>': return evalGreater(operandA, operandB);
+            case '>=': return evalGreaterEqual(operandA, operandB);
+            case '<=': return evalLesserEqual(operandA, operandB);
+            case '==': return evalEqual(operandA, operandB);
+            case '!': return evalNot(operandA);
+            case 'buttonCheck': return evalButtonCheck(operandA);
+            case 'OR': return evalOr(operandA, operandB);
+            case 'AND': return evalAnd(operandA, operandB);
+        }
+    }
+
+    const EvaluateOperandVariable = (operand) => {
+        switch (operand) {
+            case 'coins': return this.cumCoins;
+            case 'health': return null; //TODO: Need Len's PR for player health
+            default: return operand;
+        }
+    }
+
+    //Byte functions for operands
+    const evalGreater = (operandA, operandB) => {
+        return operandA > operandB;
+    }
+    const evalLesser = (operandA, operandB) => {
+        return operandA < operandB;
+    }
+    const evalEqual = (operandA, operandB) => {
+        return operandA == operandB;
+    }
+    const evalGreaterEqual = (operandA, operandB) => {
+        return operandA >= operandB;
+    }
+    const evalLesserEqual = (operandA, operandB) => {
+        return operandA <= operandB;
+    }
+    const evalNot = (operandA) => {
+        return !operandA;
+    }
+    const evalButtonCheck = (operandA) => {
+        // console.log(operandA);
+        // console.log(this.buttonMap);
+        if (this.buttonMap.get(operandA) == "triggered") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    const evalOr = (operandA, operandB) => {
+        return operandA || operandB;
+    }
+    const evalAnd = (operandA, operandB) => {
+        return operandA && operandB;
+    }
+
     // function that will be continuously ran
     this.repaint = () => {
-        doMove();
-        // check and perform jump
-        doJump();
+        runChecks();
 
-        applyYAcceleration();
-        applyYVelocity();
+        movePlayer();
+        moveCamera();
+        moveEnemies();
 
         // check if char has hit a enemy
         checkEnemies();
 
         checkDoors();
         checkCoins();
+        checkButtons();
+
+        runChecks();
 
         // set state for use in the component
         setState({
             stageX: this.stageXPos,
-            playerX: this.playerXPos,
-            playerY: this.playerYPos,
-            playerXDirection: this.xDirection,
-            blocks: this.blocks,
-            enemies: this.enemies,
-            platforms: this.platforms,
-            terrain: this.terrain,
-            doors: this.doors,
-            coins: this.coins,
+            stageY: this.stageYPos,
+            player: {
+                ...initialState.player,
+                xPos: this.player.xPos,
+                yPos: this.player.yPos,
+                xDirection: this.player.xDirection
+            },
+            level: this.level,
+            buttonMap: this.buttonMap,
             cumCoins: this.cumCoins,
             status: this.game,
         });
@@ -370,9 +563,10 @@ function CreateEngine(setState) {
             // reset and stop
             this.game = 'start';
             this.stageXPos = 0;
+            this.stageYPos = 0;
             this.jump = false;
-            this.xDirection = '';
-            this.playerYPos = 0;
+            this.player.xDirection = '';
+            this.player.yPos = 0;
             return null;
         }
 
@@ -390,29 +584,15 @@ function CreateEngine(setState) {
             }
         },
         move: (direction) => {
-            this.xDirection = direction;
+            this.player.xDirection = direction;
         },
     });
 }
 
-const initialState = {
-    stageX: 0,
-    playerX: 200,
-    playerY: 0,
-    playerXDirection: '',
-    blocks: [],
-    enemies: [],
-    platforms: [],
-    terrain: [],
-    doors: [],
-    coins: [],
-    cumCoins: 0,
-    status: 'start',
-};
-
-export default function Engine() {
+export default function Engine(props) {
+    const [originalJSON, setOriginalJSON] = useState({});
     // game state
-    const [gameState, setGameState] = useState(initialState);
+    const [gameState, setGameState] = useState({});
 
     // trigger game to start
     const [start, setStart] = useState(false);
@@ -423,12 +603,16 @@ export default function Engine() {
     // instance of game engine
     const [engine, setEngine] = useState(null);
 
+    // record any error from the JSON
+    const [errorTxt, setErrorTxt] = useState("");
+
     const handleKeyPress = (e) => {
         // the ' ' char actually represents the space bar key.
         if (e.key === ' ') {
             // start the game when the user first presses the space bar
             if (!started && !start) {
-                setStart(true);
+                setOriginalJSON(props.gameData); // maybe not the right place for it, but let's put this here for now
+                gameData = loadGame(setGameState, setStart, setErrorTxt, originalJSON);
             }
 
             // if the game has not been initialized return
@@ -466,6 +650,7 @@ export default function Engine() {
                 new CreateEngine(
                     // set state
                     state => setGameState(state),
+                    gameState
                 ),
             );
         }
@@ -473,113 +658,35 @@ export default function Engine() {
         if (gameState.status === 'fail' && started) {
             setStarted(false);
             alert('You lost! Try again?');
-            setGameState(initialState);
-            setStart(true);
+            gameData = loadGame(setGameState, setStart, setErrorTxt, props.gameData);
         }
 
         if (gameState.status === 'win' && started) {
             setStarted(false);
             alert('You won! Play again?');
-            setGameState(initialState);
-            setStart(true);
+            gameData = loadGame(setGameState, setStart, setErrorTxt, props.gameData);
         }
     });
 
-    return (
-        <div
-            className={styles.container}
-        >
-            {started && <span className="coinCounter">Coins obtained: {gameState.cumCoins ? gameState.cumCoins : 0}</span>}
-            <div
-                className={styles.stage}
-                style={{
-                    transform: `translate(-${gameState.stageX}px, 0px)`, // move stage
-                }}
-            >
-                {
-                    <Character
-                        style={gameState.playerXDirection === 'left' ? 
-                        {
-                            height: {charHeight},
-                            width: {charWidth},
-                            transform: `translate(${gameState.playerX}px, -${gameState.playerY}px) scaleX(-1)`
-                        } 
-                        : {
-                            height: {charHeight},
-                            width: {charWidth},
-                            transform: `translate(${gameState.playerX}px, -${gameState.playerY}px) scaleX(1)`
-                        }}/>
-                }
-                {
-                    gameState.enemies.map(
-                        (enemy,index) => (
-                            <span
-                                className={styles.enemy}
-                                key={index}
-                                style={{
-                                    transform: `translate(${enemy}px, 0px)`, // move stage
-                                    height: enemyHeight,
-                                    width: enemyWidth,
-                                }}
-                            />
-                        ),
-                    )
-                }
-                {
-                    gameState.platforms.map(
-                        (platform, index) => (
-                            <Platform
-                                xPos={platform["xPos"]}
-                                yPos={platform["yPos"]}
-                                length={platform["length"]}
-                                height={platformHeight}
-                                key={index}
-                                name={`${index}`}
-                            />
-                        )
-                    )   
-                }
-                {
-                    gameState.terrain.map(
-                        (platform, index) => (
-                            <Terrain
-                                xPos={platform["xPos"]}
-                                yPos={platform["yPos"]}
-                                length={platform["length"]}
-                                height={terrainHeight}
-                                key={index}
-                                name={`${index}`}
-                            />
-                        )
-                    )
-                }
-                {
-                    gameState.doors.map(
-                        door => (
-                            <Door 
-                                height={door["height"]} 
-                                width={door["width"]} 
-                                xPos={door["xPos"]} 
-                                yPos={door["yPos"]} 
-                                key={door["name"]}
-                            />
-                        )
-                    )
-                }
-                {
-                    gameState.coins.map(
-                        coin => (
-                            <Coin
-                                height={coin["height"]}
-                                width={coin["width"]}
-                                xPos={coin["xPos"]}
-                                yPos={coin["yPos"]}
-                                key={coin["name"]}
-                            />
-                        )
-                    )
-                }
+    return ( 
+        <>
+            {!started && 
+            <div className="startContainer">
+                <div className='startScreen' >
+                    <div className="introText">
+                        Your game has been generated! Press SPACE to load game <br/><br/> Controls: <br/>WASD to move, SPACE to jump <br /> 
+                    </div>
+                    <div className="errorText"> {errorTxt} </div>
+                </div>
             </div>
-        </div>
+                
+            }
+            {started && <Game gameState={gameState} /> }
+        </>
     );
+}
+
+
+Engine.propTypes = {
+    gameData: PropTypes.object
 }
