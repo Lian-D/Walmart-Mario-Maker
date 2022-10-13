@@ -8,7 +8,7 @@ Enemy Slime: {
 }
 
 Enemy Goblin: {
-    Behavoir: FOLLOW
+    Behavior: FOLLOW
     Speed: 2
 }
 

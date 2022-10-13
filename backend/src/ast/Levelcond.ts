@@ -1,14 +1,14 @@
-class Levelbody{
+class Levelcond{
     // fields
     statements:Array<Statement>;
-    entities:Array<Entity>;
+    objects:String;
     conditions:String;
 
     // constructor
 
-    constructor(statements:Array<Statement>, entities:Array<Entity>, conditions:String){
+    constructor(statements:Array<Statement>, objects:String, conditions:String){
         this.statements = statements;
-        this.entities = entities;
+        this.objects = objects;
         this.conditions = conditions;
     }
 

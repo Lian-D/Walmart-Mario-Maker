@@ -1,15 +1,13 @@
 class Level{
     // fields
-    body:Array<Statement>;
-    objects:Array<Statement>;
-    conditions:Array<Statement>;
+    name:String;
+    body:Levelbody;
 
 
     // constructor
-    constructor(body:Array<Statement>, objects:Array<Statement>, conditions:Array<Statement>){
+    constructor(name:String, body:Levelbody){
+        this.name = name;
         this.body = body;
-        this.objects = objects;
-        this.conditions = conditions;
     }
 
 

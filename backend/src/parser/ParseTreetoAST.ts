@@ -1,65 +1,121 @@
 import { PlatformerParserVisitor } from "../../PlatformerParserVisitor";
 import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor'
-import { ArrayContext, Array_objectContext, ComponentContext, LevelContext, Level_bodyContext, Level_condContext, Level_objectsContext, OpContext, PlatformerParser, ProgramContext, PropertyContext, StatementContext, ValueContext, VarnameContext } from "../../PlatformerParser";
+import { ListContext, List_objectContext, ComponentContext, LevelContext, Level_bodyContext, Level_condContext, Level_entitiesContext, OpContext, PlatformerParser, ProgramContext, PropertyContext, StatementContext, ValueContext, VarnameContext, EntityContext, PlayerContext, Entity_bodContext, ExpContext } from "../../PlatformerParser";
 
-class ParseTreetoAST extends AbstractParseTreeVisitor<Number> implements PlatformerParserVisitor<Number> {
+/**
+* @param ctx the parse tree
+* @return the visitor result
+*/
+
+class ParseTreetoAST extends AbstractParseTreeVisitor<any> implements PlatformerParserVisitor<any> {
     protected defaultResult(): Number {
         throw new Error("Method not implemented.");
     }
 
-    visitProgram(context: ProgramContext): any{
-        var entities:Object[] = new Array();
+    visitProgram(context: ProgramContext): Program{
+        var player = this.visitPlayer(context.player())
+        var entities:Entity[]= new Array();
         var levels:Level[] = new Array();
-        for(var i of context.level()){
-            var n = i.NAME.toString();
-            var q = this.visitLevelBody(i.level_body());
-            var x = new Level(n, q)
-            levels.push(x)
+        for(var e of context.entity()){
+            entities.push(this.visitEntity(e));
         }
-        return new Program(entities, levels);
+        for(var i of context.level()){
+            levels.push(this.visitLevel(i));
+        }
+        return new Program(player, entities, levels);
     }
 
 
-    visitLevel(ctx: LevelContext): any{
+    visitLevel(ctx: LevelContext): Level{
         return new Level(ctx.NAME.toString(), this.visitLevelBody(ctx.level_body()))
     }
 
     visitLevelBody(context: Level_bodyContext): Levelbody{
         var statements:Statement[] = new Array();
+        var entities = this.visitLevelEntities(context.level_entities());
+        var conds = this.visitLevelCond(context.level_cond());
         for(var i of context.statement()){
-            var x = new Statement(i.property.toString(), i.value);
-            statements.push(x);
+            statements.push(this.visitStatement(i));
         }
-        return new Levelbody(statements, this.visitLevel_objects(context.level_objects()), this.visitLevelCond(context.level_cond()));
+        return new Levelbody(statements, entities, conds);
     }
 
 
+    // TODO
     visitLevelCond(context: Level_condContext): any{
         return null;
     }
 
-    visitLevel_objects(context: Level_objectsContext): any{
+    // TODO
+    visitLevelEntities(context: Level_entitiesContext): any{
         return null;
     }
 
-
-
-    vistStatement(context: StatementContext){
-
-        return new Statement(context.property.toString(), context.value);
+    visitEntity(context: EntityContext): any{
+        var comp = context.component().toString();
+        var body = this.visitEntitybody(context.entity_bod());
+        return new Entity(comp, body);
     }
 
-    visitComponent(context : ComponentContext){
-        return this.visitChildren(context);
+    visitPlayer(context: PlayerContext): any{
+        var body = this.visitEntitybody(context.entity_bod());
+        return new Player("Player", body);
     }
 
-    visitProperty?: ((ctx: PropertyContext) => Number) | undefined;
+    visitEntitybody(context: Entity_bodContext): any{
+        var statements:Statement[] = new Array();
+        for(var i of context.statement()){
+            statements.push(this.visitStatement(i));
+        }
+        return new Entitybody(statements);
+    }
 
-    visitArray?: ((ctx: ArrayContext) => Number) | undefined;
-    visitArray_object?: ((ctx: Array_objectContext) => Number) | undefined;
-    visitOp?: ((ctx: OpContext) => Number) | undefined;
-    visitVarname?: ((ctx: VarnameContext) => Number) | undefined;
-    visitValue?: ((ctx: ValueContext) => Number) | undefined;
+    visitStatement(context: StatementContext): any{
+        var p = context.property().toString();
+        var val = this.visitValue(context.value());
+        return new Statement(p, val);   
+    }
+
+
+    visitVarname(ctx: VarnameContext): any {
+        return ctx.NAME.toString();
+    }
+
+    visitListobject(ctx: List_objectContext): any{
+        var exps:Exp[] = new Array();
+        for(var i of ctx.exp()){
+            exps.push(this.visitExp(i));
+        }
+        return new Listobject(exps);
+    }
+
+    visitExp(ctx: ExpContext): any{
+        var s = ctx.CONST()?.toString();
+        if(ctx.CONST() != undefined){
+            var n = ctx.CONST()?.toString();
+            return new Exp(n? +n:"null");
+        }
+        if(ctx.varname() != undefined){
+            var m = ctx.varname()?.toString();
+            return new Exp(m? m:"null");
+        }
+    }
+
+    visitValue (ctx: ValueContext): any{
+        if(ctx.CONST() != undefined){
+            var n = ctx.CONST()?.toString();
+            return new Value(n? +n :"null");
+        }
+        if(ctx.varname() != undefined){
+            var m = ctx.varname()?.toString();
+            return new Value(m? m:"null");
+        }
+        if(ctx.list_object() != undefined){
+            var lo = ctx.list_object();
+            return new Value(lo? this.visitListobject(lo) : null);
+        }
+    
+    }
 
 
 

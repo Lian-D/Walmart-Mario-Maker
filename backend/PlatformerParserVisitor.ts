@@ -8,8 +8,9 @@ import { LevelContext } from "./PlatformerParser";
 import { Level_bodyContext } from "./PlatformerParser";
 import { Level_condContext } from "./PlatformerParser";
 import { Level_entitiesContext } from "./PlatformerParser";
-import { EntitiesContext } from "./PlatformerParser";
 import { Entity_bodContext } from "./PlatformerParser";
+import { PlayerContext } from "./PlatformerParser";
+import { EntityContext } from "./PlatformerParser";
 import { StatementContext } from "./PlatformerParser";
 import { PropertyContext } from "./PlatformerParser";
 import { ListContext } from "./PlatformerParser";
@@ -65,18 +66,25 @@ export interface PlatformerParserVisitor<Result> extends ParseTreeVisitor<Result
 	visitLevel_entities?: (ctx: Level_entitiesContext) => Result;
 
 	/**
-	 * Visit a parse tree produced by `PlatformerParser.entities`.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	visitEntities?: (ctx: EntitiesContext) => Result;
-
-	/**
 	 * Visit a parse tree produced by `PlatformerParser.entity_bod`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	visitEntity_bod?: (ctx: Entity_bodContext) => Result;
+
+	/**
+	 * Visit a parse tree produced by `PlatformerParser.player`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitPlayer?: (ctx: PlayerContext) => Result;
+
+	/**
+	 * Visit a parse tree produced by `PlatformerParser.entity`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitEntity?: (ctx: EntityContext) => Result;
 
 	/**
 	 * Visit a parse tree produced by `PlatformerParser.statement`.

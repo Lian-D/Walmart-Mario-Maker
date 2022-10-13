@@ -8,8 +8,9 @@ import { LevelContext } from "./PlatformerParser";
 import { Level_bodyContext } from "./PlatformerParser";
 import { Level_condContext } from "./PlatformerParser";
 import { Level_entitiesContext } from "./PlatformerParser";
-import { EntitiesContext } from "./PlatformerParser";
 import { Entity_bodContext } from "./PlatformerParser";
+import { PlayerContext } from "./PlatformerParser";
+import { EntityContext } from "./PlatformerParser";
 import { StatementContext } from "./PlatformerParser";
 import { PropertyContext } from "./PlatformerParser";
 import { ListContext } from "./PlatformerParser";
@@ -82,17 +83,6 @@ export interface PlatformerParserListener extends ParseTreeListener {
 	exitLevel_entities?: (ctx: Level_entitiesContext) => void;
 
 	/**
-	 * Enter a parse tree produced by `PlatformerParser.entities`.
-	 * @param ctx the parse tree
-	 */
-	enterEntities?: (ctx: EntitiesContext) => void;
-	/**
-	 * Exit a parse tree produced by `PlatformerParser.entities`.
-	 * @param ctx the parse tree
-	 */
-	exitEntities?: (ctx: EntitiesContext) => void;
-
-	/**
 	 * Enter a parse tree produced by `PlatformerParser.entity_bod`.
 	 * @param ctx the parse tree
 	 */
@@ -102,6 +92,28 @@ export interface PlatformerParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitEntity_bod?: (ctx: Entity_bodContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `PlatformerParser.player`.
+	 * @param ctx the parse tree
+	 */
+	enterPlayer?: (ctx: PlayerContext) => void;
+	/**
+	 * Exit a parse tree produced by `PlatformerParser.player`.
+	 * @param ctx the parse tree
+	 */
+	exitPlayer?: (ctx: PlayerContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `PlatformerParser.entity`.
+	 * @param ctx the parse tree
+	 */
+	enterEntity?: (ctx: EntityContext) => void;
+	/**
+	 * Exit a parse tree produced by `PlatformerParser.entity`.
+	 * @param ctx the parse tree
+	 */
+	exitEntity?: (ctx: EntityContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `PlatformerParser.statement`.
