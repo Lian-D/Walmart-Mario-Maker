@@ -81,6 +81,14 @@ class ParseTreetoAST extends AbstractParseTreeVisitor<any> implements Platformer
         return ctx.NAME.toString();
     }
 
+    visitList(ctx: ListContext): any{
+        var listobjects:Listobject[] = new Array();
+        for(var i of ctx.list_object()){
+            listobjects.push(this.visitListobject(i));
+        }
+        return new List(listobjects);
+    }
+
     visitListobject(ctx: List_objectContext): any{
         var exps:Exp[] = new Array();
         for(var i of ctx.exp()){
@@ -116,10 +124,4 @@ class ParseTreetoAST extends AbstractParseTreeVisitor<any> implements Platformer
         }
     
     }
-
-
-
-
-    
-    
 }
