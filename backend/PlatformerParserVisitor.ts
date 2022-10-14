@@ -7,7 +7,7 @@ import { ProgramContext } from "./PlatformerParser";
 import { LevelContext } from "./PlatformerParser";
 import { Level_bodyContext } from "./PlatformerParser";
 import { Level_condContext } from "./PlatformerParser";
-import { Level_entitiesContext } from "./PlatformerParser";
+import { Level_entityContext } from "./PlatformerParser";
 import { Entity_bodContext } from "./PlatformerParser";
 import { PlayerContext } from "./PlatformerParser";
 import { EntityContext } from "./PlatformerParser";
@@ -58,11 +58,11 @@ export interface PlatformerParserVisitor<Result> extends ParseTreeVisitor<Result
 	visitLevel_cond?: (ctx: Level_condContext) => Result;
 
 	/**
-	 * Visit a parse tree produced by `PlatformerParser.level_entities`.
+	 * Visit a parse tree produced by `PlatformerParser.level_entity`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	visitLevel_entities?: (ctx: Level_entitiesContext) => Result;
+	visitLevel_entity?: (ctx: Level_entityContext) => Result;
 
 	/**
 	 * Visit a parse tree produced by `PlatformerParser.entity_bod`.

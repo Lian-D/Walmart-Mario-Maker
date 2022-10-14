@@ -7,7 +7,7 @@ import { ProgramContext } from "./PlatformerParser";
 import { LevelContext } from "./PlatformerParser";
 import { Level_bodyContext } from "./PlatformerParser";
 import { Level_condContext } from "./PlatformerParser";
-import { Level_entitiesContext } from "./PlatformerParser";
+import { Level_entityContext } from "./PlatformerParser";
 import { Entity_bodContext } from "./PlatformerParser";
 import { PlayerContext } from "./PlatformerParser";
 import { EntityContext } from "./PlatformerParser";
@@ -71,15 +71,15 @@ export interface PlatformerParserListener extends ParseTreeListener {
 	exitLevel_cond?: (ctx: Level_condContext) => void;
 
 	/**
-	 * Enter a parse tree produced by `PlatformerParser.level_entities`.
+	 * Enter a parse tree produced by `PlatformerParser.level_entity`.
 	 * @param ctx the parse tree
 	 */
-	enterLevel_entities?: (ctx: Level_entitiesContext) => void;
+	enterLevel_entity?: (ctx: Level_entityContext) => void;
 	/**
-	 * Exit a parse tree produced by `PlatformerParser.level_entities`.
+	 * Exit a parse tree produced by `PlatformerParser.level_entity`.
 	 * @param ctx the parse tree
 	 */
-	exitLevel_entities?: (ctx: Level_entitiesContext) => void;
+	exitLevel_entity?: (ctx: Level_entityContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `PlatformerParser.entity_bod`.

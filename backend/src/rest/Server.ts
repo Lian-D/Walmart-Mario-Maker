@@ -1,5 +1,6 @@
 import express from 'express';
 const cors = require('cors');
+import parseTheGame from '../ui/Main'
 
 export default class Server {
 
@@ -342,7 +343,9 @@ export default class Server {
                 ]
             }
         };
-        res.status(200).json({"gameData": gameData});
+        let userInputAsString = String(req.body["userCode"]);
+        parseTheGame(userInputAsString);
+        res.status(500).json({"error": "Check the backend logs"});
     }
 
 }

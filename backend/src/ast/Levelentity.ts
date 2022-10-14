@@ -1,9 +1,9 @@
-class Level_entity{
+class Levelentity{
     component:String;
-    list:List;
+    statements:Array<Entity>;
 
-    constructor(component:String, list:List){
+    constructor(component:String, statements:Array<Entity>){
         this.component = component;
-        this.list = list;
+        this.statements = statements;
     }
 }

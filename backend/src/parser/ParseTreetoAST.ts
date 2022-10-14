@@ -1,6 +1,6 @@
 import { PlatformerParserVisitor } from "../../PlatformerParserVisitor";
 import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor'
-import { ListContext, List_objectContext, ComponentContext, LevelContext, Level_bodyContext, Level_condContext, Level_entitiesContext, OpContext, PlatformerParser, ProgramContext, StatementContext, ValueContext, VarnameContext, EntityContext, PlayerContext, Entity_bodContext, ExpContext } from "../../PlatformerParser";
+import { ListContext, List_objectContext, ComponentContext, LevelContext, Level_bodyContext, Level_condContext, OpContext, PlatformerParser, ProgramContext, StatementContext, ValueContext, VarnameContext, EntityContext, PlayerContext, Entity_bodContext, ExpContext, Level_entityContext } from "../../PlatformerParser";
 
 /**
 * @param ctx the parse tree
@@ -32,10 +32,16 @@ export class ParseTreetoAST extends AbstractParseTreeVisitor<any> implements Pla
 
     visitLevelBody(context: Level_bodyContext): Levelbody{
         var statements:Statement[] = new Array();
-        var entities = this.visitLevelEntities(context.level_entities());
-        var conds = this.visitLevelCond(context.level_cond());
         for(var i of context.statement()){
             statements.push(this.visitStatement(i));
+        }
+        var entities:Levelentity[] = new Array();
+        for(var e of context.level_entity()){
+            entities.push(this.visitLevelEntities(e));
+        }
+        var conds:Levelcond[] = new Array();
+        for(var c of context.level_cond()){
+            conds.push(this.visitLevelCond(c));
         }
         return new Levelbody(statements, entities, conds);
     }
@@ -46,9 +52,13 @@ export class ParseTreetoAST extends AbstractParseTreeVisitor<any> implements Pla
         return null;
     }
 
-    // TODO
-    visitLevelEntities(context: Level_entitiesContext): any{
-        return null;
+    visitLevelEntities(context: Level_entityContext): any{
+        context.component().toString();
+        var entities:Entity[] = new Array();
+        for(var i of context.entity()){
+            entities.push(this.visitEntity(i));
+        }
+        return new Levelentity(context.component().toString(), entities);
     }
 
     visitEntity(context: EntityContext): any{
@@ -121,6 +131,18 @@ export class ParseTreetoAST extends AbstractParseTreeVisitor<any> implements Pla
         if(ctx.list_object() != undefined){
             var lo = ctx.list_object();
             return new Value(lo? this.visitListobject(lo) : null);
+        }
+        if(ctx.list() != undefined){
+            var l1 = ctx.list();
+            return new Value(l1? this.visitList(l1) : null);
+        }
+        if(ctx.LINK() != undefined){
+            var li = ctx.LINK()?.toString();
+            return new Value(li? li : "null");
+        }
+        if(ctx.LITERAL != undefined){
+            var lit = ctx.LITERAL()?.toString();
+            return new Value(lit? lit : "null");
         }
     
     }
