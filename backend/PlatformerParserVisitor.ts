@@ -7,10 +7,12 @@ import { ProgramContext } from "./PlatformerParser";
 import { LevelContext } from "./PlatformerParser";
 import { Level_bodyContext } from "./PlatformerParser";
 import { Level_condContext } from "./PlatformerParser";
+import { ConditionContext } from "./PlatformerParser";
 import { Level_entityContext } from "./PlatformerParser";
 import { Entity_bodContext } from "./PlatformerParser";
 import { PlayerContext } from "./PlatformerParser";
 import { EntityContext } from "./PlatformerParser";
+import { Cond_statementContext } from "./PlatformerParser";
 import { StatementContext } from "./PlatformerParser";
 import { ListContext } from "./PlatformerParser";
 import { ComponentContext } from "./PlatformerParser";
@@ -58,6 +60,13 @@ export interface PlatformerParserVisitor<Result> extends ParseTreeVisitor<Result
 	visitLevel_cond?: (ctx: Level_condContext) => Result;
 
 	/**
+	 * Visit a parse tree produced by `PlatformerParser.condition`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitCondition?: (ctx: ConditionContext) => Result;
+
+	/**
 	 * Visit a parse tree produced by `PlatformerParser.level_entity`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -84,6 +93,13 @@ export interface PlatformerParserVisitor<Result> extends ParseTreeVisitor<Result
 	 * @return the visitor result
 	 */
 	visitEntity?: (ctx: EntityContext) => Result;
+
+	/**
+	 * Visit a parse tree produced by `PlatformerParser.cond_statement`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitCond_statement?: (ctx: Cond_statementContext) => Result;
 
 	/**
 	 * Visit a parse tree produced by `PlatformerParser.statement`.

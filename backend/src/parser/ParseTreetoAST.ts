@@ -1,6 +1,6 @@
 import { PlatformerParserVisitor } from "../../PlatformerParserVisitor";
 import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor'
-import { ListContext, List_objectContext, ComponentContext, LevelContext, Level_bodyContext, Level_condContext, OpContext, PlatformerParser, ProgramContext, StatementContext, ValueContext, VarnameContext, EntityContext, PlayerContext, Entity_bodContext, ExpContext, Level_entityContext } from "../../PlatformerParser";
+import { ListContext, List_objectContext, ComponentContext, LevelContext, Level_bodyContext, Level_condContext, OpContext, PlatformerParser, ProgramContext, StatementContext, ValueContext, VarnameContext, EntityContext, PlayerContext, Entity_bodContext, ExpContext, Level_entityContext, Cond_statementContext } from "../../PlatformerParser";
 
 /**
 * @param ctx the parse tree
@@ -47,9 +47,27 @@ export class ParseTreetoAST extends AbstractParseTreeVisitor<any> implements Pla
     }
 
 
-    // TODO
     visitLevelCond(context: Level_condContext): any{
-        return null;
+        var statements:CondStatement[] = new Array();
+        var conditions:String = new String("");
+        for(var c of context.cond_statement()){
+            statements.push(this.visitCondStatement(c));
+        }
+        for(var d of context.condition()){
+            conditions = conditions.concat(d.toString());
+        }
+        return new Levelcond(statements, conditions);
+    }
+
+    visitCondStatement(ctx: Cond_statementContext): any{
+        if(ctx.ADD() != undefined){
+            var action = ctx.ADD()?.toString()
+            return new CondStatement(ctx.NAME().toString(), action? action : "null", this.visitValue(ctx.value()));
+        }
+        if(ctx.REMOVE() != undefined){
+            var action = ctx.REMOVE()?.toString()
+            return new CondStatement(ctx.NAME().toString(), action? action : "null", this.visitValue(ctx.value()));
+        }
     }
 
     visitLevelEntities(context: Level_entityContext): any{

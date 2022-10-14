@@ -34,6 +34,7 @@ EQUAL   : '=';
 SEMICOLON : ';';
 COLON : ':';
 LITERAL: ('#'| [A-Za-z0-9] | '/' | '.' | '-')+;
+LOGIC : 'AND'| 'OR';
 LINK: LITERAL+ COLON LITERAL+ ;
 
 // spaces and tabs can be ignored (apart from those immediately following a keyword above):

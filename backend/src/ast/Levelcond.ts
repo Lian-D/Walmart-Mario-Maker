@@ -1,14 +1,12 @@
 class Levelcond{
     // fields
-    statements:Array<Statement>;
-    objects:String;
+    statements:Array<CondStatement>;
     conditions:String;
 
     // constructor
 
-    constructor(statements:Array<Statement>, objects:String, conditions:String){
+    constructor(statements:Array<CondStatement>, conditions:String){
         this.statements = statements;
-        this.objects = objects;
         this.conditions = conditions;
     }
 
