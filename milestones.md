@@ -127,3 +127,28 @@ Ask users to create platformer game with entire set of features that our DSL sup
 Finish frontend and backend implementation by Wednesday<br>
 Perform final user study on Thursday<br>
 Complete final changes and video on Sunday<br>
+
+
+
+# Milestone 5
+### Status of implementation
+Frontend development is complete (Platforms, buttons, coins, terrains, multiple levels supported, interface to allow users to upload their code for parsing) <br>
+Backend tokenization, parsing, evaluation in progress <br>
+Video for project draft completed <br>
+
+### Timeline
+Complete backend and testing by Saturday by the latest <br>
+Conduct user study on Saturday <br>
+Make any necessary changes on Saturday/Sunday <br>
+Finish video on Sunday <br>
+
+
+### Plans for final user study
+Ask users to create platformer game with entire set of features that our DSL supports (Buttons, enemies, coins, user conditionals, user functions, multiple levels)
+
+### Changes to language design
+We made changes according to the first user study feedback above, and also removed some syntax which could be a potential source of confusion (ex. using ```:``` and ```=``` when defining types and then entities)
+
+
+### Misc notes from TA meeting
+We should add documentation for our errors in our video, and provide documentation in our project
