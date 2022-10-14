@@ -1,13 +1,13 @@
 import { PlatformerParserVisitor } from "../../PlatformerParserVisitor";
 import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor'
-import { ListContext, List_objectContext, ComponentContext, LevelContext, Level_bodyContext, Level_condContext, Level_entitiesContext, OpContext, PlatformerParser, ProgramContext, PropertyContext, StatementContext, ValueContext, VarnameContext, EntityContext, PlayerContext, Entity_bodContext, ExpContext } from "../../PlatformerParser";
+import { ListContext, List_objectContext, ComponentContext, LevelContext, Level_bodyContext, Level_condContext, Level_entitiesContext, OpContext, PlatformerParser, ProgramContext, StatementContext, ValueContext, VarnameContext, EntityContext, PlayerContext, Entity_bodContext, ExpContext } from "../../PlatformerParser";
 
 /**
 * @param ctx the parse tree
 * @return the visitor result
 */
 
-class ParseTreetoAST extends AbstractParseTreeVisitor<any> implements PlatformerParserVisitor<any> {
+export class ParseTreetoAST extends AbstractParseTreeVisitor<any> implements PlatformerParserVisitor<any> {
     protected defaultResult(): Number {
         throw new Error("Method not implemented.");
     }
@@ -71,7 +71,7 @@ class ParseTreetoAST extends AbstractParseTreeVisitor<any> implements Platformer
     }
 
     visitStatement(context: StatementContext): any{
-        var p = context.property().toString();
+        var p = context.NAME().toString();
         var val = this.visitValue(context.value());
         return new Statement(p, val);   
     }

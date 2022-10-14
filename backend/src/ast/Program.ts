@@ -1,7 +1,7 @@
 class Program{
     // fields
     player:Player;
-    entities:Array<Object>;
+    entities:Array<Entity>;
     levels:Array<Level>;
 
     // constructor
