@@ -52,7 +52,7 @@ export default class evaluator {
             //Must have either colour or image
             if ((terrain.image != undefined) || (
                 terrain.colour != undefined)) {
-                    this.error+`image or colour must be definied in terrain: ${tType}`; 
+                    this.error+`image or colour must be defined in terrain: ${tType}`; 
                     return false;
             }
         }
@@ -66,24 +66,52 @@ export default class evaluator {
             //Must have either colour or image
             if ((platform.image != undefined) || (
                 platform.colour != undefined)) {
-                    this.error+`image or colour must be definied in platform: ${pType}`; 
+                    this.error+`image or colour must be defined in platform: ${pType}`; 
                     return false;
             }
         }
         return true;
     }
 
-    validateDoorType(terrainTypes: any) {
-        return false;
+    validateDoorType(doorTypes: any) {
+        for (const dType in doorTypes) {
+            let door = doorTypes[dType];
 
+            // Must have image or key
+            if (door.image != undefined
+                || door.key != undefined) {
+                    this.error+`image or key must be defined in door: ${dType}`;
+                    return false;
+                }
+        }
+        return true;
     }
 
-    validateCoinType(terrainTypes: any) {
-        return false;
+    validateCoinType(coinTypes: any) {
+        for (const cType in coinTypes) {
+            let coin = coinTypes[cType];
+
+            // Must have image or value
+            if (coin.image != undefined
+                || coin.value != undefined) {
+                    this.error+`image or colour must be defined in coin: ${cType}`;
+                    return false;
+                }
+        }
+        return true;
     }
 
-    validateButtonType(terrainTypes: any) {
-        return false;
+    validateButtonType(buttonTypes: any) {
+        for (const bType in buttonTypes) {
+            let button = buttonTypes[bType];
+
+            // Must have image or value
+            if (button.image != undefined) {
+                this.error+`image must be defined in button: ${bType}`;
+                return false;
+            }
+        }
+        return true;
 
     }
 
