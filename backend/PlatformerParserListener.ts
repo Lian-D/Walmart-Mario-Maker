@@ -19,7 +19,6 @@ import { ValueContext } from "./PlatformerParser";
 import { List_objectContext } from "./PlatformerParser";
 import { ExpContext } from "./PlatformerParser";
 import { OpContext } from "./PlatformerParser";
-import { VarnameContext } from "./PlatformerParser";
 
 
 /**
@@ -202,16 +201,5 @@ export interface PlatformerParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitOp?: (ctx: OpContext) => void;
-
-	/**
-	 * Enter a parse tree produced by `PlatformerParser.varname`.
-	 * @param ctx the parse tree
-	 */
-	enterVarname?: (ctx: VarnameContext) => void;
-	/**
-	 * Exit a parse tree produced by `PlatformerParser.varname`.
-	 * @param ctx the parse tree
-	 */
-	exitVarname?: (ctx: VarnameContext) => void;
 }
 

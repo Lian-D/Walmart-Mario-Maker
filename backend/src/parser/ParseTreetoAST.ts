@@ -1,6 +1,6 @@
 import { PlatformerParserVisitor } from "../../PlatformerParserVisitor";
 import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor'
-import { ListContext, List_objectContext, LevelContext, Level_bodyContext, Level_condContext, OpContext, PlatformerParser, ProgramContext, StatementContext, ValueContext, VarnameContext, EntityContext, PlayerContext, Entity_bodContext, ExpContext, Level_entityContext, Cond_statementContext } from "../../PlatformerParser";
+import { ListContext, List_objectContext, LevelContext, Level_bodyContext, Level_condContext, OpContext, PlatformerParser, ProgramContext, StatementContext, ValueContext, EntityContext, PlayerContext, Entity_bodContext, ExpContext, Level_entityContext, Cond_statementContext } from "../../PlatformerParser";
 import { CondStatement } from "../ast/CondStatement";
 import { Entity } from "../ast/Entity";
 import { Entitybody } from "../ast/Entitybody";
@@ -41,7 +41,8 @@ export class ParseTreetoAST extends AbstractParseTreeVisitor<any> implements Pla
 
 
     visitLevel(ctx: LevelContext): Level{
-        return new Level(ctx.NAME.toString(), this.visitLevelBody(ctx.level_body()))
+        var n = ctx.NAME().toString();
+        return new Level(n, this.visitLevelBody(ctx.level_body()))
     }
 
     visitLevelBody(context: Level_bodyContext): Levelbody{
@@ -118,11 +119,6 @@ export class ParseTreetoAST extends AbstractParseTreeVisitor<any> implements Pla
         return new Statement(p, val);   
     }
 
-
-    visitVarname(ctx: VarnameContext): any {
-        return ctx.NAME.toString();
-    }
-
     visitList(ctx: ListContext): any{
         var listobjects:Listobject[] = new Array();
         for(var i of ctx.list_object()){
@@ -145,8 +141,8 @@ export class ParseTreetoAST extends AbstractParseTreeVisitor<any> implements Pla
             var n = ctx.CONST()?.toString();
             return new Exp(n? +n:"null");
         }
-        if(ctx.varname() != undefined){
-            var m = ctx.varname()?.toString();
+        if(ctx.NAME() != undefined){
+            var m = ctx.NAME()?.toString();
             return new Exp(m? m:"null");
         }
     }
@@ -157,9 +153,9 @@ export class ParseTreetoAST extends AbstractParseTreeVisitor<any> implements Pla
             var v = new Value(n? +n : "null");
             return v;
         }
-        if(ctx.varname() != undefined){
-            var m = ctx.varname()?.toString();
-            return new Value(m? m:"null");
+        if(ctx.NAME() != undefined){
+            var m = ctx.NAME()?.toString();
+            return new Value(m? m: "null");
         }
         if(ctx.list_object() != undefined){
             var lo = ctx.list_object();
@@ -173,7 +169,7 @@ export class ParseTreetoAST extends AbstractParseTreeVisitor<any> implements Pla
             var li = ctx.LINK()?.toString();
             return new Value(li? li : "null");
         }
-        if(ctx.LITERAL != undefined){
+        if(ctx.LITERAL() != undefined){
             var lit = ctx.LITERAL()?.toString();
             return new Value(lit? lit : "null");
         }

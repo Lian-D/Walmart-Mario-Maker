@@ -19,7 +19,6 @@ import { ValueContext } from "./PlatformerParser";
 import { List_objectContext } from "./PlatformerParser";
 import { ExpContext } from "./PlatformerParser";
 import { OpContext } from "./PlatformerParser";
-import { VarnameContext } from "./PlatformerParser";
 
 
 /**
@@ -141,12 +140,5 @@ export interface PlatformerParserVisitor<Result> extends ParseTreeVisitor<Result
 	 * @return the visitor result
 	 */
 	visitOp?: (ctx: OpContext) => Result;
-
-	/**
-	 * Visit a parse tree produced by `PlatformerParser.varname`.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	visitVarname?: (ctx: VarnameContext) => Result;
 }
 

@@ -37,8 +37,8 @@ Coin CoinType1: {
     value: 1
 }
 
-button buttonType1: {
-    image:https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Racket-logo.svg/1200px-Racket-logo.svg.png
+Button buttonType1: {
+    image: https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Racket-logo.svg/1200px-Racket-logo.svg.png
 }
 
 Level Level1 {
@@ -67,7 +67,7 @@ Level Level1 {
         ]
     Door: 
         doorType1: [
-            (door1, level2 door2, 200, 5)
+            (door1, door2, 200, 5)
         ]
     Button:
         Button1: [
@@ -80,12 +80,12 @@ Level Level1 {
         ]
     Checks: 
         IF: (MONEY > 10 OR button1) {
-            door1: Add (d1spawn,level2 door2, 1000, 50)
+            door1: Add (d1spawn, door2, 1000, 50)
             goblin: add (gspawn1, 200, 50)
         }
 }
 
-Level level 2 {
+Level level2 {
     player: (50, 25)
     height: 90
     width: 200
@@ -110,8 +110,8 @@ Level level 2 {
         ]
     Door: 
         doorType1: [
-            (door2, level1 door1, 200, 5),
-            (door2, level1 door1, 200, 5)
+            (door2, door1, 200, 5),
+            (door2, door1, 200, 5)
         ]
     Button:
         Button1: [
