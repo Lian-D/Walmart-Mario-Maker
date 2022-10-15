@@ -23,6 +23,8 @@ export default function parseTheGame(userInput: string) {
     let js = json.jsoner();
     let e = new evaluator(js);
     e.evaluate();
+    let s = e.getError();
+    console.log(s);
 
     // parser.buildParseTree = true;
     // return parser.value();
