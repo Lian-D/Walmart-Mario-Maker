@@ -43,7 +43,7 @@ export class jsoner {
             let entityBody: Entitybody = entity.body;
             let statements: Array<Statement> = entityBody.statements;
             for (let s of statements) {
-                typeBody[s.property] = s.value.value;
+                typeBody[s.property.toLowerCase()] = s.value.value;
             }
             // If type does not already exist in the JSON, create a key for it, else put the type definition in the existing type object
             if (entitiesJson[type] === undefined) {
@@ -165,7 +165,7 @@ export class jsoner {
                 for(let lcs of levelcondStatements){
                     let cstatement: any = {};
                     cstatement["effect"] = lcs.action.toLowerCase();
-                    cstatement["category"] = lcs.property;
+                    cstatement["category"] = lcs.property.toLowerCase();
                     let valArray:Value[] = new Array();
                     for (let e of lcs.value.value.exps){
                         valArray.push(e.Value);
@@ -199,5 +199,15 @@ export class jsoner {
             objArray.push(cb1);
          }
          return objArray;
+    }
+
+    private findCategory(property: String): String{
+        for(let i of this.program.entities){
+            if(property === i.name){
+                return i.component.toLowerCase();
+            }
         }
+        return "null";
+        
+    }
 }

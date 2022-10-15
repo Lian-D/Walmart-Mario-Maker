@@ -5,11 +5,15 @@ Player player: {
 Enemy Slime: {
     Behavior: STILL
     Speed: 2
+    colour: #042b2b
+    image: https://cdn.discordapp.com/attachments/969645894616096858/1029102857728835604/door.png
 }
 
 Enemy Goblin: {
     Behavior: FOLLOW
     Speed: 2
+    colour: #042b2b
+    image: https://cdn.discordapp.com/attachments/969645894616096858/1029102857728835604/door.png
 }
 
 Terrain terrainType1: {
@@ -78,11 +82,13 @@ Level Level1 {
             (c1, 120,50),
             (c2, 70, 40)
         ]
-    Checks: 
-        IF: (MONEY > 10 OR button1) {
-            door1: Add (d1spawn, door2, 1000, 50)
-            goblin: add (gspawn1, 200, 50)
+    Checks: [
+      IF: (MONEY > 10 OR button1) {
+            Door: Add (d1spawn, doorType1, 10, 9, level2, door2)
+            Platform: Remove (platform1)
+            Enemy: Add (gspawn1, goblin, 1, 11)
         }
+    ]
 }
 
 Level level2 {
@@ -114,7 +120,7 @@ Level level2 {
             (door2, door1, 200, 5)
         ]
     Button:
-        Button1: [
+        buttonType1: [
             (red1, 75,85)
         ]
     Coin: 
@@ -122,5 +128,6 @@ Level level2 {
             (c1, 120,50),
             (c2, 70, 40)
         ]
-    Checks: 
+    Checks: [
+   ]
 }

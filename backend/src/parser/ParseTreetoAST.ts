@@ -97,11 +97,11 @@ export class ParseTreetoAST extends AbstractParseTreeVisitor<any> implements Pla
     visitCondStatement(ctx: Cond_statementContext): any{
         if(ctx.ADD() != undefined){
             var action = ctx.ADD()?.toString()
-            return new CondStatement(ctx.NAME().toString(), action? action : "null", this.visitValue(ctx.value()));
+            return new CondStatement(ctx.COMPONENT().toString(), action? action : "null", this.visitValue(ctx.value()));
         }
         if(ctx.REMOVE() != undefined){
             var action = ctx.REMOVE()?.toString()
-            return new CondStatement(ctx.NAME().toString(), action? action : "null", this.visitValue(ctx.value()));
+            return new CondStatement(ctx.COMPONENT().toString(), action? action : "null", this.visitValue(ctx.value()));
         }
     }
 
