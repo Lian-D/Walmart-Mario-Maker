@@ -18,7 +18,6 @@ import { ListContext } from "./PlatformerParser";
 import { ValueContext } from "./PlatformerParser";
 import { List_objectContext } from "./PlatformerParser";
 import { ExpContext } from "./PlatformerParser";
-import { OpContext } from "./PlatformerParser";
 
 
 /**
@@ -133,12 +132,5 @@ export interface PlatformerParserVisitor<Result> extends ParseTreeVisitor<Result
 	 * @return the visitor result
 	 */
 	visitExp?: (ctx: ExpContext) => Result;
-
-	/**
-	 * Visit a parse tree produced by `PlatformerParser.op`.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	visitOp?: (ctx: OpContext) => Result;
 }
 

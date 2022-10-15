@@ -1,7 +1,9 @@
 import { PlatformerParserVisitor } from "../../PlatformerParserVisitor";
 import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor'
-import { ListContext, List_objectContext, LevelContext, Level_bodyContext, Level_condContext, OpContext, PlatformerParser, ProgramContext, StatementContext, ValueContext, EntityContext, PlayerContext, Entity_bodContext, ExpContext, Level_entityContext, Cond_statementContext } from "../../PlatformerParser";
+import { ListContext, List_objectContext, LevelContext, Level_bodyContext, Level_condContext, PlatformerParser, ProgramContext, StatementContext, ValueContext, EntityContext, PlayerContext, Entity_bodContext, ExpContext, Level_entityContext, Cond_statementContext, ConditionContext } from "../../PlatformerParser";
 import { CondStatement } from "../ast/CondStatement";
+import { Condition3 } from "../ast/Condition3";
+import { Condition1 } from "../ast/Condition1"
 import { Entity } from "../ast/Entity";
 import { Entitybody } from "../ast/Entitybody";
 import { Exp } from "../ast/Exp";
@@ -64,14 +66,32 @@ export class ParseTreetoAST extends AbstractParseTreeVisitor<any> implements Pla
 
     visitLevelCond(context: Level_condContext): any{
         var statements:CondStatement[] = new Array();
-        var conditions:String = new String("");
+        var conditions:(Condition1|Condition3)[] = new Array();
         for(var c of context.cond_statement()){
             statements.push(this.visitCondStatement(c));
         }
-        for(var d of context.condition()){
-            conditions = conditions.concat(d.toString());
+        if (context.condition().length > 1){
+            var op = context.LOGIC()?.toString();
         }
-        return new Levelcond(statements, conditions);
+        for(var d of context.condition()){
+            conditions.push(this.visitCondition(d));
+        }
+        return new Levelcond(statements, conditions, op? op: "");
+    }
+
+    visitCondition(ctx: ConditionContext): any {
+        let n = ctx.NAME()?.toString();
+        if(ctx.OP() == undefined){
+            return new Condition1(<String>n);
+        }
+        else{
+            let o = <String>ctx.OP()?.toString();
+            if(ctx.exp != undefined){
+                let e = <ExpContext>ctx.exp();
+                return new Condition3(<String>n, <String>o, this.visitExp(e))
+            }
+        }
+
     }
 
     visitCondStatement(ctx: Cond_statementContext): any{
@@ -96,13 +116,14 @@ export class ParseTreetoAST extends AbstractParseTreeVisitor<any> implements Pla
 
     visitEntity(context: EntityContext): any{
         var comp = context.COMPONENT().toString();
+        var n = context.NAME().toString();
         var body = this.visitEntitybody(context.entity_bod());
-        return new Entity(comp, body);
+        return new Entity(comp, n, body);
     }
 
     visitPlayer(context: PlayerContext): any{
         var body = this.visitEntitybody(context.entity_bod());
-        return new Player("Player", body);
+        return new Player(context.NAME().toString(), body);
     }
 
     visitEntitybody(context: Entity_bodContext): any{

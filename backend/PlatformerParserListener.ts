@@ -18,7 +18,6 @@ import { ListContext } from "./PlatformerParser";
 import { ValueContext } from "./PlatformerParser";
 import { List_objectContext } from "./PlatformerParser";
 import { ExpContext } from "./PlatformerParser";
-import { OpContext } from "./PlatformerParser";
 
 
 /**
@@ -190,16 +189,5 @@ export interface PlatformerParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitExp?: (ctx: ExpContext) => void;
-
-	/**
-	 * Enter a parse tree produced by `PlatformerParser.op`.
-	 * @param ctx the parse tree
-	 */
-	enterOp?: (ctx: OpContext) => void;
-	/**
-	 * Exit a parse tree produced by `PlatformerParser.op`.
-	 * @param ctx the parse tree
-	 */
-	exitOp?: (ctx: OpContext) => void;
 }
 
