@@ -91,10 +91,11 @@ export class jsoner {
                             typeJson["length"] = lo.exps[3].value;
                             arrs.push(typeJson);
                         }
+                        let typeC: string = type.slice();
                         if (type.toLowerCase() !== "terrain") {
-                            type = type + "s";
+                            typeC = typeC + "s";
                         }
-                        levelJson[type] = arrs;
+                        levelJson[typeC] = arrs;
                     }
                     
                 } else if (type.toLowerCase() === "door") {
@@ -111,8 +112,9 @@ export class jsoner {
                             typeJson["yPos"] = lo.exps[3].value;
                             arrs.push(typeJson);
                         }
-                        type = type + "s";
-                        levelJson[type] = arrs;
+                        let typeC: string = type.slice();
+                        typeC = typeC + "s";
+                        levelJson[typeC] = arrs;
                     }
                 } else {
                     let arrs: Array<any> = [];
@@ -127,12 +129,13 @@ export class jsoner {
                             typeJson["yPos"] = lo.exps[2].value;
                             arrs.push(typeJson);
                         }
+                        let typeC: string = type.slice();
                         if (type.toLowerCase() === "enemy") {
-                            type = "Enemies";
+                            typeC = "Enemies";
                         } else {
-                            type = type + "s";
+                            typeC = typeC + "s";
                         }
-                        levelJson[type] = arrs;
+                        levelJson[typeC] = arrs;
                     }
                 }
             }
