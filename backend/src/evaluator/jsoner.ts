@@ -8,6 +8,11 @@ import { Levelentity } from "../ast/Levelentity";
 import { Exp } from "../ast/Exp";
 import { Listobject } from "../ast/Listobject";
 import { Player } from "../ast/Player";
+import { Levelcond } from "../ast/Levelcond";
+import { Condition1 } from "../ast/Condition1"
+import { Condition3 } from "../ast/Condition3";
+import { CondStatement } from "../ast/CondStatement";
+import { Value } from "../ast/Value";
 
 export class jsoner {
     private program: Program;
@@ -140,8 +145,59 @@ export class jsoner {
                     }
                 }
             }
+            let levelConditions: Array<Levelcond> = levelBody.conditions;
+            instArr = [];
+            for (let levelCond of levelConditions) {
+                let condJson: any = {};
+                let conditions = this.conditionJsoner(levelCond.conditions);
+                let condBody: any = {};
+                if(levelCond.conditions.length > 1){
+                    condBody["opA"] = conditions[0];
+                    condBody["op"] = levelCond.op;
+                    condBody["opB"] = conditions[1];
+                }
+                else{
+                    condBody["opA"] = conditions[0];
+                }
+                condJson["conditions"] = condBody;
+                let levelcondStatements:Array<CondStatement> = levelCond.statements;
+                let arrAction:any[] = new Array(); 
+                for(let lcs of levelcondStatements){
+                    let cstatement: any = {};
+                    cstatement["effect"] = lcs.action.toLowerCase();
+                    cstatement["category"] = lcs.property;
+                    let valArray:Value[] = new Array();
+                    for (let e of lcs.value.value.exps){
+                        valArray.push(e.Value);
+                    }
+                    cstatement["payload"] = valArray;
+                    arrAction.push(cstatement);
+                }
+                condJson["actions"] = arrAction;
+                instArr.push(condJson);
+            }
+            levelJson["checks"] = instArr;
             levelsJson.push(levelJson);
         }
         return levelsJson;
     }
+
+    private conditionJsoner(conditions: Array<Condition1|Condition3>){
+        let objArray:any[] = new Array();
+        for(var lc of conditions){
+            let cb1: any = {};
+            if(lc.isCondition1()){
+                cb1["opA"] = lc.opA;
+                cb1["op"] = "buttonCheck";
+                cb1["opB"] = null;
+            }
+            else{
+                cb1["opA"] = lc.opA;
+                cb1["op"] = lc.op;
+                cb1["opB"] = lc.opB?.value;
+            }
+            objArray.push(cb1);
+         }
+         return objArray;
+        }
 }

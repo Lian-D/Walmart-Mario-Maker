@@ -1,6 +1,7 @@
 import{ Exp } from './Exp';
+import { Condition } from "./Condition";
 
-export class Condition3{
+export class Condition3 implements Condition{
     opA:String;
     op:String;
     opB:Exp;
@@ -9,5 +10,9 @@ export class Condition3{
         this.opA = opA;
         this.op = op;
         this.opB = opB;
+    }
+
+    public isCondition1(): boolean{
+        return false;
     }
 }

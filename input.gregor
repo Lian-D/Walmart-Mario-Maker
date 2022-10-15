@@ -70,7 +70,7 @@ Level Level1 {
             (door1, door2, 200, 5)
         ]
     Button:
-        buttonType1[
+        buttonType1: [
             (button1, 10,10)
         ]
     Coin: 

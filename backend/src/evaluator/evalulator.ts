@@ -157,7 +157,7 @@ export class evaluator {
         if (!this.validateLevelCoins(level.coins)) checkPassed = false;
         if (!this.validateLevelEnemies(level.enemies)) checkPassed = false;
         if (!this.validateLevelButtons(level.buttons)) checkPassed = false;
-        if (!this.validateLevelChecks(level.check)) checkPassed = false;
+        if (!this.validateLevelChecks(level.checks)) checkPassed = false;
         return checkPassed;
     }
 
@@ -301,7 +301,7 @@ export class evaluator {
     }
 
     validateCheckCond(check: any) {
-        const operationWhitelist = ["or", "and", ">=", "<=", "buttonCheck", "!", "==", ">", "<"];
+        const operationWhitelist = ["OR", "AND", ">=", "<=", "buttonCheck", "!", "==", ">", "<"];
         let checkPassed = true;
         if (!operationWhitelist.includes(check.op)) {
             this.error+`level conditions ${check.op} not a valid condition\n`;
@@ -318,7 +318,7 @@ export class evaluator {
                     checkPassed = false;  
                 }
             }
-            else if (["!", "buttonCjeck"].includes(check.op)) {
+            else if (["!", "buttonCheck"].includes(check.op)) {
                 if (check.opA == undefined || check.opB != undefined) {
                     this.error+`level conditions ${check.op} should not have a defined second condition\n`;
                     checkPassed = false; 
