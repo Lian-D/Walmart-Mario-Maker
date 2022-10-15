@@ -143,11 +143,11 @@ export class evaluator {
             this.error+`background must be defined in level: background \n`;
             checkPassed = false;
         }
-        if (!isNaN(level.width) && !isNaN(level.height)) {
+        if (isNaN(level.width) && isNaN(level.height)) {
             this.error+`level dimensions must be integer in level: width or height\n`;
             checkPassed = false;
         }
-        if (!isNaN(level.playerStartX) && !isNaN(level.playerStartY)) {
+        if (isNaN(level.playerStartX) && isNaN(level.playerStartY)) {
             this.error+`level playerstarts  must be integer in level: playerStartX or playerStartY\n`; 
             checkPassed = false; 
         }
@@ -168,7 +168,7 @@ export class evaluator {
                 checkPassed = false;
                 this.error+`level door missing a name declaration\n`;
             }
-            if (door.type == undefined || this.parsedData.game.types.door[door.type]) {
+            if (door.type == undefined || this.parsedData.game.types.door[door.type] == undefined) {
                 checkPassed = false;
                 this.error+`level door not connected to a defined type\n`;
             }
@@ -191,7 +191,7 @@ export class evaluator {
                 checkPassed = false;
                 this.error+`level platform missing a name declaration\n`;
             }
-            if (platform.type == undefined || this.parsedData.game.types.platform[platform.type]) {
+            if (platform.type == undefined || this.parsedData.game.types.platform[platform.type] == undefined) {
                 checkPassed = false;
                 this.error+`level platform not connected to a defined type\n`;
             }
@@ -215,7 +215,7 @@ export class evaluator {
                 checkPassed = false;
                 this.error+`level terrain missing a name declaration\n`;
             }
-            if (terrain.type == undefined || this.parsedData.game.types.terrain[terrain.type]) {
+            if (terrain.type == undefined || this.parsedData.game.types.terrain[terrain.type] == undefined) {
                 checkPassed = false;
                 this.error+`level terrain not connected to a defined type\n`;
             }
@@ -238,7 +238,7 @@ export class evaluator {
                 checkPassed = false;
                 this.error+`level coin missing a name declaration\n`;
             }
-            if (coin.type == undefined || this.parsedData.game.types.coin[coin.type]) {
+            if (coin.type == undefined || this.parsedData.game.types.coin[coin.type] == undefined) {
                 checkPassed = false;
                 this.error+`level coin not connected to a defined type\n`;
             }
@@ -257,7 +257,7 @@ export class evaluator {
                 checkPassed = false;
                 this.error+`level enemy missing a name declaration\n`;
             }
-            if (enemy.type == undefined || this.parsedData.game.types.enemy[enemy.type]) {
+            if (enemy.type == undefined || this.parsedData.game.types.enemy[enemy.type] == undefined) {
                 checkPassed = false;
                 this.error+`level enemy not connected to a defined type\n`;
             }
@@ -277,7 +277,7 @@ export class evaluator {
                 checkPassed = false;
                 this.error+`level button missing a name declaration\n`;
             }
-            if (button.type == undefined || this.parsedData.game.types.button[button.type]) {
+            if (button.type == undefined || this.parsedData.game.types.button[button.type] == undefined) {
                 checkPassed = false;
                 this.error+`level button not connected to a defined type\n`;
             }

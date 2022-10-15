@@ -92,8 +92,8 @@ export class jsoner {
                             typeJson["length"] = lo.exps[3].value;
                             arrs.push(typeJson);
                         }
-                        let typeC: string = type.slice();
-                        if (type.toLowerCase() !== "terrain") {
+                        let typeC: string = type.toLowerCase().slice();
+                        if (typeC !== "terrain") {
                             typeC = typeC + "s";
                         }
                         levelJson[typeC] = arrs;
@@ -113,7 +113,7 @@ export class jsoner {
                             typeJson["yPos"] = lo.exps[3].value;
                             arrs.push(typeJson);
                         }
-                        let typeC: string = type.slice();
+                        let typeC: string = type.toLowerCase().slice();
                         typeC = typeC + "s";
                         levelJson[typeC] = arrs;
                     }
@@ -130,9 +130,9 @@ export class jsoner {
                             typeJson["yPos"] = lo.exps[2].value;
                             arrs.push(typeJson);
                         }
-                        let typeC: string = type.slice();
-                        if (type.toLowerCase() === "enemy") {
-                            typeC = "Enemies";
+                        let typeC: string = type.toLowerCase().slice();
+                        if (typeC === "enemy") {
+                            typeC = "enemies";
                         } else {
                             typeC = typeC + "s";
                         }

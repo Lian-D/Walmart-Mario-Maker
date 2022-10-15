@@ -12,7 +12,7 @@ Enemy Goblin: {
     Speed: 2
 }
 
-Terrain TerrainType1: {
+Terrain terrainType1: {
     image: none
     colour: #042b2b
 }
@@ -32,7 +32,7 @@ Door doorType2: {
     key: buttonType1
 }
 
-Coin CoinType1: {
+Coin coinType1: {
     image: https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Racket-logo.svg/1200px-Racket-logo.svg.png
     value: 1
 }
@@ -70,7 +70,7 @@ Level Level1 {
             (door1, door2, 200, 5)
         ]
     Button:
-        Button1: [
+        buttonType1[
             (button1, 10,10)
         ]
     Coin: 
