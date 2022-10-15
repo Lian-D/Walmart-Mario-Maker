@@ -277,7 +277,7 @@ export class evaluator {
                 checkPassed = false;
                 this.error+`level button missing a name declaration\n`;
             }
-            if (button.type == undefined || this.parsedData.game.types.enemy[button.type]) {
+            if (button.type == undefined || this.parsedData.game.types.button[button.type]) {
                 checkPassed = false;
                 this.error+`level button not connected to a defined type\n`;
             }
