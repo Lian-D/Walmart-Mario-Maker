@@ -1,4 +1,6 @@
-class Player{
+import { Entitybody } from "./Entitybody";
+
+export class Player{
     // fields
     name:String;
     body:Entitybody;

@@ -1,4 +1,8 @@
-class Program{
+import { Entity } from "./Entity";
+import { Level } from "./Level";
+import { Player } from "./Player";
+
+export class Program{
     // fields
     player:Player;
     entities:Array<Entity>;

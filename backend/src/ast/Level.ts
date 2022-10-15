@@ -1,4 +1,6 @@
-class Level{
+import { Levelbody } from "./Levelbody";
+
+export class Level{
     // fields
     name:String;
     body:Levelbody;

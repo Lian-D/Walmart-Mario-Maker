@@ -1,4 +1,4 @@
-class Name {
+export class Name {
 
     text:String;
 

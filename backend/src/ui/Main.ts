@@ -1,4 +1,4 @@
-import { ANTLRInputStream, CommonTokenStream } from 'antlr4ts';
+import { ANTLRInputStream, CommonTokenStream, ConsoleErrorListener } from 'antlr4ts';
 import { PlatformerLexer } from '../../PlatformerLexer';
 import { PlatformerParser } from '../../PlatformerParser';
 import { ParseTreetoAST } from '../parser/ParseTreetoAST';
@@ -10,9 +10,10 @@ export default function parseTheGame(userInput: string) {
     // Create the lexer and parser
     let inputStream = new ANTLRInputStream(userInput);
     let lexer = new PlatformerLexer(inputStream);
-    let tokenStream = new CommonTokenStream(lexer);
     let tokens = lexer.getAllTokens();
-    console.log(tokens.length);
+    console.log(tokens[10]);
+    lexer.reset();
+    let tokenStream = new CommonTokenStream(lexer);
     let parser = new PlatformerParser(tokenStream);
     let visitor = new ParseTreetoAST();
     let program = visitor.visitProgram(parser.program());

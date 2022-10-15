@@ -1,4 +1,6 @@
-class Levelcond{
+import { CondStatement } from "./CondStatement";
+
+export class Levelcond{
     // fields
     statements:Array<CondStatement>;
     conditions:String;

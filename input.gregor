@@ -1,6 +1,6 @@
 Player player: {
     Speed: 4
-    Health:4
+    Health: 4
 }
 Enemy Slime: {
     Behavior: STILL
@@ -32,7 +32,7 @@ Door doorType2: {
     key: buttonType1
 }
 
-coin CoinType1: {
+Coin CoinType1: {
     image: https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Racket-logo.svg/1200px-Racket-logo.svg.png
     value: 1
 }

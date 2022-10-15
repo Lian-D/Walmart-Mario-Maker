@@ -1,4 +1,6 @@
-class CondStatement{
+import { Value } from "./Value";
+
+export class CondStatement{
 
     // Has varname and value to set
     property:string;

@@ -1,8 +1,11 @@
-class Levelentity{
-    component:String;
-    statements:Array<Entity>;
+import { Entity } from "./Entity";
+import { Statement } from "./Statement";
 
-    constructor(component:String, statements:Array<Entity>){
+export class Levelentity{
+    component:String;
+    statements:Array<Statement>;
+
+    constructor(component:String, statements:Array<Statement>){
         this.component = component;
         this.statements = statements;
     }

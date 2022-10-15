@@ -1,4 +1,6 @@
-class Entitybody{
+import { Statement } from "./Statement";
+
+export class Entitybody{
 
     statements:Array<Statement>;
 

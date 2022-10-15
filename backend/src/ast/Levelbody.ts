@@ -1,4 +1,8 @@
-class Levelbody{
+import { Statement } from "./Statement";
+import { Levelcond } from "./Levelcond";
+import { Levelentity } from "./Levelentity";
+
+export class Levelbody{
     // fields
     statements:Array<Statement>;
     entities:Array<Levelentity>;

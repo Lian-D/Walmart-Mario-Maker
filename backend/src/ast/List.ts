@@ -1,4 +1,6 @@
-class List{
+import { Listobject } from "./Listobject";
+
+export class List{
     listobjects:Array<Listobject>
 
 

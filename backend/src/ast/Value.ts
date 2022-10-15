@@ -1,7 +1,11 @@
-class Value{
-    value:(Number|String|Array<Exp>|List);
+export class Value{
+    value:any;
 
-    constructor(value:(Number|String|Array<Exp>|List)){
+    constructor(value:any){
         this.value = value;
+    }
+
+    toNumber(){
+        this.value = +this.value;
     }
 }

@@ -3,16 +3,17 @@ lexer grammar PlatformerLexer;
 
 // we use the default mode only to recognise keywords that start statements
 LEADING_SPACE : [ \t]+ -> channel(HIDDEN); // before a keyword
+COMPONENT: ENEMY | DOOR | BUTTON | TERRAIN | PLATFORM | COIN;
 PLAYER: 'Player ';    // including a single space in the token forces that one is always used
 ENEMY: 'Enemy ';
 DOOR: 'Door ' ;
 TERRAIN: 'Terrain ' ;
 PLATFORM: 'Platform ';
 BUTTON: 'Button ';
-COIN: 'Coin';
+COIN: 'Coin' ;
 LEVEL: 'Level ';
-CHECKS: 'Checks ';
-IF: 'if ';
+CHECKS: 'Checks';
+IF: 'IF';
 ADD: 'Add';
 REMOVE: 'Remove';
 MONEY: 'MONEY';

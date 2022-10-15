@@ -1,7 +1,9 @@
-class Entity{
+import { Entitybody } from "./Entitybody";
+
+export class Entity{
 
     component:String;
-    body:Entitybody
+    body:Entitybody;
 
 
     constructor(component:String, body:Entitybody){

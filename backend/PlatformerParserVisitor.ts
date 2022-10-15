@@ -15,7 +15,6 @@ import { EntityContext } from "./PlatformerParser";
 import { Cond_statementContext } from "./PlatformerParser";
 import { StatementContext } from "./PlatformerParser";
 import { ListContext } from "./PlatformerParser";
-import { ComponentContext } from "./PlatformerParser";
 import { ValueContext } from "./PlatformerParser";
 import { List_objectContext } from "./PlatformerParser";
 import { ExpContext } from "./PlatformerParser";
@@ -114,13 +113,6 @@ export interface PlatformerParserVisitor<Result> extends ParseTreeVisitor<Result
 	 * @return the visitor result
 	 */
 	visitList?: (ctx: ListContext) => Result;
-
-	/**
-	 * Visit a parse tree produced by `PlatformerParser.component`.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	visitComponent?: (ctx: ComponentContext) => Result;
 
 	/**
 	 * Visit a parse tree produced by `PlatformerParser.value`.

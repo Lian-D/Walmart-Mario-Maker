@@ -1,4 +1,4 @@
-class Exp{
+export class Exp{
     value:(Number|String);
 
     constructor(value:(Number|String)){

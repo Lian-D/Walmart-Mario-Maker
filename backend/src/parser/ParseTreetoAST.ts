@@ -1,6 +1,20 @@
 import { PlatformerParserVisitor } from "../../PlatformerParserVisitor";
 import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor'
-import { ListContext, List_objectContext, ComponentContext, LevelContext, Level_bodyContext, Level_condContext, OpContext, PlatformerParser, ProgramContext, StatementContext, ValueContext, VarnameContext, EntityContext, PlayerContext, Entity_bodContext, ExpContext, Level_entityContext, Cond_statementContext } from "../../PlatformerParser";
+import { ListContext, List_objectContext, LevelContext, Level_bodyContext, Level_condContext, OpContext, PlatformerParser, ProgramContext, StatementContext, ValueContext, VarnameContext, EntityContext, PlayerContext, Entity_bodContext, ExpContext, Level_entityContext, Cond_statementContext } from "../../PlatformerParser";
+import { CondStatement } from "../ast/CondStatement";
+import { Entity } from "../ast/Entity";
+import { Entitybody } from "../ast/Entitybody";
+import { Exp } from "../ast/Exp";
+import { Level } from "../ast/Level";
+import { Levelbody } from "../ast/Levelbody";
+import { Levelcond } from "../ast/Levelcond";
+import { Levelentity } from "../ast/Levelentity";
+import { List } from "../ast/List";
+import { Listobject } from "../ast/Listobject";
+import { Player } from "../ast/Player";
+import { Program } from "../ast/Program";
+import { Statement } from "../ast/Statement";
+import { Value } from "../ast/Value";
 
 /**
 * @param ctx the parse tree
@@ -71,16 +85,16 @@ export class ParseTreetoAST extends AbstractParseTreeVisitor<any> implements Pla
     }
 
     visitLevelEntities(context: Level_entityContext): any{
-        context.component().toString();
-        var entities:Entity[] = new Array();
-        for(var i of context.entity()){
-            entities.push(this.visitEntity(i));
+        context.COMPONENT().toString();
+        var statements:Statement[] = new Array();
+        for(var i of context.statement()){
+            statements.push(this.visitStatement(i));
         }
-        return new Levelentity(context.component().toString(), entities);
+        return new Levelentity(context.COMPONENT().toString(), statements);
     }
 
     visitEntity(context: EntityContext): any{
-        var comp = context.component().toString();
+        var comp = context.COMPONENT().toString();
         var body = this.visitEntitybody(context.entity_bod());
         return new Entity(comp, body);
     }
@@ -137,10 +151,11 @@ export class ParseTreetoAST extends AbstractParseTreeVisitor<any> implements Pla
         }
     }
 
-    visitValue (ctx: ValueContext): any{
+    visitValue (ctx: ValueContext): any {
         if(ctx.CONST() != undefined){
-            var n = ctx.CONST()?.toString();
-            return new Value(n? +n :"null");
+            var n = ctx.CONST();
+            var v = new Value(n? +n : "null");
+            return v;
         }
         if(ctx.varname() != undefined){
             var m = ctx.varname()?.toString();

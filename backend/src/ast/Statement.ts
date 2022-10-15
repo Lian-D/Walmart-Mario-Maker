@@ -1,4 +1,6 @@
-class Statement{
+import { Value } from "./Value";
+
+export class Statement{
 
     // Has varname and value to set
     property:string;
