@@ -1,6 +1,8 @@
 import { ANTLRInputStream, CommonTokenStream, ConsoleErrorListener } from 'antlr4ts';
 import { PlatformerLexer } from '../../PlatformerLexer';
 import { PlatformerParser } from '../../PlatformerParser';
+import { evaluator } from '../evaluator/evalulator';
+import { jsoner } from '../evaluator/jsoner';
 import { ParseTreetoAST } from '../parser/ParseTreetoAST';
 
 
@@ -17,6 +19,11 @@ export default function parseTheGame(userInput: string) {
     let parser = new PlatformerParser(tokenStream);
     let visitor = new ParseTreetoAST();
     let program = visitor.visitProgram(parser.program());
+    let json = new jsoner(program);
+    let js = json.jsoner();
+    let e = new evaluator(js);
+    e.evaluate();
+
     // parser.buildParseTree = true;
     // return parser.value();
 }

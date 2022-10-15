@@ -22,8 +22,8 @@ export class jsoner {
         gameJson["game"] = {};
         gameJson["game"] = this.entitiesJsoner(this.program.entities);
         gameJson["game"]["levels"] = this.levelsJsoner(this.program.levels);
+        return gameJson;
         console.log(gameJson);
-
     }
     
 
@@ -32,6 +32,7 @@ export class jsoner {
         for (let entity of entities) {
             // Cast component and name to string. Component what we call the type
             let type:string  = entity.component as string;
+            type = type.toLowerCase();
             let entityName: string = entity.name as string;
             let typeBody: any = {};
             let entityBody: Entitybody = entity.body;
@@ -52,7 +53,7 @@ export class jsoner {
         for (let s of player.body.statements) {
             playerJson[s.property] = s.value.value; 
         }
-        entitiesJson[player.name as string] = playerJson;
+        entitiesJson["player"] = playerJson;
         return {"types": entitiesJson};
     }
 
