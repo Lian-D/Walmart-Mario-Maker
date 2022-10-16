@@ -433,13 +433,13 @@ By using the keyword `IF` we can have actions be triggered by checks: either a b
     - Follow a conditional, we can either `Add` or `Remove` objects. The general structure is as follows:
     - `Type: Add (name, sub type, XPOS, YPOS)`
       - What's in the parentheses depends on the type of object. See above for syntax.
-    - `Type: Remove name`
+    - `Type: Remove (name)`
   - Example usage:
     ```
     Checks: [
       IF: (MONEY > 1 OR buttonType1) {
             Door: Add (d1spawn, doorType1, 100, 90, level2, door2)
-            Enemy: Remove goblin1
+            Enemy: Remove (goblin1)
         }
     ]
     ```
