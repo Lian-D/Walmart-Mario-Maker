@@ -12,6 +12,10 @@ import {
     terminalVelocity,
     enemyHeight,
     enemyWidth,
+    buttonWidth,
+    buttonHeight,
+    coinWidth,
+    coinHeight,
 } from '../../data/constants';
 import Game from '../entities/game';
 import { loadGame, loadProperties } from '../../data/jsonReader';
@@ -380,6 +384,8 @@ function CreateEngine(setState, initialState) {
             xPos: obj[2],
             yPos: obj[3],
             goesTo: obj[4],
+            width: doorWidth,
+            height: doorHeight, 
             ... doorTypes[obj[1]]
         };
         if (!(this.level.doors.find(e => e.name == obj[0]))){
@@ -394,10 +400,28 @@ function CreateEngine(setState, initialState) {
             type: obj[1],
             xPos: obj[2],
             yPos: obj[3],
+            width: buttonWidth,
+            height: buttonHeight, 
             ... buttonTypes[obj[1]]
         };
         if (!(this.level.buttons.find(e => e.name == obj[0]))){
             this.level.buttons.push(button);
+        }
+    } 
+
+    const addCoin = (obj) => {
+        let coinTypes = gameData.types.coin;
+        let coin = {
+            name: obj[0],
+            type: obj[1],
+            xPos: obj[2],
+            yPos: obj[3],
+            width: coinWidth,
+            height: coinHeight, 
+            ... coinTypes[obj[1]]
+        };
+        if (!(this.level.coins.find(e => e.name == obj[0]))){
+            this.level.coins.push(coin);
         }
     } 
 
@@ -421,6 +445,12 @@ function CreateEngine(setState, initialState) {
 
     const delButton = (obj) => {
         this.level.buttons = this.level.buttons.filter( (e) => {
+            return !(e.name == obj[0]);
+       });
+    } 
+
+    const delCoin = (obj) => {
+        this.level.coins = this.level.coins.filter( (e) => {
             return !(e.name == obj[0]);
        });
     } 
@@ -461,6 +491,7 @@ function CreateEngine(setState, initialState) {
             case 'enemy': return addEnemy(obj);
             case 'door': return addDoor(obj);
             case 'button': return addButton(obj);
+            case 'coin': return addCoin(obj);
             case 'platform': return addPlatform(obj);
         }
    }
@@ -470,6 +501,7 @@ function CreateEngine(setState, initialState) {
             case 'enemy': return delEnemy(obj);
             case 'door': return delDoor(obj);
             case 'button': return delButton(obj);
+            case 'coin': return delCoin(obj);
             case 'platform': return delPlatform(obj);
         }
    }
