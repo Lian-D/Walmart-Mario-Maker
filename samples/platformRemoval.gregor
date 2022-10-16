@@ -1,4 +1,4 @@
-Player player: {
+    Player player: {
     speed: 1
     health: 4
 }
@@ -84,7 +84,7 @@ Level Level1 {
         ]
     Checks: [
       IF: (MONEY > 10 OR buttonType1) {
-            Door: Add (d1spawn, doorType1, 100, 90, level2, door2)
+            Platform: Remove (plat1)
             Enemy: Add (gspawn1, Goblin, 10, 110)
         }
     ]
