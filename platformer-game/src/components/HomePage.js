@@ -71,13 +71,13 @@ export default function HomePage() {
             {!gameJSON 
             && 
             <div className="startContainer">
-                <div className="startScreen">
-                    <div className="introText preGameText">
+                <div className="startScreen preGameText">
+                    <div className="introText">
                         Welcome to Walmart Mario Maker! <br/> Upload your .gregor file containing your game code, and then click generate to start your game!
                     </div>
                     {
                         error && 
-                        <div className="errorText preGameText">
+                        <div className="errorText">
                             {error}
                         </div>
                     }

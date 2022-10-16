@@ -7,6 +7,7 @@ html, body {
 
 .startContainer {
   background-image: url("data/whatamidoingwithmylife.png");
+  background-position: center;
   color: aliceblue;
   background-size: contain;
   height: 100vh;
@@ -14,7 +15,12 @@ html, body {
 }
 
 .preGameText {
-  background-color: rgba(0,0,0,0.6);
+  background-color: rgba(0,0,0,0.8);
+  padding: 2%;
+  width: fit-content;
+  margin: auto;
+  border-radius: 25px;
+  border: 2px solid #000;
 }
 
 .startScreen {
@@ -183,6 +189,7 @@ html, body {
   border: 1px solid black;
   border-radius: 5px;
   color: black;
+  padding: 3px 5px;
 }
 
 
@@ -198,4 +205,5 @@ html, body {
   border-radius: 5px;
   color: black;
   font-weight: bold;
+  padding: 3px 5px;
 }
