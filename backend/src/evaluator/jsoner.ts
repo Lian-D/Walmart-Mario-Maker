@@ -46,7 +46,7 @@ export class jsoner {
             for (let s of statements) {
                 typeBody[s.property.toLowerCase()] = s.value.value;
             }
-            if((imgcol.includes(type)) && (typeBody["image"] !== "")){
+            if((imgcol.includes(type)) && (typeBody["image"] !== "none")){
                 typeBody["colour"] = "";
             }
             // If type does not already exist in the JSON, create a key for it, else put the type definition in the existing type object

@@ -57,12 +57,14 @@ export default function HomePage() {
                 console.log(resJson["gameData"]);
             } else {
                 setError(resJson["error"]);
+
             }
         }).catch((err) => {
             console.log(err);
         });
         console.log(response);
     }
+
 
     return (
         <React.Fragment>
@@ -81,7 +83,10 @@ export default function HomePage() {
                     }
                     <div className="startButtonContainer">
                         <label className="startButton startButtonFileUpload">
-                            <input type="file" className="startButtonFileUploader" accept=".gregor" onChange={event => {readInputFile(event.target.files[0])}}/>
+                            <input type="file" className="startButtonFileUploader" 
+                                accept=".gregor" 
+                                onChange={event => {readInputFile(event.target.files[0])}}
+                                onClick={event => {event.target.value=''}}/>
                             Upload your game code here!
                         </label>
                         <br/>
