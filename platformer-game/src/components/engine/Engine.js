@@ -427,11 +427,11 @@ function CreateEngine(setState, initialState) {
 
     const runChecks = () => {
         this.level.checks.forEach( e => {
-            let operation = e.conditions.op;
+            let operation = e.conditions.op.toLowerCase();
             let a = e.conditions.opA;
             let b = e.conditions.opB;
             let evalRes;
-            if ((operation == "OR" || operation == "AND") && (a.op != undefined && b.op != undefined)) {
+            if ((operation == "or" || operation == "or") && (a.op != undefined && b.op != undefined)) {
                 evalRes = evaluate(operation, evaluate(a.op, a.opA, a.opB), evaluate(b.op, b.opA, b.opB));
             } else {
                 evalRes = evaluate(operation, a, b);
@@ -483,14 +483,14 @@ function CreateEngine(setState, initialState) {
             case '==': return evalEqual(operandA, operandB);
             case '!': return evalNot(operandA);
             case 'buttonCheck': return evalButtonCheck(operandA);
-            case 'OR': return evalOr(operandA, operandB);
-            case 'AND': return evalAnd(operandA, operandB);
+            case 'or': return evalOr(operandA, operandB);
+            case 'and': return evalAnd(operandA, operandB);
         }
     }
 
     const EvaluateOperandVariable = (operand) => {
         switch (operand) {
-            case 'coins': return this.cumCoins;
+            case 'money': return this.cumCoins;
             case 'health': return this.player.health;
             default: return operand;
         }
