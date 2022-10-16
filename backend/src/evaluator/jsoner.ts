@@ -86,6 +86,12 @@ export class jsoner {
                 }
                 
             }
+            levelJson["buttons"] = [];
+            levelJson["coins"] = [];
+            levelJson["doors"] = [];
+            levelJson["enemies"] = [];
+            levelJson["platforms"] = [];
+            levelJson["terrain"] = [];
             let levelEntities: Array<Levelentity> = levelBody.entities;
             let instArr: Array<any> = [];
             for (let levelEnt of levelEntities) {
