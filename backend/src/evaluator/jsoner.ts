@@ -168,7 +168,7 @@ export class jsoner {
                     cstatement["category"] = lcs.property.toLowerCase();
                     let valArray:Value[] = new Array();
                     for (let e of lcs.value.value.exps){
-                        valArray.push(e.Value);
+                        valArray.push(e.value);
                     }
                     cstatement["payload"] = valArray;
                     arrAction.push(cstatement);
