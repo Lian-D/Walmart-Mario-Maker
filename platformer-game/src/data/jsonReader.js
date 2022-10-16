@@ -7,6 +7,8 @@ import {
     coinHeight,
     buttonWidth,
     buttonHeight,
+    doorWidth,
+    doorHeight,
 } from './constants';
 
 const loadGame = (setState, setStart, setErrorTxt, propsGameData) => {
@@ -54,7 +56,9 @@ const loadProperties = (level, types) => {
     // mapping properties from the types to the in-game entities
     level.doors = level.doors.map(
         door => ({
-            ...door, 
+            ...door,
+            width: doorWidth,
+            height: doorHeight, 
             ...types.door[door.type],
             tempClosed: false
         }

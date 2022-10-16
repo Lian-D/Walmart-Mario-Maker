@@ -128,7 +128,7 @@ function CreateEngine(setState, initialState) {
                 && (this.buttonMap.has(door["key"]) || door["key"] === null)
                 && !door.tempClosed
             ) {
-                if (door.goesTo === 'win') {
+                if (door.goesTo === 'win win') {
                     this.game = 'win';
                 } else {
                     let location = door.goesTo.split(" ");
@@ -491,8 +491,8 @@ function CreateEngine(setState, initialState) {
 
     const EvaluateOperandVariable = (operand) => {
         switch (operand) {
-            case 'money': return this.cumCoins;
-            case 'health': return this.player.health;
+            case 'MONEY': return this.cumCoins;
+            case 'HEALTH': return this.player.health;
             default: return operand;
         }
     }

@@ -45,7 +45,7 @@ Button buttonType1: {
     image: https://media.discordapp.net/attachments/1017526051989106740/1027763213896515615/key-png-11.png
 }
 
-Level Level1 {
+Level level1 {
     player: (200, 50)
     height: 900
     width: 3000
@@ -83,7 +83,7 @@ Level Level1 {
             (c2, 700, 400)
         ]
     Checks: [
-      IF: (MONEY > 10 OR buttonType1) {
+      IF: (MONEY > 1 OR buttonType1) {
             Door: Add (d1spawn, doorType1, 100, 90, level2, door2)
             Enemy: Add (gspawn1, Goblin, 10, 110)
         }
@@ -115,8 +115,10 @@ Level level2 {
         ]
     Door: 
         doorType1: [
-            (door2, level1, door1, 2000, 50),
-            (door2, level1, door1, 2000, 50)
+            (door2, level1, door1, 200, 50)
+        ]
+        doorType2: [
+            (door3, win, win, 1550, 50)
         ]
     Button:
         buttonType1: [

@@ -49,6 +49,9 @@ export class jsoner {
             if((imgcol.includes(type)) && (typeBody["image"] !== "none")){
                 typeBody["colour"] = "";
             }
+            if(type === "door" && (typeBody["key"] === "none")) {
+                typeBody["key"] = null;
+            }
             // If type does not already exist in the JSON, create a key for it, else put the type definition in the existing type object
             if (entitiesJson[type] === undefined) {
                 entitiesJson[type] = {};
