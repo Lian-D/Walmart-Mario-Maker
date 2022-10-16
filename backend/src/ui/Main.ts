@@ -28,7 +28,6 @@ export class mainHomoSapien {
         let visitor = new ParseTreetoAST();
         let program = visitor.visitProgram(parser.program());
         let tokenizationErrors = TokenizerErrorListener.INSTANCE.getError();
-        console.log(tokenizationErrors);
         if (tokenizationErrors !== "") {
             return [false,{"error": tokenizationErrors}];
         }

@@ -20,7 +20,15 @@ export class TokenizerErrorListener implements ANTLRErrorListener<any> {
         errorInstanceString + "\n";
     }
 
-    getError() {
-        return TokenizerErrorListener.errStr;
+    // The reset parameter indicates whether the error string is to be erased after being returned
+    getError(reset: boolean = true) {
+        if (reset) {
+            let ret = TokenizerErrorListener.errStr.slice();
+            TokenizerErrorListener.errStr = "";
+            return ret;
+        } else {
+            return TokenizerErrorListener.errStr;
+        }
+        
     }
 }
