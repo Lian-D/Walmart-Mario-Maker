@@ -678,10 +678,10 @@ export default function Engine(props) {
             {!started && 
             <div className="startContainer">
                 <div className='startScreen' >
-                    <div className="introText">
+                    <div className="introText preGameText">
                         Your game has been generated! Press SPACE to load game <br/><br/> Controls: <br/>WASD to move, SPACE to jump <br /> 
                     </div>
-                    <div className="errorText"> {errorTxt} </div>
+                    <div className="errorText preGameText"> {errorTxt} </div>
                 </div>
             </div>
                 

@@ -72,12 +72,12 @@ export default function HomePage() {
             && 
             <div className="startContainer">
                 <div className="startScreen">
-                    <div className="introText">
+                    <div className="introText preGameText">
                         Welcome to Walmart Mario Maker! <br/> Upload your .gregor file containing your game code, and then click generate to start your game!
                     </div>
                     {
                         error && 
-                        <div className="errorText">
+                        <div className="errorText preGameText">
                             {error}
                         </div>
                     }
@@ -89,6 +89,7 @@ export default function HomePage() {
                                 onClick={event => {event.target.value=''}}/>
                             Upload your game code here!
                         </label>
+                        <br/>
                         <br/>
                         <span className="startFileSpan">
                             {file ? file["name"] : "No file uploaded"}    
