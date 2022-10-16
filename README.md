@@ -435,7 +435,7 @@ By using the keyword `IF` we can have actions be triggered by checks: either a b
       - What's in the parentheses depends on the type of object. See above for syntax.
     - `Type: Remove (name)`
   - Example usage:
-    - In this example, a door is spawned and an enemy goblin1 is removed when the player has MONEY value greater than 1 or when the key buttonType1 is collected.
+    - In this example, a door is spawned and an enemy goblin1 is removed when the player has MONEY value greater than 1 or when the button buttonType1 is collected.
     ```
     Checks: [
       IF: (MONEY > 1 OR buttonType1) {
