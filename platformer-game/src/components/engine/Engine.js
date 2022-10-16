@@ -132,7 +132,7 @@ function CreateEngine(setState, initialState) {
                 && (this.buttonMap.has(door["key"]) || door["key"] === null)
                 && !door.tempClosed
             ) {
-                if (door.goesTo === 'win win') {
+                if (door.goesTo.includes('win')) {
                     this.game = 'win';
                 } else {
                     let location = door.goesTo.split(" ");
