@@ -419,7 +419,7 @@ By using the keyword `IF` we can have actions be triggered by checks: either a b
 
   - Conditionals
     - Following an `IF`, we put our conditional:
-      - Up to a maximum of two conditions can be placed here, using an OR operator`
+      - Up to a maximum of two conditions can be placed here, using an `OR` operator
         - A statement can be a logical comparison of values:
           - `CONST OP value`
             - supported `OP`s are: `<, >, <=, >=, ==`
