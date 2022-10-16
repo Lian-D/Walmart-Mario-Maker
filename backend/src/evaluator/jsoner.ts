@@ -34,6 +34,7 @@ export class jsoner {
 
     private entitiesJsoner(entities: Array<Entity>): Object {
         let entitiesJson: any = {};
+        const imgcol = ["enemy", "terrain", "platform"]
         for (let entity of entities) {
             // Cast component and name to string. Component what we call the type
             let type:string  = entity.component as string;
@@ -44,6 +45,9 @@ export class jsoner {
             let statements: Array<Statement> = entityBody.statements;
             for (let s of statements) {
                 typeBody[s.property.toLowerCase()] = s.value.value;
+            }
+            if((imgcol.includes(type)) && (typeBody["image"] !== "")){
+                typeBody["colour"] = "";
             }
             // If type does not already exist in the JSON, create a key for it, else put the type definition in the existing type object
             if (entitiesJson[type] === undefined) {
@@ -56,7 +60,7 @@ export class jsoner {
         let player: Player = this.program.player;
         let playerJson: any = {};
         for (let s of player.body.statements) {
-            playerJson[s.property] = s.value.value; 
+            playerJson[s.property.toLowerCase()] = s.value.value; 
         }
         entitiesJson["player"] = playerJson;
         return {"types": entitiesJson};
