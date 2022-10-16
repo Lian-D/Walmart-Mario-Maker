@@ -1,19 +1,19 @@
 Player player: {
-    Speed: 4
-    Health: 4
+    speed: 1
+    health: 4
 }
 Enemy Slime: {
-    Behavior: STILL
+    Behaviour: STILL
     Speed: 2
     colour: #042b2b
-    image: https://cdn.discordapp.com/attachments/969645894616096858/1029102857728835604/door.png
+    image: https://media.discordapp.net/attachments/969645894616096858/1028893886124412949/theTriangle.png
 }
 
 Enemy Goblin: {
-    Behavior: FOLLOW
-    Speed: 2
+    Behaviour: FOLLOW
+    Speed: 0.4
     colour: #042b2b
-    image: https://cdn.discordapp.com/attachments/969645894616096858/1029102857728835604/door.png
+    image: https://media.discordapp.net/attachments/969645894616096858/1028893886124412949/theTriangle.png
 }
 
 Terrain terrainType1: {
@@ -27,12 +27,12 @@ Platform platformType1: {
 }
 
 Door doorType1: {
-    image: https://cdn.discordapp.com/attachments/969645894616096858/1029102857728835604/door.png
+    image: https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/33142/door-clipart-md.png
     key: none
 }
 
 Door doorType2: {
-    image: https://cdn.discordapp.com/attachments/969645894616096858/1029102857728835604/door.png
+    image: https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/33142/door-clipart-md.png
     key: buttonType1
 }
 
@@ -42,91 +42,91 @@ Coin coinType1: {
 }
 
 Button buttonType1: {
-    image: https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Racket-logo.svg/1200px-Racket-logo.svg.png
+    image: https://media.discordapp.net/attachments/1017526051989106740/1027763213896515615/key-png-11.png
 }
 
 Level Level1 {
-    player: (20, 5)
-    height: 90
-    width: 300
-    background: https://media.discordapp.net/attachments/969645894616096858/1028917780617109564/bg.png
+    player: (200, 50)
+    height: 900
+    width: 3000
+    background: https://media.discordapp.net/attachments/1019466411044765716/1029542966185971822/bg.png
     Terrain: 
         terrainType1: [
-            (terrain1, 150, 30, 50), 
-            (terrain2, 0,0, 50),
-            (terrain3, 100,0, 200)
+            (terrain1, 1500, 300, 500), 
+            (terrain2, 0,0, 500),
+            (terrain3, 1000,0, 2000)
             ]
     Platform:
         platformType1: [
-            (plat1, 100,30,50),
-            (plat2, 50,20,50),
-            (plat3, 200,30,50)
+            (plat1, 1000,300,500),
+            (plat2, 500,200,500),
+            (plat3, 2000,300,500)
         ]
     Enemy: 
         Slime: [
-            (slime1, 250, 5)
+            (slime1, 2500, 50)
         ]
         Goblin: [
-            (Goblin1, 150, 5) 
+            (Goblin1, 1500, 50) 
         ]
     Door: 
         doorType1: [
-            (door1, door2, 200, 5)
+            (door1, level2 door2, 2000, 50)
         ]
     Button:
         buttonType1: [
-            (button1, 10,10)
+            (button1, 100,100)
         ]
     Coin: 
         coinType1: [
-            (c1, 120,50),
-            (c2, 70, 40)
+            (c1, 1200,500),
+            (c2, 700, 400)
         ]
     Checks: [
       IF: (MONEY > 10 OR button1) {
-            Door: Add (d1spawn, doorType1, 10, 9, level2, door2)
+            Door: Add (d1spawn, doorType1, 100, 90, level2, door2)
             Platform: Remove (platform1)
-            Enemy: Add (gspawn1, goblin, 1, 11)
+            Enemy: Add (gspawn1, goblin, 10, 110)
         }
     ]
 }
 
 Level level2 {
-    player: (50, 25)
-    height: 90
-    width: 200
-    background: https://media.discordapp.net/attachments/969645894616096858/1028917780617109564/bg.png
+    player: (500, 250)
+    height: 900
+    width: 2000
+    background: https://media.discordapp.net/attachments/1019466411044765716/1029542966185971822/bg.png
     Terrain: 
         terrainType1: [
-            (terrain1, 150, 30, 50), 
-            (terrain2, 0,0, 50),
-            (terrain3, 100,0, 200)
+            (terrain1, 1500, 300, 500), 
+            (terrain2, 0,0, 500),
+            (terrain3, 1000,0, 2000)
             ]
     Platform:
         platformType1: [
-            (plat4, 90,30,40),
-            (plat5, 50,20,40),
-            (plat6, 170,50,10),
-            (plat7, 130,65,10),
-            (plat8, 75,80,20)
+            (plat4, 900,300,400),
+            (plat5, 500,200,400),
+            (plat6, 1700,500,100),
+            (plat7, 1300,650,100),
+            (plat8, 750,800,200)
         ]
     Enemy: 
         Goblin: [
-            (Goblin1, 180, 35) 
+            (Goblin1, 1800, 350) 
         ]
     Door: 
         doorType1: [
-            (door2, door1, 200, 5),
-            (door2, door1, 200, 5)
+            (door2, door1, 2000, 50),
+            (door2, door1, 2000, 50)
         ]
     Button:
         buttonType1: [
-            (red1, 75,85)
+            (red1, 750,850)
         ]
     Coin: 
         coinType1: [
-            (c1, 120,50),
-            (c2, 70, 40)
+            (c1, 1200,500),
+            (c2, 700, 400)
         ]
     Checks: [
    ]

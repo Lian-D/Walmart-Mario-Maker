@@ -3,6 +3,10 @@ import {
     charHeight,  
     enemyWidth, 
     enemyHeight, 
+    coinWidth,
+    coinHeight,
+    buttonWidth,
+    buttonHeight,
 } from './constants';
 
 const loadGame = (setState, setStart, setErrorTxt, propsGameData) => {
@@ -72,7 +76,9 @@ const loadProperties = (level, types) => {
 
     level.coins = level.coins.map(
         coin => ({
-            ...coin, 
+            ...coin,
+            width: coinWidth,
+            height: coinHeight, 
             ...types.coin[coin.type]
         }
     ));
@@ -89,7 +95,9 @@ const loadProperties = (level, types) => {
 
     level.buttons = level.buttons.map(
         button => ({
-            ...button, 
+            ...button,
+            width: buttonWidth,
+            height: buttonHeight, 
             ...types.button[button.type]
         }
     ));

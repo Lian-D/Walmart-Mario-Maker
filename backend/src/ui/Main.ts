@@ -6,26 +6,29 @@ import { jsoner } from '../evaluator/jsoner';
 import { ParseTreetoAST } from '../parser/ParseTreetoAST';
 
 
+export class mainHomoSapien {
+    constructor() {
+        console.log("Mom can we have mario maker. No we have mario maker at home. Mario maker at home:");
+    }
 
-export default function parseTheGame(userInput: string) {
-    console.log("string received");
-    // Create the lexer and parser
-    let inputStream = new ANTLRInputStream(userInput);
-    let lexer = new PlatformerLexer(inputStream);
-    let tokens = lexer.getAllTokens();
-    console.log(tokens[10]);
-    lexer.reset();
-    let tokenStream = new CommonTokenStream(lexer);
-    let parser = new PlatformerParser(tokenStream);
-    let visitor = new ParseTreetoAST();
-    let program = visitor.visitProgram(parser.program());
-    let json = new jsoner(program);
-    let js = json.jsoner();
-    let e = new evaluator(js);
-    e.evaluate();
-    let s = e.getError();
-    console.log(s);
 
-    // parser.buildParseTree = true;
-    // return parser.value();
+    public parseAndEvaluateGame(userInput: string): [boolean,any] {
+        // Create the lexer and parser
+        let inputStream = new ANTLRInputStream(userInput);
+        let lexer = new PlatformerLexer(inputStream);
+        let tokenStream = new CommonTokenStream(lexer);
+        let parser = new PlatformerParser(tokenStream);
+        let visitor = new ParseTreetoAST();
+        let program = visitor.visitProgram(parser.program());
+        let json = new jsoner(program);
+        let js = json.jsoner();
+        let e = new evaluator(js);
+        let error;
+        if (!e.evaluate()) {
+            error = e.getError();
+            return [false,{"error": error}];
+        } else {
+            return [true,js];
+        }
+    }
 }
