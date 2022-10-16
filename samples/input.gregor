@@ -71,7 +71,7 @@ Level Level1 {
         ]
     Door: 
         doorType1: [
-            (door1, level2 door2, 2000, 50)
+            (door1, level2, door2, 2000, 50)
         ]
     Button:
         buttonType1: [
@@ -115,8 +115,8 @@ Level level2 {
         ]
     Door: 
         doorType1: [
-            (door2, door1, 2000, 50),
-            (door2, door1, 2000, 50)
+            (door2, level1, door1, 2000, 50),
+            (door2, level1, door1, 2000, 50)
         ]
     Button:
         buttonType1: [
