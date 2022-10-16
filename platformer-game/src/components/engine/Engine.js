@@ -426,6 +426,7 @@ function CreateEngine(setState, initialState) {
     } 
 
     const runChecks = () => {
+        let index = 0;
         this.level.checks.forEach( e => {
             let operation = e.conditions.op.toLowerCase();
             let a = e.conditions.opA;
@@ -441,7 +442,9 @@ function CreateEngine(setState, initialState) {
                 e.actions.forEach( act => {
                     enforceResult(act.effect, act.category, act.payload);
                 })
+                this.level.checks.splice(index, 1);
             }
+            index++;
         });
     }
 
@@ -483,7 +486,7 @@ function CreateEngine(setState, initialState) {
             case '<=': return evalLesserEqual(operandA, operandB);
             case '==': return evalEqual(operandA, operandB);
             case '!': return evalNot(operandA);
-            case 'buttonCheck': return evalButtonCheck(operandA);
+            case 'buttoncheck': return evalButtonCheck(operandA);
             case 'or': return evalOr(operandA, operandB);
             case 'and': return evalAnd(operandA, operandB);
         }
@@ -681,10 +684,9 @@ export default function Engine(props) {
                     <div className="introText preGameText">
                         Your game has been generated! Press SPACE to load game <br/><br/> Controls: <br/>WASD to move, SPACE to jump <br /> 
                     </div>
-                    <div className="errorText preGameText"> {errorTxt} </div>
+                    {errorTxt && <div className="errorText preGameText"> {errorTxt} </div>}
                 </div>
             </div>
-                
             }
             {started && <Game gameState={gameState} /> }
         </>

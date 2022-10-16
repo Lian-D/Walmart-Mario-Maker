@@ -165,7 +165,7 @@ export class jsoner {
                     condBody["opB"] = conditions[1];
                 }
                 else{
-                    condBody["opA"] = conditions[0];
+                    condBody = conditions[0];
                 }
                 condJson["conditions"] = condBody;
                 let levelcondStatements:Array<CondStatement> = levelCond.statements;
