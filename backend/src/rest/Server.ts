@@ -37,7 +37,7 @@ export default class Server {
         if (result[0]) {
             res.status(200).json({"gameData": result[1]});
         } else {
-            res.status(400).json({"error": result[1]});
+            res.status(400).json(result[1]);
         }
     }
 
