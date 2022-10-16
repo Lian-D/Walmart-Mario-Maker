@@ -431,12 +431,12 @@ function CreateEngine(setState, initialState) {
             let a = e.conditions.opA;
             let b = e.conditions.opB;
             let evalRes;
-            if ((operation == "or" || operation == "or") && (a.op != undefined && b.op != undefined)) {
+            if ((operation == "or" || operation == "and") && (a.op != undefined && b.op != undefined)) {
                 evalRes = evaluate(operation, evaluate(a.op, a.opA, a.opB), evaluate(b.op, b.opA, b.opB));
+                // console.log(operation+" "+evalRes);
             } else {
                 evalRes = evaluate(operation, a, b);
             }
-
             if (evalRes) {
                 e.actions.forEach( act => {
                     enforceResult(act.effect, act.category, act.payload);
@@ -474,6 +474,7 @@ function CreateEngine(setState, initialState) {
     const evaluate = (operand, operandA, operandB) => {
         operandA = EvaluateOperandVariable(operandA);
         operandB = EvaluateOperandVariable(operandB);
+        // console.log(operand);
         // console.log(operandA);
         switch (operand) {
             case '<': return evalLesser(operandA, operandB);
@@ -516,8 +517,6 @@ function CreateEngine(setState, initialState) {
         return !operandA;
     }
     const evalButtonCheck = (operandA) => {
-        // console.log(operandA);
-        // console.log(this.buttonMap);
         if (this.buttonMap.get(operandA) == "triggered") {
             return true;
         } else {
