@@ -1,15 +1,15 @@
-import { Levelbody } from "./Levelbody";
-
-export class Level{
+class Level{
     // fields
-    name:String;
-    body:Levelbody;
+    body:Array<Statement>;
+    objects:Array<Statement>;
+    conditions:Array<Statement>;
 
 
     // constructor
-    constructor(name:String, body:Levelbody){
-        this.name = name;
+    constructor(body:Array<Statement>, objects:Array<Statement>, conditions:Array<Statement>){
         this.body = body;
+        this.objects = objects;
+        this.conditions = conditions;
     }
 
 

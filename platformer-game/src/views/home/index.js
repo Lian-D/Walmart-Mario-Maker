@@ -1,6 +1,6 @@
 import React from 'react';
-import HomePage from '../../components/HomePage';
+import Engine from '../../components/engine/Engine';
 
 export default function Home() {
-    return (<HomePage />);
+    return (<Engine />);
 }

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { useEvent } from '../../hooks';
 import {
     charWidth, 
@@ -10,8 +9,6 @@ import {
     doorWidth,
     doorHeight,
     terminalVelocity,
-    enemyHeight,
-    enemyWidth,
 } from '../../data/constants';
 import Game from '../entities/game';
 import { loadGame, loadProperties } from '../../data/jsonReader';
@@ -128,7 +125,7 @@ function CreateEngine(setState, initialState) {
                 && (this.buttonMap.has(door["key"]) || door["key"] === null)
                 && !door.tempClosed
             ) {
-                if (door.goesTo === 'win win') {
+                if (door.goesTo === 'win') {
                     this.game = 'win';
                 } else {
                     let location = door.goesTo.split(" ");
@@ -339,195 +336,8 @@ function CreateEngine(setState, initialState) {
         return false;
     }
 
-
-    const addEnemy = (obj) => {
-        let enemyTypes = gameData.types.enemy;
-        let enemy = {
-            name: obj[0],
-            type: obj[1],
-            xPos: obj[2],
-            yPos: obj[3],
-            velocity: 0,
-            width: enemyWidth,
-            height: enemyHeight,
-            ... enemyTypes[obj[1]]
-        };
-        if (!(this.level.enemies.find(e => e.name == obj[0]))){
-            this.level.enemies.push(enemy);
-        }
-    } 
-
-    const addPlatform = (obj) => {
-        let platformTypes = gameData.types.platform;
-        let platform = {
-            name: obj[0],
-            type: obj[1],
-            xPos: obj[2],
-            yPos: obj[3],
-            length: obj[4],
-            ... platformTypes[obj[1]]
-        };
-        if (!(this.level.platforms.find(e => e.name == obj[0]))){
-            this.level.platforms.push(platform);
-        }
-    } 
-
-    const addDoor = (obj) => {
-        let doorTypes = gameData.types.door;
-        let door = {
-            name: obj[0],
-            type: obj[1],
-            xPos: obj[2],
-            yPos: obj[3],
-            goesTo: obj[4],
-            ... doorTypes[obj[1]]
-        };
-        if (!(this.level.doors.find(e => e.name == obj[0]))){
-            this.level.doors.push(door);
-        }
-    } 
-
-    const addButton = (obj) => {
-        let buttonTypes = gameData.types.button;
-        let button = {
-            name: obj[0],
-            type: obj[1],
-            xPos: obj[2],
-            yPos: obj[3],
-            ... buttonTypes[obj[1]]
-        };
-        if (!(this.level.buttons.find(e => e.name == obj[0]))){
-            this.level.buttons.push(button);
-        }
-    } 
-
-    const delEnemy = (obj) => {
-        this.level.enemies = this.level.enemies.filter( (e) => {
-            return !(e.name == obj[0]);
-       });
-    } 
-
-    const delPlatform = (obj) => {
-        this.level.platforms = this.level.platforms.filter( (e) => {
-            return !(e.name == obj[0]);
-       });
-    } 
-
-    const delDoor = (obj) => {
-        this.level.door = this.level.door.filter( (e) => {
-            return !(e.name == obj[0]);
-       });
-    } 
-
-    const delButton = (obj) => {
-        this.level.buttons = this.level.buttons.filter( (e) => {
-            return !(e.name == obj[0]);
-       });
-    } 
-
     const runChecks = () => {
-        this.level.checks.forEach( e => {
-            let operation = e.conditions.op.toLowerCase();
-            let a = e.conditions.opA;
-            let b = e.conditions.opB;
-            let evalRes;
-            if ((operation == "or" || operation == "and") && (a.op != undefined && b.op != undefined)) {
-                evalRes = evaluate(operation, evaluate(a.op, a.opA, a.opB), evaluate(b.op, b.opA, b.opB));
-                // console.log(operation+" "+evalRes);
-            } else {
-                evalRes = evaluate(operation, a, b);
-            }
-            if (evalRes) {
-                e.actions.forEach( act => {
-                    enforceResult(act.effect, act.category, act.payload);
-                })
-            }
-        });
-    }
-
-   const enforceResult = (action, category, obj) => {
-       switch (action) {
-           case 'add': return enforceAdd(category, obj);
-           case 'remove': return enforceRemove(category, obj);
-       }
-   }
-
-   const enforceAdd = (category, obj) => {
-        // console.log(this.level);
-        switch (category) {
-            case 'enemy': return addEnemy(obj);
-            case 'door': return addDoor(obj);
-            case 'button': return addButton(obj);
-            case 'platform': return addPlatform(obj);
-        }
-   }
-
-   const enforceRemove = (category, obj) => {
-        switch (category) {
-            case 'enemy': return delEnemy(obj);
-            case 'door': return delDoor(obj);
-            case 'button': return delButton(obj);
-            case 'platform': return delPlatform(obj);
-        }
-   }
-
-    const evaluate = (operand, operandA, operandB) => {
-        operandA = EvaluateOperandVariable(operandA);
-        operandB = EvaluateOperandVariable(operandB);
-        // console.log(operand);
-        // console.log(operandA);
-        switch (operand) {
-            case '<': return evalLesser(operandA, operandB);
-            case '>': return evalGreater(operandA, operandB);
-            case '>=': return evalGreaterEqual(operandA, operandB);
-            case '<=': return evalLesserEqual(operandA, operandB);
-            case '==': return evalEqual(operandA, operandB);
-            case '!': return evalNot(operandA);
-            case 'buttonCheck': return evalButtonCheck(operandA);
-            case 'or': return evalOr(operandA, operandB);
-            case 'and': return evalAnd(operandA, operandB);
-        }
-    }
-
-    const EvaluateOperandVariable = (operand) => {
-        switch (operand) {
-            case 'MONEY': return this.cumCoins;
-            case 'HEALTH': return this.player.health;
-            default: return operand;
-        }
-    }
-
-    //Byte functions for operands
-    const evalGreater = (operandA, operandB) => {
-        return operandA > operandB;
-    }
-    const evalLesser = (operandA, operandB) => {
-        return operandA < operandB;
-    }
-    const evalEqual = (operandA, operandB) => {
-        return operandA == operandB;
-    }
-    const evalGreaterEqual = (operandA, operandB) => {
-        return operandA >= operandB;
-    }
-    const evalLesserEqual = (operandA, operandB) => {
-        return operandA <= operandB;
-    }
-    const evalNot = (operandA) => {
-        return !operandA;
-    }
-    const evalButtonCheck = (operandA) => {
-        if (this.buttonMap.get(operandA) == "triggered") {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    const evalOr = (operandA, operandB) => {
-        return operandA || operandB;
-    }
-    const evalAnd = (operandA, operandB) => {
-        return operandA && operandB;
+        // TODO figure out how to run the checks
     }
 
     // function that will be continuously ran
@@ -544,8 +354,6 @@ function CreateEngine(setState, initialState) {
         checkDoors();
         checkCoins();
         checkButtons();
-
-        runChecks();
 
         // set state for use in the component
         setState({
@@ -594,8 +402,7 @@ function CreateEngine(setState, initialState) {
     });
 }
 
-export default function Engine(props) {
-    const [originalJSON, setOriginalJSON] = useState({});
+export default function Engine() {
     // game state
     const [gameState, setGameState] = useState({});
 
@@ -616,8 +423,7 @@ export default function Engine(props) {
         if (e.key === ' ') {
             // start the game when the user first presses the space bar
             if (!started && !start) {
-                setOriginalJSON(props.gameData); // maybe not the right place for it, but let's put this here for now
-                gameData = loadGame(setGameState, setStart, setErrorTxt, originalJSON);
+                gameData = loadGame(setGameState, setStart, setErrorTxt);
             }
 
             // if the game has not been initialized return
@@ -663,35 +469,27 @@ export default function Engine(props) {
         if (gameState.status === 'fail' && started) {
             setStarted(false);
             alert('You lost! Try again?');
-            gameData = loadGame(setGameState, setStart, setErrorTxt, props.gameData);
+            gameData = loadGame(setGameState, setStart, setErrorTxt);
         }
 
         if (gameState.status === 'win' && started) {
             setStarted(false);
             alert('You won! Play again?');
-            gameData = loadGame(setGameState, setStart, setErrorTxt, props.gameData);
+            gameData = loadGame(setGameState, setStart, setErrorTxt);
         }
     });
 
     return ( 
         <>
             {!started && 
-            <div className="startContainer">
                 <div className='startScreen' >
                     <div className="introText">
-                        Your game has been generated! Press SPACE to load game <br/><br/> Controls: <br/>WASD to move, SPACE to jump <br /> 
+                        Controls:<br/>WASD to move, SPACE to jump <br/><br/> Press Space to load game
                     </div>
                     <div className="errorText"> {errorTxt} </div>
                 </div>
-            </div>
-                
             }
             {started && <Game gameState={gameState} /> }
         </>
     );
-}
-
-
-Engine.propTypes = {
-    gameData: PropTypes.object
 }

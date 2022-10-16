@@ -1,13 +1,11 @@
-import { Value } from "./Value";
-
-export class Statement{
+class Statement{
 
     // Has varname and value to set
-    property:string;
-    value:Value;
+    varName:string;
+    value:any;
 
-    constructor(property:string, value:Value){
-        this.property = property;
+    constructor(varName:string, value:any){
+        this.varName = varName;
         this.value = value;
     }
 

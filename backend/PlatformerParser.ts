@@ -29,72 +29,72 @@ import { PlatformerParserVisitor } from "./PlatformerParserVisitor";
 
 export class PlatformerParser extends Parser {
 	public static readonly LEADING_SPACE = 1;
-	public static readonly COMPONENT = 2;
-	public static readonly OP = 3;
-	public static readonly PLAYER = 4;
-	public static readonly ENEMY = 5;
-	public static readonly DOOR = 6;
-	public static readonly TERRAIN = 7;
-	public static readonly PLATFORM = 8;
-	public static readonly BUTTON = 9;
-	public static readonly COIN = 10;
-	public static readonly LEVEL = 11;
-	public static readonly CHECKS = 12;
-	public static readonly IF = 13;
-	public static readonly ADD = 14;
-	public static readonly REMOVE = 15;
-	public static readonly LOGIC = 16;
+	public static readonly PLAYER = 2;
+	public static readonly ENEMY = 3;
+	public static readonly DOOR = 4;
+	public static readonly TERRAIN = 5;
+	public static readonly PLATFORM = 6;
+	public static readonly BUTTON = 7;
+	public static readonly COIN = 8;
+	public static readonly LEVEL = 9;
+	public static readonly CHECKS = 10;
+	public static readonly IF = 11;
+	public static readonly ADD = 12;
+	public static readonly REMOVE = 13;
+	public static readonly MONEY = 14;
+	public static readonly OPEN_BRACE = 15;
+	public static readonly CLOSE_BRACE = 16;
 	public static readonly STMT_NEWLINE = 17;
 	public static readonly NAME = 18;
 	public static readonly CONST = 19;
 	public static readonly COMMA = 20;
-	public static readonly OPEN_BRACE = 21;
-	public static readonly CLOSE_BRACE = 22;
-	public static readonly OPEN_PAREN = 23;
-	public static readonly CLOSE_PAREN = 24;
-	public static readonly OPEN_SQUARE = 25;
-	public static readonly CLOSED_SQUARE = 26;
-	public static readonly SEMICOLON = 27;
-	public static readonly COLON = 28;
-	public static readonly LITERAL = 29;
-	public static readonly LINK = 30;
-	public static readonly SPACE = 31;
-	public static readonly NEWLINE = 32;
+	public static readonly OPEN_PAREN = 21;
+	public static readonly CLOSE_PAREN = 22;
+	public static readonly OPEN_SQUARE = 23;
+	public static readonly CLOSED_SQUARE = 24;
+	public static readonly LARGER = 25;
+	public static readonly SMALLER = 26;
+	public static readonly EQUAL = 27;
+	public static readonly SEMICOLON = 28;
+	public static readonly COLON = 29;
+	public static readonly SPACE = 30;
+	public static readonly NEWLINE = 31;
 	public static readonly RULE_program = 0;
 	public static readonly RULE_level = 1;
 	public static readonly RULE_level_body = 2;
 	public static readonly RULE_level_cond = 3;
-	public static readonly RULE_condition = 4;
-	public static readonly RULE_level_entity = 5;
-	public static readonly RULE_entity_bod = 6;
-	public static readonly RULE_player = 7;
-	public static readonly RULE_entity = 8;
-	public static readonly RULE_cond_statement = 9;
-	public static readonly RULE_statement = 10;
-	public static readonly RULE_list = 11;
+	public static readonly RULE_level_objects = 4;
+	public static readonly RULE_objects = 5;
+	public static readonly RULE_object_bod = 6;
+	public static readonly RULE_statement = 7;
+	public static readonly RULE_property = 8;
+	public static readonly RULE_statements = 9;
+	public static readonly RULE_array = 10;
+	public static readonly RULE_component = 11;
 	public static readonly RULE_value = 12;
-	public static readonly RULE_list_object = 13;
+	public static readonly RULE_array_object = 13;
 	public static readonly RULE_exp = 14;
+	public static readonly RULE_op = 15;
+	public static readonly RULE_varname = 16;
 	// tslint:disable:no-trailing-whitespace
 	public static readonly ruleNames: string[] = [
-		"program", "level", "level_body", "level_cond", "condition", "level_entity", 
-		"entity_bod", "player", "entity", "cond_statement", "statement", "list", 
-		"value", "list_object", "exp",
+		"program", "level", "level_body", "level_cond", "level_objects", "objects", 
+		"object_bod", "statement", "property", "statements", "array", "component", 
+		"value", "array_object", "exp", "op", "varname",
 	];
 
 	private static readonly _LITERAL_NAMES: Array<string | undefined> = [
-		undefined, undefined, undefined, undefined, "'Player'", "'Enemy'", "'Door'", 
-		"'Terrain'", "'Platform'", "'Button'", "'Coin'", "'Level'", "'Checks'", 
-		"'IF'", undefined, undefined, undefined, undefined, undefined, undefined, 
-		"','", "'{'", "'}'", "'('", "')'", "'['", "']'", "';'", "':'",
+		undefined, undefined, "'Player '", "'Enemy '", "'Door '", "'Terrain '", 
+		"'Platform '", "'Button '", "'Coin'", "'Level '", "'Checks '", "'if '", 
+		"'Add'", "'Remove'", "'MONEY'", "'{'", "'}'", undefined, undefined, undefined, 
+		"','", "'('", "')'", "'['", "']'", "'>'", "'<'", "'='", "';'", "':'",
 	];
 	private static readonly _SYMBOLIC_NAMES: Array<string | undefined> = [
-		undefined, "LEADING_SPACE", "COMPONENT", "OP", "PLAYER", "ENEMY", "DOOR", 
-		"TERRAIN", "PLATFORM", "BUTTON", "COIN", "LEVEL", "CHECKS", "IF", "ADD", 
-		"REMOVE", "LOGIC", "STMT_NEWLINE", "NAME", "CONST", "COMMA", "OPEN_BRACE", 
-		"CLOSE_BRACE", "OPEN_PAREN", "CLOSE_PAREN", "OPEN_SQUARE", "CLOSED_SQUARE", 
-		"SEMICOLON", "COLON", "LITERAL", "LINK", "SPACE", "NEWLINE",
-
+		undefined, "LEADING_SPACE", "PLAYER", "ENEMY", "DOOR", "TERRAIN", "PLATFORM", 
+		"BUTTON", "COIN", "LEVEL", "CHECKS", "IF", "ADD", "REMOVE", "MONEY", "OPEN_BRACE", 
+		"CLOSE_BRACE", "STMT_NEWLINE", "NAME", "CONST", "COMMA", "OPEN_PAREN", 
+		"CLOSE_PAREN", "OPEN_SQUARE", "CLOSED_SQUARE", "LARGER", "SMALLER", "EQUAL", 
+		"SEMICOLON", "COLON", "SPACE", "NEWLINE",
 	];
 	public static readonly VOCABULARY: Vocabulary = new VocabularyImpl(PlatformerParser._LITERAL_NAMES, PlatformerParser._SYMBOLIC_NAMES, []);
 
@@ -130,71 +130,45 @@ export class PlatformerParser extends Parser {
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 30;
-			this.player();
-			this.state = 32;
+			this.state = 34;
+			this.objects();
+			this.state = 36;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
 			if (_la === PlatformerParser.STMT_NEWLINE) {
 				{
-				this.state = 31;
+				this.state = 35;
 				this.match(PlatformerParser.STMT_NEWLINE);
 				}
 			}
 
-			this.state = 39;
+			this.state = 38;
+			this.level();
+			this.state = 45;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			while (_la === PlatformerParser.COMPONENT) {
+			while (_la === PlatformerParser.LEVEL || _la === PlatformerParser.STMT_NEWLINE) {
 				{
 				{
-				this.state = 34;
-				this.entity();
-				this.state = 35;
-				_la = this._input.LA(1);
-				if (!(_la === PlatformerParser.STMT_NEWLINE || _la === PlatformerParser.NEWLINE)) {
-				this._errHandler.recoverInline(this);
-				} else {
-					if (this._input.LA(1) === Token.EOF) {
-						this.matchedEOF = true;
-					}
-
-					this._errHandler.reportMatch(this);
-					this.consume();
-				}
-				}
-				}
-				this.state = 41;
+				this.state = 40;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
-			}
-			this.state = 47;
-			this._errHandler.sync(this);
-			_la = this._input.LA(1);
-			while (_la === PlatformerParser.LEVEL) {
-				{
-				{
+				if (_la === PlatformerParser.STMT_NEWLINE) {
+					{
+					this.state = 39;
+					this.match(PlatformerParser.STMT_NEWLINE);
+					}
+				}
+
 				this.state = 42;
 				this.level();
-				this.state = 43;
-				_la = this._input.LA(1);
-				if (!(_la === PlatformerParser.STMT_NEWLINE || _la === PlatformerParser.NEWLINE)) {
-				this._errHandler.recoverInline(this);
-				} else {
-					if (this._input.LA(1) === Token.EOF) {
-						this.matchedEOF = true;
-					}
-
-					this._errHandler.reportMatch(this);
-					this.consume();
 				}
 				}
-				}
-				this.state = 49;
+				this.state = 47;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 			}
-			this.state = 50;
+			this.state = 48;
 			this.match(PlatformerParser.EOF);
 			}
 		}
@@ -220,35 +194,35 @@ export class PlatformerParser extends Parser {
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 52;
+			this.state = 50;
 			this.match(PlatformerParser.LEVEL);
-			this.state = 53;
+			this.state = 51;
 			this.match(PlatformerParser.NAME);
-			this.state = 54;
+			this.state = 52;
 			this.match(PlatformerParser.OPEN_BRACE);
+			this.state = 54;
+			this._errHandler.sync(this);
+			_la = this._input.LA(1);
+			if (_la === PlatformerParser.STMT_NEWLINE) {
+				{
+				this.state = 53;
+				this.match(PlatformerParser.STMT_NEWLINE);
+				}
+			}
+
 			this.state = 56;
-			this._errHandler.sync(this);
-			_la = this._input.LA(1);
-			if (_la === PlatformerParser.STMT_NEWLINE) {
-				{
-				this.state = 55;
-				this.match(PlatformerParser.STMT_NEWLINE);
-				}
-			}
-
-			this.state = 58;
 			this.level_body();
-			this.state = 60;
+			this.state = 58;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
 			if (_la === PlatformerParser.STMT_NEWLINE) {
 				{
-				this.state = 59;
+				this.state = 57;
 				this.match(PlatformerParser.STMT_NEWLINE);
 				}
 			}
 
-			this.state = 62;
+			this.state = 60;
 			this.match(PlatformerParser.CLOSE_BRACE);
 			}
 		}
@@ -274,132 +248,32 @@ export class PlatformerParser extends Parser {
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 69;
+			this.state = 62;
+			this.statements();
+			this.state = 64;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			while (_la === PlatformerParser.NAME) {
+			if (_la === PlatformerParser.STMT_NEWLINE) {
 				{
-				{
-				this.state = 64;
-				this.statement();
-				this.state = 65;
-				_la = this._input.LA(1);
-				if (!(_la === PlatformerParser.STMT_NEWLINE || _la === PlatformerParser.NEWLINE)) {
-				this._errHandler.recoverInline(this);
-				} else {
-					if (this._input.LA(1) === Token.EOF) {
-						this.matchedEOF = true;
-					}
-
-					this._errHandler.reportMatch(this);
-					this.consume();
+				this.state = 63;
+				this.match(PlatformerParser.STMT_NEWLINE);
 				}
-				}
-				}
-				this.state = 71;
-				this._errHandler.sync(this);
-				_la = this._input.LA(1);
 			}
-			this.state = 78;
+
+			this.state = 66;
+			this.level_objects();
+			this.state = 68;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			while (_la === PlatformerParser.COMPONENT) {
+			if (_la === PlatformerParser.STMT_NEWLINE) {
 				{
-				{
-				this.state = 72;
-				this.level_entity();
-				this.state = 74;
-				this._errHandler.sync(this);
-				_la = this._input.LA(1);
-				if (_la === PlatformerParser.STMT_NEWLINE || _la === PlatformerParser.NEWLINE) {
-					{
-					this.state = 73;
-					_la = this._input.LA(1);
-					if (!(_la === PlatformerParser.STMT_NEWLINE || _la === PlatformerParser.NEWLINE)) {
-					this._errHandler.recoverInline(this);
-					} else {
-						if (this._input.LA(1) === Token.EOF) {
-							this.matchedEOF = true;
-						}
-
-						this._errHandler.reportMatch(this);
-						this.consume();
-					}
-					}
-				}
-
-				}
-				}
-				this.state = 80;
-				this._errHandler.sync(this);
-				_la = this._input.LA(1);
-			}
-			this.state = 81;
-			this.match(PlatformerParser.CHECKS);
-			this.state = 82;
-			this.match(PlatformerParser.COLON);
-			this.state = 83;
-			this.match(PlatformerParser.OPEN_SQUARE);
-			this.state = 85;
-			this._errHandler.sync(this);
-			_la = this._input.LA(1);
-			if (_la === PlatformerParser.STMT_NEWLINE || _la === PlatformerParser.NEWLINE) {
-				{
-				this.state = 84;
-				_la = this._input.LA(1);
-				if (!(_la === PlatformerParser.STMT_NEWLINE || _la === PlatformerParser.NEWLINE)) {
-				this._errHandler.recoverInline(this);
-				} else {
-					if (this._input.LA(1) === Token.EOF) {
-						this.matchedEOF = true;
-					}
-
-					this._errHandler.reportMatch(this);
-					this.consume();
-				}
+				this.state = 67;
+				this.match(PlatformerParser.STMT_NEWLINE);
 				}
 			}
 
-			this.state = 92;
-			this._errHandler.sync(this);
-			_la = this._input.LA(1);
-			while (_la === PlatformerParser.IF) {
-				{
-				{
-				this.state = 87;
-				this.level_cond();
-				this.state = 88;
-				_la = this._input.LA(1);
-				if (!(_la === PlatformerParser.STMT_NEWLINE || _la === PlatformerParser.NEWLINE)) {
-				this._errHandler.recoverInline(this);
-				} else {
-					if (this._input.LA(1) === Token.EOF) {
-						this.matchedEOF = true;
-					}
-
-					this._errHandler.reportMatch(this);
-					this.consume();
-				}
-				}
-				}
-				this.state = 94;
-				this._errHandler.sync(this);
-				_la = this._input.LA(1);
-			}
-			this.state = 95;
-			this.match(PlatformerParser.CLOSED_SQUARE);
-			this.state = 96;
-			_la = this._input.LA(1);
-			if (!(_la === PlatformerParser.STMT_NEWLINE || _la === PlatformerParser.NEWLINE)) {
-			this._errHandler.recoverInline(this);
-			} else {
-				if (this._input.LA(1) === Token.EOF) {
-					this.matchedEOF = true;
-				}
-
-				this._errHandler.reportMatch(this);
-				this.consume();
-			}
+			this.state = 70;
+			this.level_cond();
 			}
 		}
 		catch (re) {
@@ -424,67 +298,33 @@ export class PlatformerParser extends Parser {
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 98;
+			this.state = 72;
 			this.match(PlatformerParser.IF);
-			this.state = 99;
-			this.match(PlatformerParser.COLON);
-			this.state = 100;
+			this.state = 73;
 			this.match(PlatformerParser.OPEN_PAREN);
-			this.state = 101;
-			this.condition();
-			this.state = 104;
-			this._errHandler.sync(this);
-			_la = this._input.LA(1);
-			if (_la === PlatformerParser.LOGIC) {
-				{
-				this.state = 102;
-				this.match(PlatformerParser.LOGIC);
-				this.state = 103;
-				this.condition();
-				}
-			}
-
-			this.state = 106;
+			this.state = 74;
+			this.varname();
+			this.state = 75;
+			this.op();
+			this.state = 76;
+			this.exp();
+			this.state = 77;
 			this.match(PlatformerParser.CLOSE_PAREN);
-			this.state = 107;
+			this.state = 78;
 			this.match(PlatformerParser.OPEN_BRACE);
-			this.state = 109;
+			this.state = 80;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
 			if (_la === PlatformerParser.STMT_NEWLINE) {
 				{
-				this.state = 108;
+				this.state = 79;
 				this.match(PlatformerParser.STMT_NEWLINE);
 				}
 			}
 
-			this.state = 116;
-			this._errHandler.sync(this);
-			_la = this._input.LA(1);
-			while (_la === PlatformerParser.COMPONENT) {
-				{
-				{
-				this.state = 111;
-				this.cond_statement();
-				this.state = 112;
-				_la = this._input.LA(1);
-				if (!(_la === PlatformerParser.STMT_NEWLINE || _la === PlatformerParser.NEWLINE)) {
-				this._errHandler.recoverInline(this);
-				} else {
-					if (this._input.LA(1) === Token.EOF) {
-						this.matchedEOF = true;
-					}
-
-					this._errHandler.reportMatch(this);
-					this.consume();
-				}
-				}
-				}
-				this.state = 118;
-				this._errHandler.sync(this);
-				_la = this._input.LA(1);
-			}
-			this.state = 119;
+			this.state = 82;
+			this.statements();
+			this.state = 83;
 			this.match(PlatformerParser.CLOSE_BRACE);
 			}
 		}
@@ -503,97 +343,92 @@ export class PlatformerParser extends Parser {
 		return _localctx;
 	}
 	// @RuleVersion(0)
-	public condition(): ConditionContext {
-		let _localctx: ConditionContext = new ConditionContext(this._ctx, this.state);
-		this.enterRule(_localctx, 8, PlatformerParser.RULE_condition);
+	public level_objects(): Level_objectsContext {
+		let _localctx: Level_objectsContext = new Level_objectsContext(this._ctx, this.state);
+		this.enterRule(_localctx, 8, PlatformerParser.RULE_level_objects);
+		let _la: number;
 		try {
-			this.state = 125;
+			this.enterOuterAlt(_localctx, 1);
+			{
+			this.state = 85;
+			this.component();
+			this.state = 86;
+			this.match(PlatformerParser.COLON);
+			this.state = 88;
 			this._errHandler.sync(this);
-			switch ( this.interpreter.adaptivePredict(this._input, 13, this._ctx) ) {
+			_la = this._input.LA(1);
+			if (_la === PlatformerParser.STMT_NEWLINE) {
+				{
+				this.state = 87;
+				this.match(PlatformerParser.STMT_NEWLINE);
+				}
+			}
+
+			this.state = 90;
+			this.array();
+			}
+		}
+		catch (re) {
+			if (re instanceof RecognitionException) {
+				_localctx.exception = re;
+				this._errHandler.reportError(this, re);
+				this._errHandler.recover(this, re);
+			} else {
+				throw re;
+			}
+		}
+		finally {
+			this.exitRule();
+		}
+		return _localctx;
+	}
+	// @RuleVersion(0)
+	public objects(): ObjectsContext {
+		let _localctx: ObjectsContext = new ObjectsContext(this._ctx, this.state);
+		this.enterRule(_localctx, 10, PlatformerParser.RULE_objects);
+		let _la: number;
+		try {
+			this.enterOuterAlt(_localctx, 1);
+			{
+			this.state = 95;
+			this._errHandler.sync(this);
+			_la = this._input.LA(1);
+			if (_la === PlatformerParser.PLAYER) {
+				{
+				this.state = 92;
+				this.match(PlatformerParser.PLAYER);
+				this.state = 93;
+				this.match(PlatformerParser.NAME);
+				this.state = 94;
+				this.object_bod();
+				}
+			}
+
+			this.state = 98;
+			this._errHandler.sync(this);
+			switch ( this.interpreter.adaptivePredict(this._input, 10, this._ctx) ) {
 			case 1:
-				this.enterOuterAlt(_localctx, 1);
 				{
-				{
-				this.state = 121;
-				this.match(PlatformerParser.NAME);
-				this.state = 122;
-				this.match(PlatformerParser.OP);
-				this.state = 123;
-				this.exp();
-				}
-				}
-				break;
-
-			case 2:
-				this.enterOuterAlt(_localctx, 2);
-				{
-				this.state = 124;
-				this.match(PlatformerParser.NAME);
+				this.state = 97;
+				this.match(PlatformerParser.STMT_NEWLINE);
 				}
 				break;
 			}
-		}
-		catch (re) {
-			if (re instanceof RecognitionException) {
-				_localctx.exception = re;
-				this._errHandler.reportError(this, re);
-				this._errHandler.recover(this, re);
-			} else {
-				throw re;
-			}
-		}
-		finally {
-			this.exitRule();
-		}
-		return _localctx;
-	}
-	// @RuleVersion(0)
-	public level_entity(): Level_entityContext {
-		let _localctx: Level_entityContext = new Level_entityContext(this._ctx, this.state);
-		this.enterRule(_localctx, 10, PlatformerParser.RULE_level_entity);
-		let _la: number;
-		try {
-			this.enterOuterAlt(_localctx, 1);
-			{
-			this.state = 127;
-			this.match(PlatformerParser.COMPONENT);
-			this.state = 128;
-			this.match(PlatformerParser.COLON);
-			this.state = 129;
-			_la = this._input.LA(1);
-			if (!(_la === PlatformerParser.STMT_NEWLINE || _la === PlatformerParser.NEWLINE)) {
-			this._errHandler.recoverInline(this);
-			} else {
-				if (this._input.LA(1) === Token.EOF) {
-					this.matchedEOF = true;
-				}
-
-				this._errHandler.reportMatch(this);
-				this.consume();
-			}
-			this.state = 135;
+			this.state = 106;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			while (_la === PlatformerParser.NAME) {
+			while ((((_la) & ~0x1F) === 0 && ((1 << _la) & ((1 << PlatformerParser.ENEMY) | (1 << PlatformerParser.DOOR) | (1 << PlatformerParser.TERRAIN) | (1 << PlatformerParser.BUTTON))) !== 0)) {
 				{
 				{
-				this.state = 130;
-				this.statement();
-				this.state = 131;
-				_la = this._input.LA(1);
-				if (!(_la === PlatformerParser.STMT_NEWLINE || _la === PlatformerParser.NEWLINE)) {
-				this._errHandler.recoverInline(this);
-				} else {
-					if (this._input.LA(1) === Token.EOF) {
-						this.matchedEOF = true;
-					}
-
-					this._errHandler.reportMatch(this);
-					this.consume();
+				this.state = 100;
+				this.component();
+				this.state = 101;
+				this.match(PlatformerParser.NAME);
+				this.state = 102;
+				this.object_bod();
 				}
 				}
-				}
-				this.state = 137;
+				this.state = 108;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 			}
@@ -614,159 +449,37 @@ export class PlatformerParser extends Parser {
 		return _localctx;
 	}
 	// @RuleVersion(0)
-	public entity_bod(): Entity_bodContext {
-		let _localctx: Entity_bodContext = new Entity_bodContext(this._ctx, this.state);
-		this.enterRule(_localctx, 12, PlatformerParser.RULE_entity_bod);
+	public object_bod(): Object_bodContext {
+		let _localctx: Object_bodContext = new Object_bodContext(this._ctx, this.state);
+		this.enterRule(_localctx, 12, PlatformerParser.RULE_object_bod);
 		let _la: number;
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 138;
+			this.state = 109;
 			this.match(PlatformerParser.OPEN_BRACE);
-			this.state = 139;
-			_la = this._input.LA(1);
-			if (!(_la === PlatformerParser.STMT_NEWLINE || _la === PlatformerParser.NEWLINE)) {
-			this._errHandler.recoverInline(this);
-			} else {
-				if (this._input.LA(1) === Token.EOF) {
-					this.matchedEOF = true;
-				}
-
-				this._errHandler.reportMatch(this);
-				this.consume();
-			}
-			this.state = 145;
+			this.state = 111;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			while (_la === PlatformerParser.NAME) {
+			if (_la === PlatformerParser.STMT_NEWLINE) {
 				{
-				{
-				this.state = 140;
-				this.statement();
-				this.state = 141;
-				_la = this._input.LA(1);
-				if (!(_la === PlatformerParser.STMT_NEWLINE || _la === PlatformerParser.NEWLINE)) {
-				this._errHandler.recoverInline(this);
-				} else {
-					if (this._input.LA(1) === Token.EOF) {
-						this.matchedEOF = true;
-					}
+				this.state = 110;
+				this.match(PlatformerParser.STMT_NEWLINE);
+				}
+			}
 
-					this._errHandler.reportMatch(this);
-					this.consume();
-				}
-				}
-				}
-				this.state = 147;
-				this._errHandler.sync(this);
-				_la = this._input.LA(1);
-			}
-			this.state = 148;
-			this.match(PlatformerParser.CLOSE_BRACE);
-			}
-		}
-		catch (re) {
-			if (re instanceof RecognitionException) {
-				_localctx.exception = re;
-				this._errHandler.reportError(this, re);
-				this._errHandler.recover(this, re);
-			} else {
-				throw re;
-			}
-		}
-		finally {
-			this.exitRule();
-		}
-		return _localctx;
-	}
-	// @RuleVersion(0)
-	public player(): PlayerContext {
-		let _localctx: PlayerContext = new PlayerContext(this._ctx, this.state);
-		this.enterRule(_localctx, 14, PlatformerParser.RULE_player);
-		try {
-			this.enterOuterAlt(_localctx, 1);
-			{
-			this.state = 150;
-			this.match(PlatformerParser.PLAYER);
-			this.state = 151;
-			this.match(PlatformerParser.NAME);
-			this.state = 152;
-			this.match(PlatformerParser.COLON);
-			this.state = 153;
-			this.entity_bod();
-			}
-		}
-		catch (re) {
-			if (re instanceof RecognitionException) {
-				_localctx.exception = re;
-				this._errHandler.reportError(this, re);
-				this._errHandler.recover(this, re);
-			} else {
-				throw re;
-			}
-		}
-		finally {
-			this.exitRule();
-		}
-		return _localctx;
-	}
-	// @RuleVersion(0)
-	public entity(): EntityContext {
-		let _localctx: EntityContext = new EntityContext(this._ctx, this.state);
-		this.enterRule(_localctx, 16, PlatformerParser.RULE_entity);
-		try {
-			this.enterOuterAlt(_localctx, 1);
-			{
-			this.state = 155;
-			this.match(PlatformerParser.COMPONENT);
-			this.state = 156;
-			this.match(PlatformerParser.NAME);
-			this.state = 157;
-			this.match(PlatformerParser.COLON);
-			this.state = 158;
-			this.entity_bod();
-			}
-		}
-		catch (re) {
-			if (re instanceof RecognitionException) {
-				_localctx.exception = re;
-				this._errHandler.reportError(this, re);
-				this._errHandler.recover(this, re);
-			} else {
-				throw re;
-			}
-		}
-		finally {
-			this.exitRule();
-		}
-		return _localctx;
-	}
-	// @RuleVersion(0)
-	public cond_statement(): Cond_statementContext {
-		let _localctx: Cond_statementContext = new Cond_statementContext(this._ctx, this.state);
-		this.enterRule(_localctx, 18, PlatformerParser.RULE_cond_statement);
-		let _la: number;
-		try {
-			this.enterOuterAlt(_localctx, 1);
-			{
-			this.state = 160;
-			this.match(PlatformerParser.COMPONENT);
-			this.state = 161;
-			this.match(PlatformerParser.COLON);
-			this.state = 162;
+			this.state = 114;
+			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			if (!(_la === PlatformerParser.ADD || _la === PlatformerParser.REMOVE)) {
-			this._errHandler.recoverInline(this);
-			} else {
-				if (this._input.LA(1) === Token.EOF) {
-					this.matchedEOF = true;
+			if (_la === PlatformerParser.NAME) {
+				{
+				this.state = 113;
+				this.statements();
 				}
-
-				this._errHandler.reportMatch(this);
-				this.consume();
 			}
-			this.state = 163;
-			this.value();
+
+			this.state = 116;
+			this.match(PlatformerParser.CLOSE_BRACE);
 			}
 		}
 		catch (re) {
@@ -786,15 +499,15 @@ export class PlatformerParser extends Parser {
 	// @RuleVersion(0)
 	public statement(): StatementContext {
 		let _localctx: StatementContext = new StatementContext(this._ctx, this.state);
-		this.enterRule(_localctx, 20, PlatformerParser.RULE_statement);
+		this.enterRule(_localctx, 14, PlatformerParser.RULE_statement);
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 165;
-			this.match(PlatformerParser.NAME);
-			this.state = 166;
+			this.state = 118;
+			this.property();
+			this.state = 119;
 			this.match(PlatformerParser.COLON);
-			this.state = 167;
+			this.state = 120;
 			this.value();
 			}
 		}
@@ -813,21 +526,47 @@ export class PlatformerParser extends Parser {
 		return _localctx;
 	}
 	// @RuleVersion(0)
-	public list(): ListContext {
-		let _localctx: ListContext = new ListContext(this._ctx, this.state);
-		this.enterRule(_localctx, 22, PlatformerParser.RULE_list);
+	public property(): PropertyContext {
+		let _localctx: PropertyContext = new PropertyContext(this._ctx, this.state);
+		this.enterRule(_localctx, 16, PlatformerParser.RULE_property);
+		try {
+			this.enterOuterAlt(_localctx, 1);
+			{
+			this.state = 122;
+			this.match(PlatformerParser.NAME);
+			}
+		}
+		catch (re) {
+			if (re instanceof RecognitionException) {
+				_localctx.exception = re;
+				this._errHandler.reportError(this, re);
+				this._errHandler.recover(this, re);
+			} else {
+				throw re;
+			}
+		}
+		finally {
+			this.exitRule();
+		}
+		return _localctx;
+	}
+	// @RuleVersion(0)
+	public statements(): StatementsContext {
+		let _localctx: StatementsContext = new StatementsContext(this._ctx, this.state);
+		this.enterRule(_localctx, 18, PlatformerParser.RULE_statements);
 		let _la: number;
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 169;
-			this.match(PlatformerParser.OPEN_SQUARE);
-			this.state = 171;
+			this.state = 127;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			if (_la === PlatformerParser.STMT_NEWLINE || _la === PlatformerParser.NEWLINE) {
+			do {
 				{
-				this.state = 170;
+				{
+				this.state = 124;
+				this.statement();
+				this.state = 125;
 				_la = this._input.LA(1);
 				if (!(_la === PlatformerParser.STMT_NEWLINE || _la === PlatformerParser.NEWLINE)) {
 				this._errHandler.recoverInline(this);
@@ -840,60 +579,93 @@ export class PlatformerParser extends Parser {
 					this.consume();
 				}
 				}
+				}
+				this.state = 129;
+				this._errHandler.sync(this);
+				_la = this._input.LA(1);
+			} while (_la === PlatformerParser.NAME);
 			}
-
-			this.state = 173;
-			this.list_object();
-			this.state = 179;
+		}
+		catch (re) {
+			if (re instanceof RecognitionException) {
+				_localctx.exception = re;
+				this._errHandler.reportError(this, re);
+				this._errHandler.recover(this, re);
+			} else {
+				throw re;
+			}
+		}
+		finally {
+			this.exitRule();
+		}
+		return _localctx;
+	}
+	// @RuleVersion(0)
+	public array(): ArrayContext {
+		let _localctx: ArrayContext = new ArrayContext(this._ctx, this.state);
+		this.enterRule(_localctx, 20, PlatformerParser.RULE_array);
+		let _la: number;
+		try {
+			this.enterOuterAlt(_localctx, 1);
+			{
+			this.state = 131;
+			this.match(PlatformerParser.OPEN_SQUARE);
+			this.state = 132;
+			this.array_object();
+			this.state = 137;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
 			while (_la === PlatformerParser.COMMA) {
 				{
 				{
-				this.state = 174;
+				this.state = 133;
 				this.match(PlatformerParser.COMMA);
-				this.state = 175;
-				_la = this._input.LA(1);
-				if (!(_la === PlatformerParser.STMT_NEWLINE || _la === PlatformerParser.NEWLINE)) {
-				this._errHandler.recoverInline(this);
-				} else {
-					if (this._input.LA(1) === Token.EOF) {
-						this.matchedEOF = true;
-					}
-
-					this._errHandler.reportMatch(this);
-					this.consume();
-				}
-				this.state = 176;
-				this.list_object();
+				this.state = 134;
+				this.array_object();
 				}
 				}
-				this.state = 181;
+				this.state = 139;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 			}
-			this.state = 183;
-			this._errHandler.sync(this);
-			_la = this._input.LA(1);
-			if (_la === PlatformerParser.STMT_NEWLINE || _la === PlatformerParser.NEWLINE) {
-				{
-				this.state = 182;
-				_la = this._input.LA(1);
-				if (!(_la === PlatformerParser.STMT_NEWLINE || _la === PlatformerParser.NEWLINE)) {
-				this._errHandler.recoverInline(this);
-				} else {
-					if (this._input.LA(1) === Token.EOF) {
-						this.matchedEOF = true;
-					}
-
-					this._errHandler.reportMatch(this);
-					this.consume();
-				}
-				}
-			}
-
-			this.state = 185;
+			this.state = 140;
 			this.match(PlatformerParser.CLOSED_SQUARE);
+			}
+		}
+		catch (re) {
+			if (re instanceof RecognitionException) {
+				_localctx.exception = re;
+				this._errHandler.reportError(this, re);
+				this._errHandler.recover(this, re);
+			} else {
+				throw re;
+			}
+		}
+		finally {
+			this.exitRule();
+		}
+		return _localctx;
+	}
+	// @RuleVersion(0)
+	public component(): ComponentContext {
+		let _localctx: ComponentContext = new ComponentContext(this._ctx, this.state);
+		this.enterRule(_localctx, 22, PlatformerParser.RULE_component);
+		let _la: number;
+		try {
+			this.enterOuterAlt(_localctx, 1);
+			{
+			this.state = 142;
+			_la = this._input.LA(1);
+			if (!((((_la) & ~0x1F) === 0 && ((1 << _la) & ((1 << PlatformerParser.ENEMY) | (1 << PlatformerParser.DOOR) | (1 << PlatformerParser.TERRAIN) | (1 << PlatformerParser.BUTTON))) !== 0))) {
+			this._errHandler.recoverInline(this);
+			} else {
+				if (this._input.LA(1) === Token.EOF) {
+					this.matchedEOF = true;
+				}
+
+				this._errHandler.reportMatch(this);
+				this.consume();
+			}
 			}
 		}
 		catch (re) {
@@ -915,49 +687,28 @@ export class PlatformerParser extends Parser {
 		let _localctx: ValueContext = new ValueContext(this._ctx, this.state);
 		this.enterRule(_localctx, 24, PlatformerParser.RULE_value);
 		try {
-			this.state = 193;
+			this.state = 147;
 			this._errHandler.sync(this);
 			switch (this._input.LA(1)) {
 			case PlatformerParser.NAME:
 				this.enterOuterAlt(_localctx, 1);
 				{
-				this.state = 187;
-				this.match(PlatformerParser.NAME);
+				this.state = 144;
+				this.varname();
 				}
 				break;
 			case PlatformerParser.CONST:
 				this.enterOuterAlt(_localctx, 2);
 				{
-				this.state = 188;
+				this.state = 145;
 				this.match(PlatformerParser.CONST);
 				}
 				break;
 			case PlatformerParser.OPEN_PAREN:
 				this.enterOuterAlt(_localctx, 3);
 				{
-				this.state = 189;
-				this.list_object();
-				}
-				break;
-			case PlatformerParser.LITERAL:
-				this.enterOuterAlt(_localctx, 4);
-				{
-				this.state = 190;
-				this.match(PlatformerParser.LITERAL);
-				}
-				break;
-			case PlatformerParser.LINK:
-				this.enterOuterAlt(_localctx, 5);
-				{
-				this.state = 191;
-				this.match(PlatformerParser.LINK);
-				}
-				break;
-			case PlatformerParser.OPEN_SQUARE:
-				this.enterOuterAlt(_localctx, 6);
-				{
-				this.state = 192;
-				this.list();
+				this.state = 146;
+				this.array_object();
 				}
 				break;
 			default:
@@ -979,34 +730,34 @@ export class PlatformerParser extends Parser {
 		return _localctx;
 	}
 	// @RuleVersion(0)
-	public list_object(): List_objectContext {
-		let _localctx: List_objectContext = new List_objectContext(this._ctx, this.state);
-		this.enterRule(_localctx, 26, PlatformerParser.RULE_list_object);
+	public array_object(): Array_objectContext {
+		let _localctx: Array_objectContext = new Array_objectContext(this._ctx, this.state);
+		this.enterRule(_localctx, 26, PlatformerParser.RULE_array_object);
 		let _la: number;
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 195;
+			this.state = 149;
 			this.match(PlatformerParser.OPEN_PAREN);
-			this.state = 196;
+			this.state = 150;
 			this.exp();
-			this.state = 201;
+			this.state = 155;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
 			while (_la === PlatformerParser.COMMA) {
 				{
 				{
-				this.state = 197;
+				this.state = 151;
 				this.match(PlatformerParser.COMMA);
-				this.state = 198;
+				this.state = 152;
 				this.exp();
 				}
 				}
-				this.state = 203;
+				this.state = 157;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 			}
-			this.state = 204;
+			this.state = 158;
 			this.match(PlatformerParser.CLOSE_PAREN);
 			}
 		}
@@ -1028,13 +779,53 @@ export class PlatformerParser extends Parser {
 	public exp(): ExpContext {
 		let _localctx: ExpContext = new ExpContext(this._ctx, this.state);
 		this.enterRule(_localctx, 28, PlatformerParser.RULE_exp);
+		try {
+			this.state = 162;
+			this._errHandler.sync(this);
+			switch (this._input.LA(1)) {
+			case PlatformerParser.NAME:
+				this.enterOuterAlt(_localctx, 1);
+				{
+				this.state = 160;
+				this.varname();
+				}
+				break;
+			case PlatformerParser.CONST:
+				this.enterOuterAlt(_localctx, 2);
+				{
+				this.state = 161;
+				this.match(PlatformerParser.CONST);
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (re) {
+			if (re instanceof RecognitionException) {
+				_localctx.exception = re;
+				this._errHandler.reportError(this, re);
+				this._errHandler.recover(this, re);
+			} else {
+				throw re;
+			}
+		}
+		finally {
+			this.exitRule();
+		}
+		return _localctx;
+	}
+	// @RuleVersion(0)
+	public op(): OpContext {
+		let _localctx: OpContext = new OpContext(this._ctx, this.state);
+		this.enterRule(_localctx, 30, PlatformerParser.RULE_op);
 		let _la: number;
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 206;
+			this.state = 164;
 			_la = this._input.LA(1);
-			if (!(_la === PlatformerParser.NAME || _la === PlatformerParser.CONST)) {
+			if (!((((_la) & ~0x1F) === 0 && ((1 << _la) & ((1 << PlatformerParser.LARGER) | (1 << PlatformerParser.SMALLER) | (1 << PlatformerParser.EQUAL))) !== 0))) {
 			this._errHandler.recoverInline(this);
 			} else {
 				if (this._input.LA(1) === Token.EOF) {
@@ -1060,98 +851,103 @@ export class PlatformerParser extends Parser {
 		}
 		return _localctx;
 	}
+	// @RuleVersion(0)
+	public varname(): VarnameContext {
+		let _localctx: VarnameContext = new VarnameContext(this._ctx, this.state);
+		this.enterRule(_localctx, 32, PlatformerParser.RULE_varname);
+		try {
+			this.enterOuterAlt(_localctx, 1);
+			{
+			this.state = 166;
+			this.match(PlatformerParser.NAME);
+			}
+		}
+		catch (re) {
+			if (re instanceof RecognitionException) {
+				_localctx.exception = re;
+				this._errHandler.reportError(this, re);
+				this._errHandler.recover(this, re);
+			} else {
+				throw re;
+			}
+		}
+		finally {
+			this.exitRule();
+		}
+		return _localctx;
+	}
 
 	public static readonly _serializedATN: string =
-		"\x03\uC91D\uCABA\u058D\uAFBA\u4F53\u0607\uEA8B\uC241\x03\"\xD3\x04\x02" +
+		"\x03\uC91D\uCABA\u058D\uAFBA\u4F53\u0607\uEA8B\uC241\x03!\xAB\x04\x02" +
 		"\t\x02\x04\x03\t\x03\x04\x04\t\x04\x04\x05\t\x05\x04\x06\t\x06\x04\x07" +
 		"\t\x07\x04\b\t\b\x04\t\t\t\x04\n\t\n\x04\v\t\v\x04\f\t\f\x04\r\t\r\x04" +
-		"\x0E\t\x0E\x04\x0F\t\x0F\x04\x10\t\x10\x03\x02\x03\x02\x05\x02#\n\x02" +
-		"\x03\x02\x03\x02\x03\x02\x07\x02(\n\x02\f\x02\x0E\x02+\v\x02\x03\x02\x03" +
-		"\x02\x03\x02\x07\x020\n\x02\f\x02\x0E\x023\v\x02\x03\x02\x03\x02\x03\x03" +
-		"\x03\x03\x03\x03\x03\x03\x05\x03;\n\x03\x03\x03\x03\x03\x05\x03?\n\x03" +
-		"\x03\x03\x03\x03\x03\x04\x03\x04\x03\x04\x07\x04F\n\x04\f\x04\x0E\x04" +
-		"I\v\x04\x03\x04\x03\x04\x05\x04M\n\x04\x07\x04O\n\x04\f\x04\x0E\x04R\v" +
-		"\x04\x03\x04\x03\x04\x03\x04\x03\x04\x05\x04X\n\x04\x03\x04\x03\x04\x03" +
-		"\x04\x07\x04]\n\x04\f\x04\x0E\x04`\v\x04\x03\x04\x03\x04\x03\x04\x03\x05" +
-		"\x03\x05\x03\x05\x03\x05\x03\x05\x03\x05\x05\x05k\n\x05\x03\x05\x03\x05" +
-		"\x03\x05\x05\x05p\n\x05\x03\x05\x03\x05\x03\x05\x07\x05u\n\x05\f\x05\x0E" +
-		"\x05x\v\x05\x03\x05\x03\x05\x03\x06\x03\x06\x03\x06\x03\x06\x05\x06\x80" +
-		"\n\x06\x03\x07\x03\x07\x03\x07\x03\x07\x03\x07\x03\x07\x07\x07\x88\n\x07" +
-		"\f\x07\x0E\x07\x8B\v\x07\x03\b\x03\b\x03\b\x03\b\x03\b\x07\b\x92\n\b\f" +
-		"\b\x0E\b\x95\v\b\x03\b\x03\b\x03\t\x03\t\x03\t\x03\t\x03\t\x03\n\x03\n" +
-		"\x03\n\x03\n\x03\n\x03\v\x03\v\x03\v\x03\v\x03\v\x03\f\x03\f\x03\f\x03" +
-		"\f\x03\r\x03\r\x05\r\xAE\n\r\x03\r\x03\r\x03\r\x03\r\x07\r\xB4\n\r\f\r" +
-		"\x0E\r\xB7\v\r\x03\r\x05\r\xBA\n\r\x03\r\x03\r\x03\x0E\x03\x0E\x03\x0E" +
-		"\x03\x0E\x03\x0E\x03\x0E\x05\x0E\xC4\n\x0E\x03\x0F\x03\x0F\x03\x0F\x03" +
-		"\x0F\x07\x0F\xCA\n\x0F\f\x0F\x0E\x0F\xCD\v\x0F\x03\x0F\x03\x0F\x03\x10" +
-		"\x03\x10\x03\x10\x02\x02\x02\x11\x02\x02\x04\x02\x06\x02\b\x02\n\x02\f" +
-		"\x02\x0E\x02\x10\x02\x12\x02\x14\x02\x16\x02\x18\x02\x1A\x02\x1C\x02\x1E" +
-		"\x02\x02\x05\x04\x02\x13\x13\"\"\x03\x02\x10\x11\x03\x02\x14\x15\x02\xDC" +
-		"\x02 \x03\x02\x02\x02\x046\x03\x02\x02\x02\x06G\x03\x02\x02\x02\bd\x03" +
-		"\x02\x02\x02\n\x7F\x03\x02\x02\x02\f\x81\x03\x02\x02\x02\x0E\x8C\x03\x02" +
-		"\x02\x02\x10\x98\x03\x02\x02\x02\x12\x9D\x03\x02\x02\x02\x14\xA2\x03\x02" +
-		"\x02\x02\x16\xA7\x03\x02\x02\x02\x18\xAB\x03\x02\x02\x02\x1A\xC3\x03\x02" +
-		"\x02\x02\x1C\xC5\x03\x02\x02\x02\x1E\xD0\x03\x02\x02\x02 \"\x05\x10\t" +
-		"\x02!#\x07\x13\x02\x02\"!\x03\x02\x02\x02\"#\x03\x02\x02\x02#)\x03\x02" +
-		"\x02\x02$%\x05\x12\n\x02%&\t\x02\x02\x02&(\x03\x02\x02\x02\'$\x03\x02" +
-		"\x02\x02(+\x03\x02\x02\x02)\'\x03\x02\x02\x02)*\x03\x02\x02\x02*1\x03" +
-		"\x02\x02\x02+)\x03\x02\x02\x02,-\x05\x04\x03\x02-.\t\x02\x02\x02.0\x03" +
-		"\x02\x02\x02/,\x03\x02\x02\x0203\x03\x02\x02\x021/\x03\x02\x02\x0212\x03" +
-		"\x02\x02\x0224\x03\x02\x02\x0231\x03\x02\x02\x0245\x07\x02\x02\x035\x03" +
-		"\x03\x02\x02\x0267\x07\r\x02\x0278\x07\x14\x02\x028:\x07\x17\x02\x029" +
-		";\x07\x13\x02\x02:9\x03\x02\x02\x02:;\x03\x02\x02\x02;<\x03\x02\x02\x02" +
-		"<>\x05\x06\x04\x02=?\x07\x13\x02\x02>=\x03\x02\x02\x02>?\x03\x02\x02\x02" +
-		"?@\x03\x02\x02\x02@A\x07\x18\x02\x02A\x05\x03\x02\x02\x02BC\x05\x16\f" +
-		"\x02CD\t\x02\x02\x02DF\x03\x02\x02\x02EB\x03\x02\x02\x02FI\x03\x02\x02" +
-		"\x02GE\x03\x02\x02\x02GH\x03\x02\x02\x02HP\x03\x02\x02\x02IG\x03\x02\x02" +
-		"\x02JL\x05\f\x07\x02KM\t\x02\x02\x02LK\x03\x02\x02\x02LM\x03\x02\x02\x02" +
-		"MO\x03\x02\x02\x02NJ\x03\x02\x02\x02OR\x03\x02\x02\x02PN\x03\x02\x02\x02" +
-		"PQ\x03\x02\x02\x02QS\x03\x02\x02\x02RP\x03\x02\x02\x02ST\x07\x0E\x02\x02" +
-		"TU\x07\x1E\x02\x02UW\x07\x1B\x02\x02VX\t\x02\x02\x02WV\x03\x02\x02\x02" +
-		"WX\x03\x02\x02\x02X^\x03\x02\x02\x02YZ\x05\b\x05\x02Z[\t\x02\x02\x02[" +
-		"]\x03\x02\x02\x02\\Y\x03\x02\x02\x02]`\x03\x02\x02\x02^\\\x03\x02\x02" +
-		"\x02^_\x03\x02\x02\x02_a\x03\x02\x02\x02`^\x03\x02\x02\x02ab\x07\x1C\x02" +
-		"\x02bc\t\x02\x02\x02c\x07\x03\x02\x02\x02de\x07\x0F\x02\x02ef\x07\x1E" +
-		"\x02\x02fg\x07\x19\x02\x02gj\x05\n\x06\x02hi\x07\x12\x02\x02ik\x05\n\x06" +
-		"\x02jh\x03\x02\x02\x02jk\x03\x02\x02\x02kl\x03\x02\x02\x02lm\x07\x1A\x02" +
-		"\x02mo\x07\x17\x02\x02np\x07\x13\x02\x02on\x03\x02\x02\x02op\x03\x02\x02" +
-		"\x02pv\x03\x02\x02\x02qr\x05\x14\v\x02rs\t\x02\x02\x02su\x03\x02\x02\x02" +
-		"tq\x03\x02\x02\x02ux\x03\x02\x02\x02vt\x03\x02\x02\x02vw\x03\x02\x02\x02" +
-		"wy\x03\x02\x02\x02xv\x03\x02\x02\x02yz\x07\x18\x02\x02z\t\x03\x02\x02" +
-		"\x02{|\x07\x14\x02\x02|}\x07\x05\x02\x02}\x80\x05\x1E\x10\x02~\x80\x07" +
-		"\x14\x02\x02\x7F{\x03\x02\x02\x02\x7F~\x03\x02\x02\x02\x80\v\x03\x02\x02" +
-		"\x02\x81\x82\x07\x04\x02\x02\x82\x83\x07\x1E\x02\x02\x83\x89\t\x02\x02" +
-		"\x02\x84\x85\x05\x16\f\x02\x85\x86\t\x02\x02\x02\x86\x88\x03\x02\x02\x02" +
-		"\x87\x84\x03\x02\x02\x02\x88\x8B\x03\x02\x02\x02\x89\x87\x03\x02\x02\x02" +
-		"\x89\x8A\x03\x02\x02\x02\x8A\r\x03\x02\x02\x02\x8B\x89\x03\x02\x02\x02" +
-		"\x8C\x8D\x07\x17\x02\x02\x8D\x93\t\x02\x02\x02\x8E\x8F\x05\x16\f\x02\x8F" +
-		"\x90\t\x02\x02\x02\x90\x92\x03\x02\x02\x02\x91\x8E\x03\x02\x02\x02\x92" +
-		"\x95\x03\x02\x02\x02\x93\x91\x03\x02\x02\x02\x93\x94\x03\x02\x02\x02\x94" +
-		"\x96\x03\x02\x02\x02\x95\x93\x03\x02\x02\x02\x96\x97\x07\x18\x02\x02\x97" +
-		"\x0F\x03\x02\x02\x02\x98\x99\x07\x06\x02\x02\x99\x9A\x07\x14\x02\x02\x9A" +
-		"\x9B\x07\x1E\x02\x02\x9B\x9C\x05\x0E\b\x02\x9C\x11\x03\x02\x02\x02\x9D" +
-		"\x9E\x07\x04\x02\x02\x9E\x9F\x07\x14\x02\x02\x9F\xA0\x07\x1E\x02\x02\xA0" +
-		"\xA1\x05\x0E\b\x02\xA1\x13\x03\x02\x02\x02\xA2\xA3\x07\x04\x02\x02\xA3" +
-		"\xA4\x07\x1E\x02\x02\xA4\xA5\t\x03\x02\x02\xA5\xA6\x05\x1A\x0E\x02\xA6" +
-		"\x15\x03\x02\x02\x02\xA7\xA8\x07\x14\x02\x02\xA8\xA9\x07\x1E\x02\x02\xA9" +
-		"\xAA\x05\x1A\x0E\x02\xAA\x17\x03\x02\x02\x02\xAB\xAD\x07\x1B\x02\x02\xAC" +
-		"\xAE\t\x02\x02\x02\xAD\xAC\x03\x02\x02\x02\xAD\xAE\x03\x02\x02\x02\xAE" +
-		"\xAF\x03\x02\x02\x02\xAF\xB5\x05\x1C\x0F\x02\xB0\xB1\x07\x16\x02\x02\xB1" +
-		"\xB2\t\x02\x02\x02\xB2\xB4\x05\x1C\x0F\x02\xB3\xB0\x03\x02\x02\x02\xB4" +
-		"\xB7\x03\x02\x02\x02\xB5\xB3\x03\x02\x02\x02\xB5\xB6\x03\x02\x02\x02\xB6" +
-		"\xB9\x03\x02\x02\x02\xB7\xB5\x03\x02\x02\x02\xB8\xBA\t\x02\x02\x02\xB9" +
-		"\xB8\x03\x02\x02\x02\xB9\xBA\x03\x02\x02\x02\xBA\xBB\x03\x02\x02\x02\xBB" +
-		"\xBC\x07\x1C\x02\x02\xBC\x19\x03\x02\x02\x02\xBD\xC4\x07\x14\x02\x02\xBE" +
-		"\xC4\x07\x15\x02\x02\xBF\xC4\x05\x1C\x0F\x02\xC0\xC4\x07\x1F\x02\x02\xC1" +
-		"\xC4\x07 \x02\x02\xC2\xC4\x05\x18\r\x02\xC3\xBD\x03\x02\x02\x02\xC3\xBE" +
-		"\x03\x02\x02\x02\xC3\xBF\x03\x02\x02\x02\xC3\xC0\x03\x02\x02\x02\xC3\xC1" +
-		"\x03\x02\x02\x02\xC3\xC2\x03\x02\x02\x02\xC4\x1B\x03\x02\x02\x02\xC5\xC6" +
-		"\x07\x19\x02\x02\xC6\xCB\x05\x1E\x10\x02\xC7\xC8\x07\x16\x02\x02\xC8\xCA" +
-		"\x05\x1E\x10\x02\xC9\xC7\x03\x02\x02\x02\xCA\xCD\x03\x02\x02\x02\xCB\xC9" +
-		"\x03\x02\x02\x02\xCB\xCC\x03\x02\x02\x02\xCC\xCE\x03\x02\x02\x02\xCD\xCB" +
-		"\x03\x02\x02\x02\xCE\xCF\x07\x1A\x02\x02\xCF\x1D\x03\x02\x02\x02\xD0\xD1" +
-		"\t\x04\x02\x02\xD1\x1F\x03\x02\x02\x02\x17\")1:>GLPW^jov\x7F\x89\x93\xAD" +
-		"\xB5\xB9\xC3\xCB";
+		"\x0E\t\x0E\x04\x0F\t\x0F\x04\x10\t\x10\x04\x11\t\x11\x04\x12\t\x12\x03" +
+		"\x02\x03\x02\x05\x02\'\n\x02\x03\x02\x03\x02\x05\x02+\n\x02\x03\x02\x07" +
+		"\x02.\n\x02\f\x02\x0E\x021\v\x02\x03\x02\x03\x02\x03\x03\x03\x03\x03\x03" +
+		"\x03\x03\x05\x039\n\x03\x03\x03\x03\x03\x05\x03=\n\x03\x03\x03\x03\x03" +
+		"\x03\x04\x03\x04\x05\x04C\n\x04\x03\x04\x03\x04\x05\x04G\n\x04\x03\x04" +
+		"\x03\x04\x03\x05\x03\x05\x03\x05\x03\x05\x03\x05\x03\x05\x03\x05\x03\x05" +
+		"\x05\x05S\n\x05\x03\x05\x03\x05\x03\x05\x03\x06\x03\x06\x03\x06\x05\x06" +
+		"[\n\x06\x03\x06\x03\x06\x03\x07\x03\x07\x03\x07\x05\x07b\n\x07\x03\x07" +
+		"\x05\x07e\n\x07\x03\x07\x03\x07\x03\x07\x03\x07\x07\x07k\n\x07\f\x07\x0E" +
+		"\x07n\v\x07\x03\b\x03\b\x05\br\n\b\x03\b\x05\bu\n\b\x03\b\x03\b\x03\t" +
+		"\x03\t\x03\t\x03\t\x03\n\x03\n\x03\v\x03\v\x03\v\x06\v\x82\n\v\r\v\x0E" +
+		"\v\x83\x03\f\x03\f\x03\f\x03\f\x07\f\x8A\n\f\f\f\x0E\f\x8D\v\f\x03\f\x03" +
+		"\f\x03\r\x03\r\x03\x0E\x03\x0E\x03\x0E\x05\x0E\x96\n\x0E\x03\x0F\x03\x0F" +
+		"\x03\x0F\x03\x0F\x07\x0F\x9C\n\x0F\f\x0F\x0E\x0F\x9F\v\x0F\x03\x0F\x03" +
+		"\x0F\x03\x10\x03\x10\x05\x10\xA5\n\x10\x03\x11\x03\x11\x03\x12\x03\x12" +
+		"\x03\x12\x02\x02\x02\x13\x02\x02\x04\x02\x06\x02\b\x02\n\x02\f\x02\x0E" +
+		"\x02\x10\x02\x12\x02\x14\x02\x16\x02\x18\x02\x1A\x02\x1C\x02\x1E\x02 " +
+		"\x02\"\x02\x02\x05\x04\x02\x13\x13!!\x04\x02\x05\x07\t\t\x03\x02\x1B\x1D" +
+		"\x02\xAD\x02$\x03\x02\x02\x02\x044\x03\x02\x02\x02\x06@\x03\x02\x02\x02" +
+		"\bJ\x03\x02\x02\x02\nW\x03\x02\x02\x02\fa\x03\x02\x02\x02\x0Eo\x03\x02" +
+		"\x02\x02\x10x\x03\x02\x02\x02\x12|\x03\x02\x02\x02\x14\x81\x03\x02\x02" +
+		"\x02\x16\x85\x03\x02\x02\x02\x18\x90\x03\x02\x02\x02\x1A\x95\x03\x02\x02" +
+		"\x02\x1C\x97\x03\x02\x02\x02\x1E\xA4\x03\x02\x02\x02 \xA6\x03\x02\x02" +
+		"\x02\"\xA8\x03\x02\x02\x02$&\x05\f\x07\x02%\'\x07\x13\x02\x02&%\x03\x02" +
+		"\x02\x02&\'\x03\x02\x02\x02\'(\x03\x02\x02\x02(/\x05\x04\x03\x02)+\x07" +
+		"\x13\x02\x02*)\x03\x02\x02\x02*+\x03\x02\x02\x02+,\x03\x02\x02\x02,.\x05" +
+		"\x04\x03\x02-*\x03\x02\x02\x02.1\x03\x02\x02\x02/-\x03\x02\x02\x02/0\x03" +
+		"\x02\x02\x0202\x03\x02\x02\x021/\x03\x02\x02\x0223\x07\x02\x02\x033\x03" +
+		"\x03\x02\x02\x0245\x07\v\x02\x0256\x07\x14\x02\x0268\x07\x11\x02\x027" +
+		"9\x07\x13\x02\x0287\x03\x02\x02\x0289\x03\x02\x02\x029:\x03\x02\x02\x02" +
+		":<\x05\x06\x04\x02;=\x07\x13\x02\x02<;\x03\x02\x02\x02<=\x03\x02\x02\x02" +
+		"=>\x03\x02\x02\x02>?\x07\x12\x02\x02?\x05\x03\x02\x02\x02@B\x05\x14\v" +
+		"\x02AC\x07\x13\x02\x02BA\x03\x02\x02\x02BC\x03\x02\x02\x02CD\x03\x02\x02" +
+		"\x02DF\x05\n\x06\x02EG\x07\x13\x02\x02FE\x03\x02\x02\x02FG\x03\x02\x02" +
+		"\x02GH\x03\x02\x02\x02HI\x05\b\x05\x02I\x07\x03\x02\x02\x02JK\x07\r\x02" +
+		"\x02KL\x07\x17\x02\x02LM\x05\"\x12\x02MN\x05 \x11\x02NO\x05\x1E\x10\x02" +
+		"OP\x07\x18\x02\x02PR\x07\x11\x02\x02QS\x07\x13\x02\x02RQ\x03\x02\x02\x02" +
+		"RS\x03\x02\x02\x02ST\x03\x02\x02\x02TU\x05\x14\v\x02UV\x07\x12\x02\x02" +
+		"V\t\x03\x02\x02\x02WX\x05\x18\r\x02XZ\x07\x1F\x02\x02Y[\x07\x13\x02\x02" +
+		"ZY\x03\x02\x02\x02Z[\x03\x02\x02\x02[\\\x03\x02\x02\x02\\]\x05\x16\f\x02" +
+		"]\v\x03\x02\x02\x02^_\x07\x04\x02\x02_`\x07\x14\x02\x02`b\x05\x0E\b\x02" +
+		"a^\x03\x02\x02\x02ab\x03\x02\x02\x02bd\x03\x02\x02\x02ce\x07\x13\x02\x02" +
+		"dc\x03\x02\x02\x02de\x03\x02\x02\x02el\x03\x02\x02\x02fg\x05\x18\r\x02" +
+		"gh\x07\x14\x02\x02hi\x05\x0E\b\x02ik\x03\x02\x02\x02jf\x03\x02\x02\x02" +
+		"kn\x03\x02\x02\x02lj\x03\x02\x02\x02lm\x03\x02\x02\x02m\r\x03\x02\x02" +
+		"\x02nl\x03\x02\x02\x02oq\x07\x11\x02\x02pr\x07\x13\x02\x02qp\x03\x02\x02" +
+		"\x02qr\x03\x02\x02\x02rt\x03\x02\x02\x02su\x05\x14\v\x02ts\x03\x02\x02" +
+		"\x02tu\x03\x02\x02\x02uv\x03\x02\x02\x02vw\x07\x12\x02\x02w\x0F\x03\x02" +
+		"\x02\x02xy\x05\x12\n\x02yz\x07\x1F\x02\x02z{\x05\x1A\x0E\x02{\x11\x03" +
+		"\x02\x02\x02|}\x07\x14\x02\x02}\x13\x03\x02\x02\x02~\x7F\x05\x10\t\x02" +
+		"\x7F\x80\t\x02\x02\x02\x80\x82\x03\x02\x02\x02\x81~\x03\x02\x02\x02\x82" +
+		"\x83\x03\x02\x02\x02\x83\x81\x03\x02\x02\x02\x83\x84\x03\x02\x02\x02\x84" +
+		"\x15\x03\x02\x02\x02\x85\x86\x07\x19\x02\x02\x86\x8B\x05\x1C\x0F\x02\x87" +
+		"\x88\x07\x16\x02\x02\x88\x8A\x05\x1C\x0F\x02\x89\x87\x03\x02\x02\x02\x8A" +
+		"\x8D\x03\x02\x02\x02\x8B\x89\x03\x02\x02\x02\x8B\x8C\x03\x02\x02\x02\x8C" +
+		"\x8E\x03\x02\x02\x02\x8D\x8B\x03\x02\x02\x02\x8E\x8F\x07\x1A\x02\x02\x8F" +
+		"\x17\x03\x02\x02\x02\x90\x91\t\x03\x02\x02\x91\x19\x03\x02\x02\x02\x92" +
+		"\x96\x05\"\x12\x02\x93\x96\x07\x15\x02\x02\x94\x96\x05\x1C\x0F\x02\x95" +
+		"\x92\x03\x02\x02\x02\x95\x93\x03\x02\x02\x02\x95\x94\x03\x02\x02\x02\x96" +
+		"\x1B\x03\x02\x02\x02\x97\x98\x07\x17\x02\x02\x98\x9D\x05\x1E\x10\x02\x99" +
+		"\x9A\x07\x16\x02\x02\x9A\x9C\x05\x1E\x10\x02\x9B\x99\x03\x02\x02\x02\x9C" +
+		"\x9F\x03\x02\x02\x02\x9D\x9B\x03\x02\x02\x02\x9D\x9E\x03\x02\x02\x02\x9E" +
+		"\xA0\x03\x02\x02\x02\x9F\x9D\x03\x02\x02\x02\xA0\xA1\x07\x18\x02\x02\xA1" +
+		"\x1D\x03\x02\x02\x02\xA2\xA5\x05\"\x12\x02\xA3\xA5\x07\x15\x02\x02\xA4" +
+		"\xA2\x03\x02\x02\x02\xA4\xA3\x03\x02\x02\x02\xA5\x1F\x03\x02\x02\x02\xA6" +
+		"\xA7\t\x04\x02\x02\xA7!\x03\x02\x02\x02\xA8\xA9\x07\x14\x02\x02\xA9#\x03" +
+		"\x02\x02\x02\x15&*/8<BFRZadlqt\x83\x8B\x95\x9D\xA4";
 	public static __ATN: ATN;
 	public static get _ATN(): ATN {
 		if (!PlatformerParser.__ATN) {
@@ -1164,27 +960,8 @@ export class PlatformerParser extends Parser {
 }
 
 export class ProgramContext extends ParserRuleContext {
-	public player(): PlayerContext {
-		return this.getRuleContext(0, PlayerContext);
-	}
-	public EOF(): TerminalNode { return this.getToken(PlatformerParser.EOF, 0); }
-	public STMT_NEWLINE(): TerminalNode[];
-	public STMT_NEWLINE(i: number): TerminalNode;
-	public STMT_NEWLINE(i?: number): TerminalNode | TerminalNode[] {
-		if (i === undefined) {
-			return this.getTokens(PlatformerParser.STMT_NEWLINE);
-		} else {
-			return this.getToken(PlatformerParser.STMT_NEWLINE, i);
-		}
-	}
-	public entity(): EntityContext[];
-	public entity(i: number): EntityContext;
-	public entity(i?: number): EntityContext | EntityContext[] {
-		if (i === undefined) {
-			return this.getRuleContexts(EntityContext);
-		} else {
-			return this.getRuleContext(i, EntityContext);
-		}
+	public objects(): ObjectsContext {
+		return this.getRuleContext(0, ObjectsContext);
 	}
 	public level(): LevelContext[];
 	public level(i: number): LevelContext;
@@ -1195,13 +972,14 @@ export class ProgramContext extends ParserRuleContext {
 			return this.getRuleContext(i, LevelContext);
 		}
 	}
-	public NEWLINE(): TerminalNode[];
-	public NEWLINE(i: number): TerminalNode;
-	public NEWLINE(i?: number): TerminalNode | TerminalNode[] {
+	public EOF(): TerminalNode { return this.getToken(PlatformerParser.EOF, 0); }
+	public STMT_NEWLINE(): TerminalNode[];
+	public STMT_NEWLINE(i: number): TerminalNode;
+	public STMT_NEWLINE(i?: number): TerminalNode | TerminalNode[] {
 		if (i === undefined) {
-			return this.getTokens(PlatformerParser.NEWLINE);
+			return this.getTokens(PlatformerParser.STMT_NEWLINE);
 		} else {
-			return this.getToken(PlatformerParser.NEWLINE, i);
+			return this.getToken(PlatformerParser.STMT_NEWLINE, i);
 		}
 	}
 	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
@@ -1278,10 +1056,15 @@ export class LevelContext extends ParserRuleContext {
 
 
 export class Level_bodyContext extends ParserRuleContext {
-	public CHECKS(): TerminalNode { return this.getToken(PlatformerParser.CHECKS, 0); }
-	public COLON(): TerminalNode { return this.getToken(PlatformerParser.COLON, 0); }
-	public OPEN_SQUARE(): TerminalNode { return this.getToken(PlatformerParser.OPEN_SQUARE, 0); }
-	public CLOSED_SQUARE(): TerminalNode { return this.getToken(PlatformerParser.CLOSED_SQUARE, 0); }
+	public statements(): StatementsContext {
+		return this.getRuleContext(0, StatementsContext);
+	}
+	public level_objects(): Level_objectsContext {
+		return this.getRuleContext(0, Level_objectsContext);
+	}
+	public level_cond(): Level_condContext {
+		return this.getRuleContext(0, Level_condContext);
+	}
 	public STMT_NEWLINE(): TerminalNode[];
 	public STMT_NEWLINE(i: number): TerminalNode;
 	public STMT_NEWLINE(i?: number): TerminalNode | TerminalNode[] {
@@ -1289,42 +1072,6 @@ export class Level_bodyContext extends ParserRuleContext {
 			return this.getTokens(PlatformerParser.STMT_NEWLINE);
 		} else {
 			return this.getToken(PlatformerParser.STMT_NEWLINE, i);
-		}
-	}
-	public NEWLINE(): TerminalNode[];
-	public NEWLINE(i: number): TerminalNode;
-	public NEWLINE(i?: number): TerminalNode | TerminalNode[] {
-		if (i === undefined) {
-			return this.getTokens(PlatformerParser.NEWLINE);
-		} else {
-			return this.getToken(PlatformerParser.NEWLINE, i);
-		}
-	}
-	public statement(): StatementContext[];
-	public statement(i: number): StatementContext;
-	public statement(i?: number): StatementContext | StatementContext[] {
-		if (i === undefined) {
-			return this.getRuleContexts(StatementContext);
-		} else {
-			return this.getRuleContext(i, StatementContext);
-		}
-	}
-	public level_entity(): Level_entityContext[];
-	public level_entity(i: number): Level_entityContext;
-	public level_entity(i?: number): Level_entityContext | Level_entityContext[] {
-		if (i === undefined) {
-			return this.getRuleContexts(Level_entityContext);
-		} else {
-			return this.getRuleContext(i, Level_entityContext);
-		}
-	}
-	public level_cond(): Level_condContext[];
-	public level_cond(i: number): Level_condContext;
-	public level_cond(i?: number): Level_condContext | Level_condContext[] {
-		if (i === undefined) {
-			return this.getRuleContexts(Level_condContext);
-		} else {
-			return this.getRuleContext(i, Level_condContext);
 		}
 	}
 	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
@@ -1357,48 +1104,23 @@ export class Level_bodyContext extends ParserRuleContext {
 
 export class Level_condContext extends ParserRuleContext {
 	public IF(): TerminalNode { return this.getToken(PlatformerParser.IF, 0); }
-	public COLON(): TerminalNode { return this.getToken(PlatformerParser.COLON, 0); }
 	public OPEN_PAREN(): TerminalNode { return this.getToken(PlatformerParser.OPEN_PAREN, 0); }
-	public condition(): ConditionContext[];
-	public condition(i: number): ConditionContext;
-	public condition(i?: number): ConditionContext | ConditionContext[] {
-		if (i === undefined) {
-			return this.getRuleContexts(ConditionContext);
-		} else {
-			return this.getRuleContext(i, ConditionContext);
-		}
+	public varname(): VarnameContext {
+		return this.getRuleContext(0, VarnameContext);
+	}
+	public op(): OpContext {
+		return this.getRuleContext(0, OpContext);
+	}
+	public exp(): ExpContext {
+		return this.getRuleContext(0, ExpContext);
 	}
 	public CLOSE_PAREN(): TerminalNode { return this.getToken(PlatformerParser.CLOSE_PAREN, 0); }
 	public OPEN_BRACE(): TerminalNode { return this.getToken(PlatformerParser.OPEN_BRACE, 0); }
+	public statements(): StatementsContext {
+		return this.getRuleContext(0, StatementsContext);
+	}
 	public CLOSE_BRACE(): TerminalNode { return this.getToken(PlatformerParser.CLOSE_BRACE, 0); }
-	public LOGIC(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.LOGIC, 0); }
-	public STMT_NEWLINE(): TerminalNode[];
-	public STMT_NEWLINE(i: number): TerminalNode;
-	public STMT_NEWLINE(i?: number): TerminalNode | TerminalNode[] {
-		if (i === undefined) {
-			return this.getTokens(PlatformerParser.STMT_NEWLINE);
-		} else {
-			return this.getToken(PlatformerParser.STMT_NEWLINE, i);
-		}
-	}
-	public cond_statement(): Cond_statementContext[];
-	public cond_statement(i: number): Cond_statementContext;
-	public cond_statement(i?: number): Cond_statementContext | Cond_statementContext[] {
-		if (i === undefined) {
-			return this.getRuleContexts(Cond_statementContext);
-		} else {
-			return this.getRuleContext(i, Cond_statementContext);
-		}
-	}
-	public NEWLINE(): TerminalNode[];
-	public NEWLINE(i: number): TerminalNode;
-	public NEWLINE(i?: number): TerminalNode | TerminalNode[] {
-		if (i === undefined) {
-			return this.getTokens(PlatformerParser.NEWLINE);
-		} else {
-			return this.getToken(PlatformerParser.NEWLINE, i);
-		}
-	}
+	public STMT_NEWLINE(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.STMT_NEWLINE, 0); }
 	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
 		super(parent, invokingState);
 	}
@@ -1427,91 +1149,36 @@ export class Level_condContext extends ParserRuleContext {
 }
 
 
-export class ConditionContext extends ParserRuleContext {
-	public NAME(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.NAME, 0); }
-	public OP(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.OP, 0); }
-	public exp(): ExpContext | undefined {
-		return this.tryGetRuleContext(0, ExpContext);
+export class Level_objectsContext extends ParserRuleContext {
+	public component(): ComponentContext {
+		return this.getRuleContext(0, ComponentContext);
 	}
-	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
-		super(parent, invokingState);
-	}
-	// @Override
-	public get ruleIndex(): number { return PlatformerParser.RULE_condition; }
-	// @Override
-	public enterRule(listener: PlatformerParserListener): void {
-		if (listener.enterCondition) {
-			listener.enterCondition(this);
-		}
-	}
-	// @Override
-	public exitRule(listener: PlatformerParserListener): void {
-		if (listener.exitCondition) {
-			listener.exitCondition(this);
-		}
-	}
-	// @Override
-	public accept<Result>(visitor: PlatformerParserVisitor<Result>): Result {
-		if (visitor.visitCondition) {
-			return visitor.visitCondition(this);
-		} else {
-			return visitor.visitChildren(this);
-		}
-	}
-}
-
-
-export class Level_entityContext extends ParserRuleContext {
-	public COMPONENT(): TerminalNode { return this.getToken(PlatformerParser.COMPONENT, 0); }
 	public COLON(): TerminalNode { return this.getToken(PlatformerParser.COLON, 0); }
-	public STMT_NEWLINE(): TerminalNode[];
-	public STMT_NEWLINE(i: number): TerminalNode;
-	public STMT_NEWLINE(i?: number): TerminalNode | TerminalNode[] {
-		if (i === undefined) {
-			return this.getTokens(PlatformerParser.STMT_NEWLINE);
-		} else {
-			return this.getToken(PlatformerParser.STMT_NEWLINE, i);
-		}
+	public array(): ArrayContext {
+		return this.getRuleContext(0, ArrayContext);
 	}
-	public NEWLINE(): TerminalNode[];
-	public NEWLINE(i: number): TerminalNode;
-	public NEWLINE(i?: number): TerminalNode | TerminalNode[] {
-		if (i === undefined) {
-			return this.getTokens(PlatformerParser.NEWLINE);
-		} else {
-			return this.getToken(PlatformerParser.NEWLINE, i);
-		}
-	}
-	public statement(): StatementContext[];
-	public statement(i: number): StatementContext;
-	public statement(i?: number): StatementContext | StatementContext[] {
-		if (i === undefined) {
-			return this.getRuleContexts(StatementContext);
-		} else {
-			return this.getRuleContext(i, StatementContext);
-		}
-	}
+	public STMT_NEWLINE(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.STMT_NEWLINE, 0); }
 	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
 		super(parent, invokingState);
 	}
 	// @Override
-	public get ruleIndex(): number { return PlatformerParser.RULE_level_entity; }
+	public get ruleIndex(): number { return PlatformerParser.RULE_level_objects; }
 	// @Override
 	public enterRule(listener: PlatformerParserListener): void {
-		if (listener.enterLevel_entity) {
-			listener.enterLevel_entity(this);
+		if (listener.enterLevel_objects) {
+			listener.enterLevel_objects(this);
 		}
 	}
 	// @Override
 	public exitRule(listener: PlatformerParserListener): void {
-		if (listener.exitLevel_entity) {
-			listener.exitLevel_entity(this);
+		if (listener.exitLevel_objects) {
+			listener.exitLevel_objects(this);
 		}
 	}
 	// @Override
 	public accept<Result>(visitor: PlatformerParserVisitor<Result>): Result {
-		if (visitor.visitLevel_entity) {
-			return visitor.visitLevel_entity(this);
+		if (visitor.visitLevel_objects) {
+			return visitor.visitLevel_objects(this);
 		} else {
 			return visitor.visitChildren(this);
 		}
@@ -1519,163 +1186,92 @@ export class Level_entityContext extends ParserRuleContext {
 }
 
 
-export class Entity_bodContext extends ParserRuleContext {
+export class ObjectsContext extends ParserRuleContext {
+	public PLAYER(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.PLAYER, 0); }
+	public NAME(): TerminalNode[];
+	public NAME(i: number): TerminalNode;
+	public NAME(i?: number): TerminalNode | TerminalNode[] {
+		if (i === undefined) {
+			return this.getTokens(PlatformerParser.NAME);
+		} else {
+			return this.getToken(PlatformerParser.NAME, i);
+		}
+	}
+	public object_bod(): Object_bodContext[];
+	public object_bod(i: number): Object_bodContext;
+	public object_bod(i?: number): Object_bodContext | Object_bodContext[] {
+		if (i === undefined) {
+			return this.getRuleContexts(Object_bodContext);
+		} else {
+			return this.getRuleContext(i, Object_bodContext);
+		}
+	}
+	public STMT_NEWLINE(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.STMT_NEWLINE, 0); }
+	public component(): ComponentContext[];
+	public component(i: number): ComponentContext;
+	public component(i?: number): ComponentContext | ComponentContext[] {
+		if (i === undefined) {
+			return this.getRuleContexts(ComponentContext);
+		} else {
+			return this.getRuleContext(i, ComponentContext);
+		}
+	}
+	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
+		super(parent, invokingState);
+	}
+	// @Override
+	public get ruleIndex(): number { return PlatformerParser.RULE_objects; }
+	// @Override
+	public enterRule(listener: PlatformerParserListener): void {
+		if (listener.enterObjects) {
+			listener.enterObjects(this);
+		}
+	}
+	// @Override
+	public exitRule(listener: PlatformerParserListener): void {
+		if (listener.exitObjects) {
+			listener.exitObjects(this);
+		}
+	}
+	// @Override
+	public accept<Result>(visitor: PlatformerParserVisitor<Result>): Result {
+		if (visitor.visitObjects) {
+			return visitor.visitObjects(this);
+		} else {
+			return visitor.visitChildren(this);
+		}
+	}
+}
+
+
+export class Object_bodContext extends ParserRuleContext {
 	public OPEN_BRACE(): TerminalNode { return this.getToken(PlatformerParser.OPEN_BRACE, 0); }
 	public CLOSE_BRACE(): TerminalNode { return this.getToken(PlatformerParser.CLOSE_BRACE, 0); }
-	public STMT_NEWLINE(): TerminalNode[];
-	public STMT_NEWLINE(i: number): TerminalNode;
-	public STMT_NEWLINE(i?: number): TerminalNode | TerminalNode[] {
-		if (i === undefined) {
-			return this.getTokens(PlatformerParser.STMT_NEWLINE);
-		} else {
-			return this.getToken(PlatformerParser.STMT_NEWLINE, i);
-		}
-	}
-	public NEWLINE(): TerminalNode[];
-	public NEWLINE(i: number): TerminalNode;
-	public NEWLINE(i?: number): TerminalNode | TerminalNode[] {
-		if (i === undefined) {
-			return this.getTokens(PlatformerParser.NEWLINE);
-		} else {
-			return this.getToken(PlatformerParser.NEWLINE, i);
-		}
-	}
-	public statement(): StatementContext[];
-	public statement(i: number): StatementContext;
-	public statement(i?: number): StatementContext | StatementContext[] {
-		if (i === undefined) {
-			return this.getRuleContexts(StatementContext);
-		} else {
-			return this.getRuleContext(i, StatementContext);
-		}
+	public STMT_NEWLINE(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.STMT_NEWLINE, 0); }
+	public statements(): StatementsContext | undefined {
+		return this.tryGetRuleContext(0, StatementsContext);
 	}
 	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
 		super(parent, invokingState);
 	}
 	// @Override
-	public get ruleIndex(): number { return PlatformerParser.RULE_entity_bod; }
+	public get ruleIndex(): number { return PlatformerParser.RULE_object_bod; }
 	// @Override
 	public enterRule(listener: PlatformerParserListener): void {
-		if (listener.enterEntity_bod) {
-			listener.enterEntity_bod(this);
+		if (listener.enterObject_bod) {
+			listener.enterObject_bod(this);
 		}
 	}
 	// @Override
 	public exitRule(listener: PlatformerParserListener): void {
-		if (listener.exitEntity_bod) {
-			listener.exitEntity_bod(this);
+		if (listener.exitObject_bod) {
+			listener.exitObject_bod(this);
 		}
 	}
 	// @Override
 	public accept<Result>(visitor: PlatformerParserVisitor<Result>): Result {
-		if (visitor.visitEntity_bod) {
-			return visitor.visitEntity_bod(this);
-		} else {
-			return visitor.visitChildren(this);
-		}
-	}
-}
-
-
-export class PlayerContext extends ParserRuleContext {
-	public PLAYER(): TerminalNode { return this.getToken(PlatformerParser.PLAYER, 0); }
-	public NAME(): TerminalNode { return this.getToken(PlatformerParser.NAME, 0); }
-	public COLON(): TerminalNode { return this.getToken(PlatformerParser.COLON, 0); }
-	public entity_bod(): Entity_bodContext {
-		return this.getRuleContext(0, Entity_bodContext);
-	}
-	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
-		super(parent, invokingState);
-	}
-	// @Override
-	public get ruleIndex(): number { return PlatformerParser.RULE_player; }
-	// @Override
-	public enterRule(listener: PlatformerParserListener): void {
-		if (listener.enterPlayer) {
-			listener.enterPlayer(this);
-		}
-	}
-	// @Override
-	public exitRule(listener: PlatformerParserListener): void {
-		if (listener.exitPlayer) {
-			listener.exitPlayer(this);
-		}
-	}
-	// @Override
-	public accept<Result>(visitor: PlatformerParserVisitor<Result>): Result {
-		if (visitor.visitPlayer) {
-			return visitor.visitPlayer(this);
-		} else {
-			return visitor.visitChildren(this);
-		}
-	}
-}
-
-
-export class EntityContext extends ParserRuleContext {
-	public COMPONENT(): TerminalNode { return this.getToken(PlatformerParser.COMPONENT, 0); }
-	public NAME(): TerminalNode { return this.getToken(PlatformerParser.NAME, 0); }
-	public COLON(): TerminalNode { return this.getToken(PlatformerParser.COLON, 0); }
-	public entity_bod(): Entity_bodContext {
-		return this.getRuleContext(0, Entity_bodContext);
-	}
-	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
-		super(parent, invokingState);
-	}
-	// @Override
-	public get ruleIndex(): number { return PlatformerParser.RULE_entity; }
-	// @Override
-	public enterRule(listener: PlatformerParserListener): void {
-		if (listener.enterEntity) {
-			listener.enterEntity(this);
-		}
-	}
-	// @Override
-	public exitRule(listener: PlatformerParserListener): void {
-		if (listener.exitEntity) {
-			listener.exitEntity(this);
-		}
-	}
-	// @Override
-	public accept<Result>(visitor: PlatformerParserVisitor<Result>): Result {
-		if (visitor.visitEntity) {
-			return visitor.visitEntity(this);
-		} else {
-			return visitor.visitChildren(this);
-		}
-	}
-}
-
-
-export class Cond_statementContext extends ParserRuleContext {
-	public COMPONENT(): TerminalNode { return this.getToken(PlatformerParser.COMPONENT, 0); }
-	public COLON(): TerminalNode { return this.getToken(PlatformerParser.COLON, 0); }
-	public value(): ValueContext {
-		return this.getRuleContext(0, ValueContext);
-	}
-	public ADD(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.ADD, 0); }
-	public REMOVE(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.REMOVE, 0); }
-	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
-		super(parent, invokingState);
-	}
-	// @Override
-	public get ruleIndex(): number { return PlatformerParser.RULE_cond_statement; }
-	// @Override
-	public enterRule(listener: PlatformerParserListener): void {
-		if (listener.enterCond_statement) {
-			listener.enterCond_statement(this);
-		}
-	}
-	// @Override
-	public exitRule(listener: PlatformerParserListener): void {
-		if (listener.exitCond_statement) {
-			listener.exitCond_statement(this);
-		}
-	}
-	// @Override
-	public accept<Result>(visitor: PlatformerParserVisitor<Result>): Result {
-		if (visitor.visitCond_statement) {
-			return visitor.visitCond_statement(this);
+		if (visitor.visitObject_bod) {
+			return visitor.visitObject_bod(this);
 		} else {
 			return visitor.visitChildren(this);
 		}
@@ -1684,7 +1280,9 @@ export class Cond_statementContext extends ParserRuleContext {
 
 
 export class StatementContext extends ParserRuleContext {
-	public NAME(): TerminalNode { return this.getToken(PlatformerParser.NAME, 0); }
+	public property(): PropertyContext {
+		return this.getRuleContext(0, PropertyContext);
+	}
 	public COLON(): TerminalNode { return this.getToken(PlatformerParser.COLON, 0); }
 	public value(): ValueContext {
 		return this.getRuleContext(0, ValueContext);
@@ -1717,25 +1315,44 @@ export class StatementContext extends ParserRuleContext {
 }
 
 
-export class ListContext extends ParserRuleContext {
-	public OPEN_SQUARE(): TerminalNode { return this.getToken(PlatformerParser.OPEN_SQUARE, 0); }
-	public list_object(): List_objectContext[];
-	public list_object(i: number): List_objectContext;
-	public list_object(i?: number): List_objectContext | List_objectContext[] {
-		if (i === undefined) {
-			return this.getRuleContexts(List_objectContext);
-		} else {
-			return this.getRuleContext(i, List_objectContext);
+export class PropertyContext extends ParserRuleContext {
+	public NAME(): TerminalNode { return this.getToken(PlatformerParser.NAME, 0); }
+	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
+		super(parent, invokingState);
+	}
+	// @Override
+	public get ruleIndex(): number { return PlatformerParser.RULE_property; }
+	// @Override
+	public enterRule(listener: PlatformerParserListener): void {
+		if (listener.enterProperty) {
+			listener.enterProperty(this);
 		}
 	}
-	public CLOSED_SQUARE(): TerminalNode { return this.getToken(PlatformerParser.CLOSED_SQUARE, 0); }
-	public COMMA(): TerminalNode[];
-	public COMMA(i: number): TerminalNode;
-	public COMMA(i?: number): TerminalNode | TerminalNode[] {
-		if (i === undefined) {
-			return this.getTokens(PlatformerParser.COMMA);
+	// @Override
+	public exitRule(listener: PlatformerParserListener): void {
+		if (listener.exitProperty) {
+			listener.exitProperty(this);
+		}
+	}
+	// @Override
+	public accept<Result>(visitor: PlatformerParserVisitor<Result>): Result {
+		if (visitor.visitProperty) {
+			return visitor.visitProperty(this);
 		} else {
-			return this.getToken(PlatformerParser.COMMA, i);
+			return visitor.visitChildren(this);
+		}
+	}
+}
+
+
+export class StatementsContext extends ParserRuleContext {
+	public statement(): StatementContext[];
+	public statement(i: number): StatementContext;
+	public statement(i?: number): StatementContext | StatementContext[] {
+		if (i === undefined) {
+			return this.getRuleContexts(StatementContext);
+		} else {
+			return this.getRuleContext(i, StatementContext);
 		}
 	}
 	public STMT_NEWLINE(): TerminalNode[];
@@ -1760,23 +1377,105 @@ export class ListContext extends ParserRuleContext {
 		super(parent, invokingState);
 	}
 	// @Override
-	public get ruleIndex(): number { return PlatformerParser.RULE_list; }
+	public get ruleIndex(): number { return PlatformerParser.RULE_statements; }
 	// @Override
 	public enterRule(listener: PlatformerParserListener): void {
-		if (listener.enterList) {
-			listener.enterList(this);
+		if (listener.enterStatements) {
+			listener.enterStatements(this);
 		}
 	}
 	// @Override
 	public exitRule(listener: PlatformerParserListener): void {
-		if (listener.exitList) {
-			listener.exitList(this);
+		if (listener.exitStatements) {
+			listener.exitStatements(this);
 		}
 	}
 	// @Override
 	public accept<Result>(visitor: PlatformerParserVisitor<Result>): Result {
-		if (visitor.visitList) {
-			return visitor.visitList(this);
+		if (visitor.visitStatements) {
+			return visitor.visitStatements(this);
+		} else {
+			return visitor.visitChildren(this);
+		}
+	}
+}
+
+
+export class ArrayContext extends ParserRuleContext {
+	public OPEN_SQUARE(): TerminalNode { return this.getToken(PlatformerParser.OPEN_SQUARE, 0); }
+	public array_object(): Array_objectContext[];
+	public array_object(i: number): Array_objectContext;
+	public array_object(i?: number): Array_objectContext | Array_objectContext[] {
+		if (i === undefined) {
+			return this.getRuleContexts(Array_objectContext);
+		} else {
+			return this.getRuleContext(i, Array_objectContext);
+		}
+	}
+	public CLOSED_SQUARE(): TerminalNode { return this.getToken(PlatformerParser.CLOSED_SQUARE, 0); }
+	public COMMA(): TerminalNode[];
+	public COMMA(i: number): TerminalNode;
+	public COMMA(i?: number): TerminalNode | TerminalNode[] {
+		if (i === undefined) {
+			return this.getTokens(PlatformerParser.COMMA);
+		} else {
+			return this.getToken(PlatformerParser.COMMA, i);
+		}
+	}
+	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
+		super(parent, invokingState);
+	}
+	// @Override
+	public get ruleIndex(): number { return PlatformerParser.RULE_array; }
+	// @Override
+	public enterRule(listener: PlatformerParserListener): void {
+		if (listener.enterArray) {
+			listener.enterArray(this);
+		}
+	}
+	// @Override
+	public exitRule(listener: PlatformerParserListener): void {
+		if (listener.exitArray) {
+			listener.exitArray(this);
+		}
+	}
+	// @Override
+	public accept<Result>(visitor: PlatformerParserVisitor<Result>): Result {
+		if (visitor.visitArray) {
+			return visitor.visitArray(this);
+		} else {
+			return visitor.visitChildren(this);
+		}
+	}
+}
+
+
+export class ComponentContext extends ParserRuleContext {
+	public ENEMY(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.ENEMY, 0); }
+	public DOOR(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.DOOR, 0); }
+	public BUTTON(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.BUTTON, 0); }
+	public TERRAIN(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.TERRAIN, 0); }
+	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
+		super(parent, invokingState);
+	}
+	// @Override
+	public get ruleIndex(): number { return PlatformerParser.RULE_component; }
+	// @Override
+	public enterRule(listener: PlatformerParserListener): void {
+		if (listener.enterComponent) {
+			listener.enterComponent(this);
+		}
+	}
+	// @Override
+	public exitRule(listener: PlatformerParserListener): void {
+		if (listener.exitComponent) {
+			listener.exitComponent(this);
+		}
+	}
+	// @Override
+	public accept<Result>(visitor: PlatformerParserVisitor<Result>): Result {
+		if (visitor.visitComponent) {
+			return visitor.visitComponent(this);
 		} else {
 			return visitor.visitChildren(this);
 		}
@@ -1785,15 +1484,12 @@ export class ListContext extends ParserRuleContext {
 
 
 export class ValueContext extends ParserRuleContext {
-	public NAME(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.NAME, 0); }
-	public CONST(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.CONST, 0); }
-	public list_object(): List_objectContext | undefined {
-		return this.tryGetRuleContext(0, List_objectContext);
+	public varname(): VarnameContext | undefined {
+		return this.tryGetRuleContext(0, VarnameContext);
 	}
-	public LITERAL(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.LITERAL, 0); }
-	public LINK(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.LINK, 0); }
-	public list(): ListContext | undefined {
-		return this.tryGetRuleContext(0, ListContext);
+	public CONST(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.CONST, 0); }
+	public array_object(): Array_objectContext | undefined {
+		return this.tryGetRuleContext(0, Array_objectContext);
 	}
 	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
 		super(parent, invokingState);
@@ -1823,7 +1519,7 @@ export class ValueContext extends ParserRuleContext {
 }
 
 
-export class List_objectContext extends ParserRuleContext {
+export class Array_objectContext extends ParserRuleContext {
 	public OPEN_PAREN(): TerminalNode { return this.getToken(PlatformerParser.OPEN_PAREN, 0); }
 	public exp(): ExpContext[];
 	public exp(i: number): ExpContext;
@@ -1848,23 +1544,23 @@ export class List_objectContext extends ParserRuleContext {
 		super(parent, invokingState);
 	}
 	// @Override
-	public get ruleIndex(): number { return PlatformerParser.RULE_list_object; }
+	public get ruleIndex(): number { return PlatformerParser.RULE_array_object; }
 	// @Override
 	public enterRule(listener: PlatformerParserListener): void {
-		if (listener.enterList_object) {
-			listener.enterList_object(this);
+		if (listener.enterArray_object) {
+			listener.enterArray_object(this);
 		}
 	}
 	// @Override
 	public exitRule(listener: PlatformerParserListener): void {
-		if (listener.exitList_object) {
-			listener.exitList_object(this);
+		if (listener.exitArray_object) {
+			listener.exitArray_object(this);
 		}
 	}
 	// @Override
 	public accept<Result>(visitor: PlatformerParserVisitor<Result>): Result {
-		if (visitor.visitList_object) {
-			return visitor.visitList_object(this);
+		if (visitor.visitArray_object) {
+			return visitor.visitArray_object(this);
 		} else {
 			return visitor.visitChildren(this);
 		}
@@ -1873,7 +1569,9 @@ export class List_objectContext extends ParserRuleContext {
 
 
 export class ExpContext extends ParserRuleContext {
-	public NAME(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.NAME, 0); }
+	public varname(): VarnameContext | undefined {
+		return this.tryGetRuleContext(0, VarnameContext);
+	}
 	public CONST(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.CONST, 0); }
 	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
 		super(parent, invokingState);
@@ -1901,3 +1599,67 @@ export class ExpContext extends ParserRuleContext {
 		}
 	}
 }
+
+
+export class OpContext extends ParserRuleContext {
+	public LARGER(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.LARGER, 0); }
+	public SMALLER(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.SMALLER, 0); }
+	public EQUAL(): TerminalNode | undefined { return this.tryGetToken(PlatformerParser.EQUAL, 0); }
+	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
+		super(parent, invokingState);
+	}
+	// @Override
+	public get ruleIndex(): number { return PlatformerParser.RULE_op; }
+	// @Override
+	public enterRule(listener: PlatformerParserListener): void {
+		if (listener.enterOp) {
+			listener.enterOp(this);
+		}
+	}
+	// @Override
+	public exitRule(listener: PlatformerParserListener): void {
+		if (listener.exitOp) {
+			listener.exitOp(this);
+		}
+	}
+	// @Override
+	public accept<Result>(visitor: PlatformerParserVisitor<Result>): Result {
+		if (visitor.visitOp) {
+			return visitor.visitOp(this);
+		} else {
+			return visitor.visitChildren(this);
+		}
+	}
+}
+
+
+export class VarnameContext extends ParserRuleContext {
+	public NAME(): TerminalNode { return this.getToken(PlatformerParser.NAME, 0); }
+	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
+		super(parent, invokingState);
+	}
+	// @Override
+	public get ruleIndex(): number { return PlatformerParser.RULE_varname; }
+	// @Override
+	public enterRule(listener: PlatformerParserListener): void {
+		if (listener.enterVarname) {
+			listener.enterVarname(this);
+		}
+	}
+	// @Override
+	public exitRule(listener: PlatformerParserListener): void {
+		if (listener.exitVarname) {
+			listener.exitVarname(this);
+		}
+	}
+	// @Override
+	public accept<Result>(visitor: PlatformerParserVisitor<Result>): Result {
+		if (visitor.visitVarname) {
+			return visitor.visitVarname(this);
+		} else {
+			return visitor.visitChildren(this);
+		}
+	}
+}
+
+
