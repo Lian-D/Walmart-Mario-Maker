@@ -192,6 +192,7 @@ function CreateEngine(setState, initialState) {
                     this.buttonMap.set(button.type, "triggered");
                 }
             }
+            buttonIndex++;
         });
     };
 
