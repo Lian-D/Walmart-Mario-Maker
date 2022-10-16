@@ -272,7 +272,7 @@ A door leading to either a different level, or the win condition. The location t
 - Image representing our door. 
 
 `key`: Button
-- A key required for our door to open. If button given exists in the same level and is collected, the door will spawn and allow the player to go through.
+- A key required for our door to open. If button given exists in the same level and is collected, the door will spawn and allow the player to go through. If specified as "none", then the door will be spawned in at game start or level load.
 
 ### Example usage
 ```
