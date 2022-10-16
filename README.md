@@ -418,15 +418,14 @@ By using the keyword `IF` we can have actions be triggered by checks: either a b
 
   - Conditionals
     - Following an `IF`, we put our conditional:
-      - This is an arbitrary number of statements chained by `AND` or `OR`
+      - Up to a maximum of two conditions can be placed here, using an OR operator`
         - A statement can be a logical comparison of values:
           - `CONST OP value`
             - supported `OP`s are: `<, >, <=, >=, ==`
             - supported `CONST`s are: `HEALTH, MONEY`
         - Or a button check:
-          - `buttonCheck name`
-            - `name` must be the name of a button already defined
-        - Statements may also be negated: `!CONST OP value`
+          - `buttonName`
+            - `buttonName` must be the name of a button already defined
 
 
   - Events
