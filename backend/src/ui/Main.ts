@@ -21,14 +21,19 @@ export class mainHomoSapien {
         let visitor = new ParseTreetoAST();
         let program = visitor.visitProgram(parser.program());
         let json = new jsoner(program);
-        let js = json.jsoner();
-        let e = new evaluator(js);
-        let error;
-        if (!e.evaluate()) {
-            error = e.getError();
-            return [false,{"error": error}];
-        } else {
-            return [true,js];
+        try {
+            let js = json.jsoner();
+            let e = new evaluator(js);
+            let error;
+            if (!e.evaluate()) {
+                error = e.getError();
+                return [false,{"error": error}];
+            } else {
+                return [true,js];
+            }
+        } catch (err: any) {
+            return [false,err];
         }
+        
     }
 }

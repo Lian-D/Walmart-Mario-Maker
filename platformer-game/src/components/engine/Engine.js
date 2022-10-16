@@ -609,7 +609,7 @@ export default function Engine(props) {
     const [engine, setEngine] = useState(null);
 
     // record any error from the JSON
-    const [errorTxt, setErrorTxt] = useState("");
+    const [errorTxt, setErrorTxt] = useState(null);
 
     const handleKeyPress = (e) => {
         // the ' ' char actually represents the space bar key.
@@ -681,7 +681,7 @@ export default function Engine(props) {
                     <div className="introText preGameText">
                         Your game has been generated! Press SPACE to load game <br/><br/> Controls: <br/>WASD to move, SPACE to jump <br /> 
                     </div>
-                    <div className="errorText preGameText"> {errorTxt} </div>
+                    {errorTxt && <div className="errorText preGameText"> {errorTxt} </div>}
                 </div>
             </div>
                 
