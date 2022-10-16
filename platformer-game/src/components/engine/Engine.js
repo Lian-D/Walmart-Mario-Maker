@@ -645,7 +645,7 @@ export default function Engine(props) {
     const [engine, setEngine] = useState(null);
 
     // record any error from the JSON
-    const [errorTxt, setErrorTxt] = useState("");
+    const [errorTxt, setErrorTxt] = useState(null);
 
     const handleKeyPress = (e) => {
         // the ' ' char actually represents the space bar key.

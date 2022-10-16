@@ -4,6 +4,7 @@ import { PlatformerParser } from '../../PlatformerParser';
 import { evaluator } from '../evaluator/evalulator';
 import { jsoner } from '../evaluator/jsoner';
 import { ParseTreetoAST } from '../parser/ParseTreetoAST';
+import { TokenizerErrorListener } from '../parser/TokenizerErrorListener';
 
 
 export class mainHomoSapien {
@@ -16,19 +17,34 @@ export class mainHomoSapien {
         // Create the lexer and parser
         let inputStream = new ANTLRInputStream(userInput);
         let lexer = new PlatformerLexer(inputStream);
+        // Remove error listeners from lexer and parser so we can return them instead of just printing to console
+        lexer.removeErrorListeners();
+        lexer.addErrorListener(TokenizerErrorListener.INSTANCE);
         let tokenStream = new CommonTokenStream(lexer);
         let parser = new PlatformerParser(tokenStream);
+        // Remove error listeners from lexer and parser so we can return them instead of just printing to console
+        parser.removeErrorListeners();
+        parser.addErrorListener(TokenizerErrorListener.INSTANCE);
         let visitor = new ParseTreetoAST();
         let program = visitor.visitProgram(parser.program());
-        let json = new jsoner(program);
-        let js = json.jsoner();
-        let e = new evaluator(js);
-        let error;
-        if (!e.evaluate()) {
-            error = e.getError();
-            return [false,{"error": error}];
-        } else {
-            return [true,js];
+        let tokenizationErrors = TokenizerErrorListener.INSTANCE.getError();
+        if (tokenizationErrors !== "") {
+            return [false,{"error": tokenizationErrors}];
         }
+        let json = new jsoner(program);
+        try {
+            let js = json.jsoner();
+            let e = new evaluator(js);
+            let error;
+            if (!e.evaluate()) {
+                error = e.getError();
+                return [false,{"error": error}];
+            } else {
+                return [true,js];
+            }
+        } catch (err: any) {
+            return [false,err];
+        }
+        
     }
 }
