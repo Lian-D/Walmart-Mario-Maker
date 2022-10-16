@@ -3,37 +3,38 @@ lexer grammar PlatformerLexer;
 
 // we use the default mode only to recognise keywords that start statements
 LEADING_SPACE : [ \t]+ -> channel(HIDDEN); // before a keyword
-PLAYER: 'Player ' -> mode(EXP_MODE);     // including a single space in the token forces that one is always used
-ENEMY: 'Enemy ' -> mode(EXP_MODE);
-DOOR: 'Door ' -> mode(EXP_MODE);
-TERRAIN: 'Terrain ' -> mode(EXP_MODE);
-PLATFORM: 'Platform ' -> mode(EXP_MODE);
-BUTTON: 'Button ' -> mode(EXP_MODE);
-COIN: 'Coin' -> mode(EXP_MODE);
-LEVEL: 'Level ' -> mode(EXP_MODE);
-CHECKS: 'Checks ' -> mode(EXP_MODE);
-IF: 'if ' -> mode(EXP_MODE);
-ADD: 'Add' -> mode(EXP_MODE);
-REMOVE: 'Remove' -> mode(EXP_MODE);
-MONEY: 'MONEY' -> mode(EXP_MODE);
-OPEN_BRACE  : '{';
-CLOSE_BRACE : '}';
+COMPONENT: ENEMY | DOOR | BUTTON | TERRAIN | PLATFORM | COIN;
+OP: '>' | '>=' | '<=' | '<' | '==' | '=' | '!';
+PLAYER: 'Player';    // including a single space in the token forces that one is always used
+ENEMY: 'Enemy';
+DOOR: 'Door' ;
+TERRAIN: 'Terrain' ;
+PLATFORM: 'Platform';
+BUTTON: 'Button';
+COIN: 'Coin' ;
+LEVEL: 'Level';
+CHECKS: 'Checks';
+IF: 'IF';
+ADD: 'add'| 'Add';
+REMOVE: 'remove' | 'Remove';
+LOGIC : 'AND' | 'OR';
 STMT_NEWLINE: [\r\n]+; // newlines while in statement mode
 
-mode EXP_MODE;
 
 NAME  : [A-Za-z][A-Za-z0-9]*;
 CONST : '-'?[0-9]+;
 COMMA : ',';
+OPEN_BRACE  : '{';
+CLOSE_BRACE : '}';
 OPEN_PAREN  : '(';
 CLOSE_PAREN : ')';
 OPEN_SQUARE  : '[';
 CLOSED_SQUARE  : ']';
-LARGER  : '>';
-SMALLER  : '<';
-EQUAL   : '=';
+ Back-End
 SEMICOLON : ';';
 COLON : ':';
+LITERAL: ('#'| [A-Za-z0-9] | '/' | '.' | '-')+;
+LINK: LITERAL+ COLON LITERAL+ ;
 
 // spaces and tabs can be ignored (apart from those immediately following a keyword above):
 SPACE : [ \t]+ -> channel(HIDDEN);

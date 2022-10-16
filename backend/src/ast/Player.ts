@@ -1,13 +1,15 @@
-class Player{
+import { Entitybody } from "./Entitybody";
+
+export class Player{
     // fields
     name:String;
-    traits:Array<Statement>;
+    body:Entitybody;
 
     // constructor
 
-    constructor(name:String, traits:Array<Statement>){
+    constructor(name:String, body:Entitybody){
         this.name = name;
-        this.traits = traits;
+        this.body = body;
     }
 
     // functions

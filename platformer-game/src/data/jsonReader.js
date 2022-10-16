@@ -3,11 +3,18 @@ import {
     charHeight,  
     enemyWidth, 
     enemyHeight, 
+    coinWidth,
+    coinHeight,
+    buttonWidth,
+    buttonHeight,
+    doorWidth,
+    doorHeight,
 } from './constants';
 
-const loadGame = (setState, setStart, setErrorTxt) => {
-    delete require.cache['./src/data/gameData.json'];
-    let gameData = require('./gameData.json');
+const loadGame = (setState, setStart, setErrorTxt, propsGameData) => {
+    // delete require.cache['./src/data/gameData.json'];
+    // let gameData = require('./gameData.json');
+    let gameData = structuredClone(propsGameData);
 
     if (gameData.game) {
         gameData = gameData['game'];
@@ -49,7 +56,9 @@ const loadProperties = (level, types) => {
     // mapping properties from the types to the in-game entities
     level.doors = level.doors.map(
         door => ({
-            ...door, 
+            ...door,
+            width: doorWidth,
+            height: doorHeight, 
             ...types.door[door.type],
             tempClosed: false
         }
@@ -71,7 +80,9 @@ const loadProperties = (level, types) => {
 
     level.coins = level.coins.map(
         coin => ({
-            ...coin, 
+            ...coin,
+            width: coinWidth,
+            height: coinHeight, 
             ...types.coin[coin.type]
         }
     ));
@@ -88,7 +99,9 @@ const loadProperties = (level, types) => {
 
     level.buttons = level.buttons.map(
         button => ({
-            ...button, 
+            ...button,
+            width: buttonWidth,
+            height: buttonHeight, 
             ...types.button[button.type]
         }
     ));
