@@ -1,7 +1,7 @@
 parser grammar PlatformerParser;
 options { tokenVocab=PlatformerLexer; }
 
-program   : player STMT_NEWLINE? (entity (STMT_NEWLINE | NEWLINE))* (level (STMT_NEWLINE | NEWLINE))+ EOF;
+program   : player STMT_NEWLINE? (entity (STMT_NEWLINE | NEWLINE))+ (level (STMT_NEWLINE | NEWLINE))+ EOF;
 
 level    : LEVEL NAME OPEN_BRACE STMT_NEWLINE? level_body STMT_NEWLINE? CLOSE_BRACE;
 level_body: (statement (STMT_NEWLINE | NEWLINE))* (level_entity (STMT_NEWLINE | NEWLINE)?)* CHECKS COLON OPEN_SQUARE (STMT_NEWLINE | NEWLINE)? (level_cond (STMT_NEWLINE | NEWLINE))* CLOSED_SQUARE (STMT_NEWLINE | NEWLINE);
