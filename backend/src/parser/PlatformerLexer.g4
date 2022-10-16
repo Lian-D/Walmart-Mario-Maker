@@ -4,7 +4,7 @@ lexer grammar PlatformerLexer;
 // we use the default mode only to recognise keywords that start statements
 LEADING_SPACE : [ \t]+ -> channel(HIDDEN); // before a keyword
 COMPONENT: ENEMY | DOOR | BUTTON | TERRAIN | PLATFORM | COIN;
-OP: '>' | '>=' | '<=' | '<' | '==' | '=' | '!';
+OP: '>' | '>=' | '<=' | '<' | '==';
 PLAYER: 'Player';    // including a single space in the token forces that one is always used
 ENEMY: 'Enemy';
 DOOR: 'Door' ;
@@ -32,7 +32,8 @@ OPEN_SQUARE  : '[';
 CLOSED_SQUARE  : ']';
 SEMICOLON : ';';
 COLON : ':';
-LITERAL: ('#'| [A-Za-z0-9] | '/' | '.' | '-' | '=' | '_' | '?' | '%' | '~')+;
+LITERAL: ('#'| [A-Za-z0-9] | '/' | '.' | '-' | '=' | '_' | '?' | '%' | '~'| '!' | 
+'$' | '&')+;
 LINK: LITERAL+ COLON LITERAL+ ;
 
 // spaces and tabs can be ignored (apart from those immediately following a keyword above):
