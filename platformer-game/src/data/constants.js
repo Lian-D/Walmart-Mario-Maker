@@ -14,6 +14,12 @@ const doorHeight = 170;
 const enemyWidth = 110;
 const enemyHeight = 100;
 
+const coinWidth = 30;
+const coinHeight = 30;
+
+const buttonWidth = 50;
+const buttonHeight = 50;
+
 export {
     tile, 
     terminalVelocity,
@@ -25,4 +31,8 @@ export {
     terrainHeight, 
     enemyWidth, 
     enemyHeight, 
+    coinWidth,
+    coinHeight,
+    buttonWidth,
+    buttonHeight
 };

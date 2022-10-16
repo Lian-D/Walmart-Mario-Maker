@@ -5,11 +5,18 @@ html, body {
   overflow: hidden;
 }
 
-.startScreen {
+.startContainer {
   background-color: #2b333d;
   color: aliceblue;
   height: 100vh;
   width: 100vw;
+}
+
+
+.startScreen {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .container {
@@ -142,20 +149,45 @@ html, body {
 }
 
 .introText {
-  position: relative;
-  top: 25%;
   text-align: center;
   font-family: 'Segoe UI Emoji';
   font-size: 30px;
 }
 
 .errorText {
-  position: relative;
-  margin-top: 5%;
-  top: 150px;
+  margin-top: 1%;
   text-align: center;
   font-family: 'Segoe UI Emoji';
   font-size: 20px;
   color: rgb(255, 87, 87);
   font-weight: bold;
+  white-space: pre-wrap;
+}
+
+.startButtonContainer {
+  margin-top: 1%;
+  text-align: center;
+}
+
+
+.startButton {
+  font-family: 'Segoe UI Emoji';
+  margin-top: 1%;
+  font-weight: bold;
+  font-size: 20px;
+  background-color: LightBlue;
+  border: 1px solid black;
+  border-radius: 5px;
+  color: black;
+}
+
+
+
+.startButtonFileUploader {
+  display: none;
+}
+
+.startFileSpan {
+  font-family: 'Segoe UI Emoji';
+  font-size: 20px;
 }
