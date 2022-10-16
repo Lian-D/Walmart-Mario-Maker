@@ -306,7 +306,7 @@ While a level itself is technically an object and is defined the same way, they 
 
 ### Properties
 `player`: (Integer, Integer)
- - The spawn location for the player. If this is the first level defined, it is the start position. If not, then it is the location a player will be teleported to when entering a door that leads to this level.
+ - The spawn location for the player. If this is the first level defined, it is the start position. If not, then it is the location a player will be teleported to when entering a door that leads to this level. The first integer is starting x position, and the second integer is starting y position.
 
 `height`: Integer
  - The height of the level in tiles.
@@ -376,7 +376,7 @@ Type:
   ```
   
 `Door` : (name, exit level, exit door, XPOS, YPOS)
-- Categorizer for doors. If a player enters a given door, they will be teleported to an instance of `exit door` in the `exit level`. Additionally, `win` may be used in place of either of these to indicate that the player will win if this door is entered. 
+- Categorizer for doors. If a player enters a given door, they will be teleported to an instance of `exit door` in the `exit level`. Note that in order to place a door that will result in the player winning when they go through it, `exit level` and `exit door` MUST both be `win`. An example is provided below with doorType2.  
 - Example Usage:
   ```
       Door: 
@@ -435,6 +435,7 @@ By using the keyword `IF` we can have actions be triggered by checks: either a b
       - What's in the parentheses depends on the type of object. See above for syntax.
     - `Type: Remove (name)`
   - Example usage:
+    - In this example, a door is spawned and an enemy goblin1 is removed when the player has MONEY value greater than 1 or when the key buttonType1 is collected.
     ```
     Checks: [
       IF: (MONEY > 1 OR buttonType1) {
