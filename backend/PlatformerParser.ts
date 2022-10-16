@@ -94,6 +94,7 @@ export class PlatformerParser extends Parser {
 		"REMOVE", "LOGIC", "STMT_NEWLINE", "NAME", "CONST", "COMMA", "OPEN_BRACE", 
 		"CLOSE_BRACE", "OPEN_PAREN", "CLOSE_PAREN", "OPEN_SQUARE", "CLOSED_SQUARE", 
 		"SEMICOLON", "COLON", "LITERAL", "LINK", "SPACE", "NEWLINE",
+
 	];
 	public static readonly VOCABULARY: Vocabulary = new VocabularyImpl(PlatformerParser._LITERAL_NAMES, PlatformerParser._SYMBOLIC_NAMES, []);
 
@@ -1900,5 +1901,3 @@ export class ExpContext extends ParserRuleContext {
 		}
 	}
 }
-
-

@@ -445,6 +445,7 @@ public class PlatformerParser extends Parser {
 				_errHandler.reportMatch(this);
 				consume();
 			}
+
 			}
 		}
 		catch (RecognitionException re) {
