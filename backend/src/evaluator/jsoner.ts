@@ -121,6 +121,12 @@ export class jsoner {
                     
                 }
                 levelProp = "";
+                levelJson["buttons"] = [];
+                levelJson["coins"] = [];
+                levelJson["doors"] = [];
+                levelJson["enemies"] = [];
+                levelJson["platforms"] = [];
+                levelJson["terrain"] = [];
                 let levelEntities: Array<Levelentity> = levelBody.entities;
                 let instArr: Array<any> = [];
                 for (let levelEnt of levelEntities) {
@@ -200,14 +206,13 @@ export class jsoner {
                     let condJson: any = {};
                     let conditions = this.conditionJsoner(levelCond.conditions);
                     let condBody: any = {};
-                    operandA = conditions[0]["opA"];
                     if(levelCond.conditions.length > 1){
                         condBody["opA"] = conditions[0];
                         condBody["op"] = levelCond.op;
                         condBody["opB"] = conditions[1];
                     }
                     else{
-                        condBody["opA"] = conditions[0];
+                        condBody = conditions[0];
                     }
                     condJson["conditions"] = condBody;
                     let levelcondStatements:Array<CondStatement> = levelCond.statements;
@@ -239,7 +244,6 @@ export class jsoner {
                     condJson["actions"] = arrAction;
                     instArr.push(condJson);
                 }
-                operandA = "";
                 levelJson["checks"] = instArr;
                 levelsJson.push(levelJson);
             }

@@ -7,7 +7,7 @@ const Enemy = ({enemy}) => {
         background = `${enemy.colour}`;
     }
 
-    if (enemy.image) {
+    if (enemy.image !== "none") {
         background = `url("${enemy.image}") center / 100% 100% no-repeat`;
     }
 
