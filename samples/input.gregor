@@ -83,10 +83,10 @@ Level Level1 {
             (c2, 700, 400)
         ]
     Checks: [
-      IF: (MONEY > 10 OR button1) {
+      IF: (MONEY > 10 OR buttonType1) {
             Door: Add (d1spawn, doorType1, 100, 90, level2, door2)
             Platform: Remove (platform1)
-            Enemy: Add (gspawn1, goblin, 10, 110)
+            Enemy: Add (gspawn1, Goblin, 10, 110)
         }
     ]
 }
