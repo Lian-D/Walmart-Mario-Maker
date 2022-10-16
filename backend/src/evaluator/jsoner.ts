@@ -117,9 +117,10 @@ export class jsoner {
                             let typeJson: any = {};
                             typeJson["name"] = lo.exps[0].value;
                             typeJson["type"] = les.property;
-                            typeJson["goesTo"] = lo.exps[1].value;
-                            typeJson["xPos"] = lo.exps[2].value;
-                            typeJson["yPos"] = lo.exps[3].value;
+                            let gt = lo.exps[1].value.toString().concat(" ", lo.exps[2].value.toString());
+                            typeJson["goesTo"] = gt;
+                            typeJson["xPos"] = lo.exps[3].value;
+                            typeJson["yPos"] = lo.exps[4].value;
                             arrs.push(typeJson);
                         }
                         let typeC: string = type.toLowerCase().slice();
@@ -170,9 +171,22 @@ export class jsoner {
                     let cstatement: any = {};
                     cstatement["effect"] = lcs.action.toLowerCase();
                     cstatement["category"] = lcs.property.toLowerCase();
-                    let valArray:Value[] = new Array();
+                    let valArray:any[] = new Array();
                     for (let e of lcs.value.value.exps){
                         valArray.push(e.value);
+                    }
+                    if(cstatement["category"] === "door"){
+                        let q = undefined;
+                        for(let i = 0; i<valArray.length; i++){
+                            if(valArray[i].toString().startsWith("level")){
+                                let w = valArray[i] + " " + valArray[i+1];
+                                valArray[i] = w;
+                                q = i+1;
+                            }
+                        }
+                        if(q != undefined){
+                            valArray.splice(q);
+                        }
                     }
                     cstatement["payload"] = valArray;
                     arrAction.push(cstatement);
