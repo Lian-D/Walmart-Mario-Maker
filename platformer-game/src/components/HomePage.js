@@ -56,7 +56,11 @@ export default function HomePage() {
                 setGameJSON(resJson["gameData"]);
                 console.log(resJson["gameData"]);
             } else {
-                setError(resJson["error"]);
+                if (!resJson["error"]) {
+                    setError("An unexpected error has occurred. Please double check your input file and try again");
+                } else {
+                    setError(resJson["error"]);
+                }
 
             }
         }).catch((err) => {
