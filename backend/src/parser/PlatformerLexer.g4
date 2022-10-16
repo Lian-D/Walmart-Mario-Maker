@@ -30,7 +30,6 @@ OPEN_PAREN  : '(';
 CLOSE_PAREN : ')';
 OPEN_SQUARE  : '[';
 CLOSED_SQUARE  : ']';
- Back-End
 SEMICOLON : ';';
 COLON : ':';
 LITERAL: ('#'| [A-Za-z0-9] | '/' | '.' | '-')+;
