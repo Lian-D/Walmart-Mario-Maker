@@ -25,14 +25,20 @@ export class mainHomoSapien {
         // Remove error listeners from lexer and parser so we can return them instead of just printing to console
         parser.removeErrorListeners();
         parser.addErrorListener(TokenizerErrorListener.INSTANCE);
+        // Perform check here, sometimes error event listener fires before program is visited. Sometimes it doesn't
         let tokenizationErrors = TokenizerErrorListener.INSTANCE.getError();
         if (tokenizationErrors !== "") {
             return [false,{"error": tokenizationErrors}];
         }
-        let visitor = new ParseTreetoAST();
-        let program = visitor.visitProgram(parser.program());
-        let json = new jsoner(program);
         try {
+            let visitor = new ParseTreetoAST();
+            let program = visitor.visitProgram(parser.program());
+            let tokenizationErrors = TokenizerErrorListener.INSTANCE.getError();
+            // Perform check here again
+            if (tokenizationErrors !== "") {
+                return [false,{"error": tokenizationErrors}];
+            }
+            let json = new jsoner(program);
             let js = json.jsoner();
             let e = new evaluator(js);
             let error;
@@ -43,7 +49,13 @@ export class mainHomoSapien {
                 return [true,js];
             }
         } catch (err: any) {
-            return [false,err];
+            // Perform check here again
+            let tokenizationErrors = TokenizerErrorListener.INSTANCE.getError();
+            if (tokenizationErrors !== "") {
+                return [false,{"error": tokenizationErrors}];
+            } else {
+                return [false,err];
+            }
         }
         
     }
