@@ -4,3 +4,4 @@
 /platformer-game/.idea/
 /backend/node_modules/
 /backend/**/*.js
+/backend/**/*.js.map

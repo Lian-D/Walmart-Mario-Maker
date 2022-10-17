@@ -1,0 +1,91 @@
+Player player: {
+    speed: 1
+    health: 4
+}
+Enemy Nulltrooper: {
+    Behaviour: FOLLOW
+    Speed: 0.8
+    colour: #32a84e
+    image: https://i.pinimg.com/originals/7a/79/bc/7a79bcdbe4f07499262e7e607717f72c.jpg
+}
+
+Enemy Nulljumper: {
+    Behaviour: FOLLOW
+    Speed: 0.4
+    colour: #042b2b
+    image: https://i.pinimg.com/originals/88/62/56/88625667b0bcac1a044f9304393e93a4.jpg
+}
+
+Terrain terrainType1: {
+    image: https://images.pexels.com/photos/978462/pexels-photo-978462.jpeg?cs=srgb&dl=pexels-hoang-le-978462.jpg&fm=jpg
+    colour: #57f542
+}
+
+Platform platformType1: {
+    image: https://images.pexels.com/photos/978462/pexels-photo-978462.jpeg?cs=srgb&dl=pexels-hoang-le-978462.jpg&fm=jpg
+    colour: #5932a8
+}
+
+Door doorType1: {
+    image: https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/33142/door-clipart-md.png
+    key: buttonType1
+}
+
+Door doorType2: {
+    image: https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/33142/door-clipart-md.png
+    key: buttonType1
+}
+
+Coin coinType1: {
+    image: https://imageio.forbes.com/specials-images/imageserve/602e01a6ce88dc4d342619a1/A-golden-loot-box-in-Overwatch/960x0.jpg?format=jpg&width=960
+    value: 3
+}
+
+Button buttonType1: {
+    image: https://media.discordapp.net/attachments/1017526051989106740/1027763213896515615/key-png-11.png
+}
+
+Level level1 {
+    player: (200, 50)
+    height: 900
+    width: 3000
+    background: https://www.cbc.ca/kidsnews/content/Overwatch-THUMB.jpg
+    Terrain: 
+        terrainType1: [
+            (terrain1, 0,0, 1200),
+            (terrain2, 1600,0, 1200)
+            ]
+    Platform:
+        platformType1: [
+            (plat1, 1400,300,200)
+        ]
+    Enemy: 
+        Nulltrooper: [
+            (nt1, 2500, 50)
+        ]
+        Nulljumper: [
+            (nj1, 500, 50) 
+        ]
+
+    Button:
+        buttonType1: [
+            (button1, 2700, 50)
+        ]
+    Coin: 
+        coinType1: [
+            (c1, 1200, 50),
+            (c2, 1500, 50),
+            (c3, 2699, 50)
+        ]
+    Checks: [
+      IF: (MONEY > 2) {
+            Enemy: Add (nt2 , Nulltrooper, 10, 110)
+            Enemy: Add (nj2 , Nulljumper, 40, 110)
+            Enemy: Add (nt3 , Nulltrooper, 70, 110)
+            Enemy: Add (nj3 , Nulljumper, 100, 110)
+        }
+      IF: (buttonType1) {
+            Door: Add (d1spawn, doorType1, 0, 50, win, win)
+        }
+    ]
+}
