@@ -65,7 +65,7 @@ export default function HomePage() {
             }
         }).catch((err) => {
             console.log(err);
-            setError("An unexpected error has occurred. Please double check your input file and make sure that the backend server is running before trying again.");
+            setError("An unexpected error has occurred. Please double check your input file.");
         });
         console.log(response);
     }
