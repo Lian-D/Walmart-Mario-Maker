@@ -25,12 +25,12 @@ export class mainHomoSapien {
         // Remove error listeners from lexer and parser so we can return them instead of just printing to console
         parser.removeErrorListeners();
         parser.addErrorListener(TokenizerErrorListener.INSTANCE);
-        let visitor = new ParseTreetoAST();
-        let program = visitor.visitProgram(parser.program());
         let tokenizationErrors = TokenizerErrorListener.INSTANCE.getError();
         if (tokenizationErrors !== "") {
             return [false,{"error": tokenizationErrors}];
         }
+        let visitor = new ParseTreetoAST();
+        let program = visitor.visitProgram(parser.program());
         let json = new jsoner(program);
         try {
             let js = json.jsoner();

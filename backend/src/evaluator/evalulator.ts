@@ -195,7 +195,7 @@ export class evaluator {
                 checkPassed = false;
                 this.error+=`level platform missing a name declaration\n`;
             }
-            if (platform.type === undefined || this.parsedData.game.types.platform[platform.type] === undefined) {
+            if (platform.type === undefined || this.parsedData.game.types.platform?.[platform.type] === undefined) {
                 checkPassed = false;
                 this.error+=`level platform not connected to a defined type\n`;
             }
@@ -219,7 +219,7 @@ export class evaluator {
                 checkPassed = false;
                 this.error+=`level terrain missing a name declaration\n`;
             }
-            if (terrain.type === undefined || this.parsedData.game.types.terrain[terrain.type] === undefined) {
+            if (terrain.type === undefined || this.parsedData.game.types.terrain?.[terrain.type] === undefined) {
                 checkPassed = false;
                 this.error+=`level terrain not connected to a defined type\n`;
             }
@@ -242,7 +242,7 @@ export class evaluator {
                 checkPassed = false;
                 this.error+=`level coin missing a name declaration\n`;
             }
-            if (coin.type === undefined || this.parsedData.game.types.coin[coin.type] === undefined) {
+            if (coin.type === undefined || this.parsedData.game.types.coin?.[coin.type] === undefined) {
                 checkPassed = false;
                 this.error+=`level coin not connected to a defined type\n`;
             }
@@ -281,7 +281,7 @@ export class evaluator {
                 checkPassed = false;
                 this.error+=`level button missing a name declaration\n`;
             }
-            if (button.type === undefined || this.parsedData.game.types.button[button.type] === undefined) {
+            if (button.type === undefined || this.parsedData.game.types.button?.[button.type] === undefined) {
                 checkPassed = false;
                 this.error+=`level button not connected to a defined type\n`;
             }
