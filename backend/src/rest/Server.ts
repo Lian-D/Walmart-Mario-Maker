@@ -30,8 +30,7 @@ export default class Server {
             }
         });
     }
-    
-    // Once the backend implementation is complete, this function can be finished.
+
     private static postGame(req: express.Request, res: express.Response) {
         let result: [boolean,any] = Server.main.parseAndEvaluateGame(req.body["userCode"]);
         if (result[0]) {
