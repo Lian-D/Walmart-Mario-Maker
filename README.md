@@ -1,4 +1,4 @@
-# Group 8, Project 1 - Walmart Mario Maker
+#Walmart Mario Maker
 Walmart Mario Maker is a tool that allows users to create 2d platformer levels with a simple domain specific language.
 
 ## How do I run the project?
